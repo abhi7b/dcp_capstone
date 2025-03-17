@@ -1,0 +1,13 @@
+# Dockerfile for DCP AI Scouting Platform Scheduler
+#
+# This Dockerfile sets up the environment for running the scheduler component
+# of the DCP AI Scouting Platform. The scheduler is responsible for automated
+# data collection, processing, and maintenance tasks.
+#
+# It should:
+# 1. Use Python 3.9 as the base image
+# 2. Install system dependencies (build-essential, libpq-dev for PostgreSQL)
+# 3. Install Python dependencies from requirements.txt
+# 4. Set up the application code
+# 5. Configure environment variables
+# 6. Define the command to run the scheduler
