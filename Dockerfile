@@ -1,11 +1,30 @@
-# Dockerfile for DCP AI Scouting Platform
-#
-# This Dockerfile sets up the environment for running the DCP AI Scouting Platform.
-# It should:
-# 1. Use Python 3.9 as the base image
-# 2. Install system dependencies (build-essential, libpq-dev for PostgreSQL)
-# 3. Install Python dependencies from requirements.txt
-# 4. Set up the application code
-# 5. Configure environment variables
-# 6. Expose the necessary ports
-# 7. Define the command to run the application
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gcc libpq-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
+COPY . .
+
+# Create necessary directories
+RUN mkdir -p /app/data/raw /app/data/json_inputs /app/data/logs
+
+# Expose port
+EXPOSE 8000
+
+# Command to run the application
+CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"] 

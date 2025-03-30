@@ -1,18 +1,96 @@
-# Docker Compose Configuration for DCP AI Scouting Platform
-#
-# This docker-compose.yml file defines the services needed to run the complete
-# DCP AI Scouting Platform. It should include:
-#
-# 1. API Service: The main FastAPI application
-# 2. Database Service: PostgreSQL for data storage
-# 3. Redis Service: For caching and background tasks
-# 4. Scheduler Service: For automated data collection and processing
-# 5. Frontend Service: React frontend (when implemented)
-#
-# Each service should have:
-# - Appropriate image or build configuration
-# - Required environment variables
-# - Volume mounts for persistent data
-# - Port mappings for external access
-# - Dependencies on other services
-#
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    command: uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - duke-vc-network
+
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD:-postgres}
+      - POSTGRES_USER=${DATABASE_USER:-postgres}
+      - POSTGRES_DB=${DATABASE_NAME:-duke_vc_db}
+    ports:
+      - "5432:5432"
+    networks:
+      - duke-vc-network
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - duke-vc-network
+
+  celery_worker:
+    build: .
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+    command: celery -A backend.app.tasks.celery_app worker --loglevel=info
+    networks:
+      - duke-vc-network
+
+  celery_beat:
+    build: .
+    volumes:
+      - .:/app
+      - ./data:/app/data
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - celery_worker
+    command: celery -A backend.app.tasks.celery_app beat --loglevel=info
+    networks:
+      - duke-vc-network
+
+  flower:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    ports:
+      - "5555:5555"
+    depends_on:
+      - db
+      - redis
+      - celery_worker
+    command: celery -A backend.app.tasks.celery_app flower --port=5555
+    networks:
+      - duke-vc-network
+
+networks:
+  duke-vc-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data: 
