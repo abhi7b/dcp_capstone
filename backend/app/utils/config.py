@@ -27,11 +27,11 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = os.getenv("DATABASE_NAME", "postgres")
     
     # OpenAI
-    OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
-    OPENAI_MODEL: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    OPENAI_API_KEY: str
+    OPENAI_MODEL: str = "gpt-4"
     
     # SERP API
-    SERPAPI_KEY: str = os.getenv("SERPAPI_KEY", "")
+    SERPAPI_KEY: str
     
     # Twitter/Nitter
     TWITTER_NITTER_BASE_URL: str = os.getenv("TWITTER_NITTER_BASE_URL", "https://nitter.net")
@@ -56,7 +56,7 @@ class Settings(BaseSettings):
     HOME_DIR: str = os.path.expanduser("~")
     
     # File paths - avoid using /app paths
-    BASE_DIR: str = os.getenv("BASE_DIR", os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
+    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
     if BASE_DIR.startswith("/app"):
         BASE_DIR = os.path.join(HOME_DIR, "duke_vc_insight_engine")
     
@@ -64,10 +64,18 @@ class Settings(BaseSettings):
     BACKEND_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
     
     # Set all data directories as subdirectories of BACKEND_DIR/data
-    DATA_DIR: str = os.getenv("DATA_DIR", os.path.join(BACKEND_DIR, "data"))
-    RAW_DATA_DIR: str = os.getenv("RAW_DATA_DIR", os.path.join(DATA_DIR, "raw"))
-    JSON_INPUTS_DIR: str = os.getenv("JSON_INPUTS_DIR", os.path.join(DATA_DIR, "json_inputs"))
-    LOGS_DIR: str = os.getenv("LOGS_DIR", os.path.join(DATA_DIR, "logs"))
+    BASE_DATA_DIR: str = os.path.join(BACKEND_DIR, "data")
+    RAW_DATA_DIR: str = os.path.join(BASE_DATA_DIR, "raw")
+    JSON_INPUTS_DIR: str = os.path.join(BASE_DATA_DIR, "json_inputs")
+    LOGS_DIR: str = os.getenv("LOGS_DIR", os.path.join(BASE_DATA_DIR, "logs"))
+    PROCESSED_DATA_DIR: str = os.path.join(BASE_DATA_DIR, "processed")
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Create all data directories
+        for dir_path in [self.BASE_DATA_DIR, self.RAW_DATA_DIR, self.JSON_INPUTS_DIR, 
+                        self.LOGS_DIR, self.PROCESSED_DATA_DIR]:
+            os.makedirs(dir_path, exist_ok=True)
     
     class Config:
         """Pydantic settings configuration"""

@@ -247,6 +247,10 @@ class TokenData(BaseModel):
     """Schema for decoded token data."""
     api_key: Optional[str] = None
 
+# Simple response schema for messages
+class Message(BaseModel):
+    message: str
+
 # Need to update forward refs after all models are defined
 CompanyResponse.update_forward_refs()
 PersonResponse.update_forward_refs()

@@ -1,14 +1,12 @@
-# Services package for scrapers, NLP processing, and scoring 
-from .nlp_processor import NLPProcessor
-from .person_processor import PersonProcessor
-from .scorer import Scorer
-from .scraper import SERPScraper
-from .nitter import NitterScraper
+"""
+Services package for Duke VC Insight Engine.
+Contains core processing modules for data collection and analysis.
+"""
 
-__all__ = [
-    'NLPProcessor',
-    'PersonProcessor',
-    'Scorer',
-    'SERPScraper',
-    'NitterScraper'
-] 
+# Import individual services
+from .nitter import NitterScraper
+from .company_scorer import Scorer
+from .nlp_processor import NLPProcessor
+
+# Export services
+__all__ = ['NitterScraper', 'Scorer', 'NLPProcessor'] 

@@ -4,50 +4,67 @@ import logging
 from logging.handlers import RotatingFileHandler
 from .config import settings
 
-def setup_logger(name, log_file, level=logging.INFO):
-    """Function to setup a logger with file and console handlers"""
-    # Create logger
+def setup_logger(name: str, log_file: str = None, level: str = None) -> logging.Logger:
+    """Set up a logger with file and console handlers
+    
+    Args:
+        name: Logger name
+        log_file: Optional path to log file. If None, only console logging is used
+        level: Optional log level. If None, uses level from settings
+    """
     logger = logging.getLogger(name)
-    logger.setLevel(level)
-    logger.propagate = False
     
-    # Remove existing handlers (for reconfiguration)
-    for handler in logger.handlers[:]:
-        logger.removeHandler(handler)
-    
-    # Create formatter
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
-    )
-    
-    # Create console handler
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
-    
-    # Create file handler if log file is provided
-    if log_file:
-        try:
-            # Ensure log directory exists
-            log_dir = os.path.dirname(log_file)
-            os.makedirs(log_dir, exist_ok=True)
-            
-            # Create rotating file handler (10MB max size, keep 5 backups)
-            file_handler = RotatingFileHandler(
-                log_file, 
-                maxBytes=10*1024*1024,  # 10MB
-                backupCount=5,
-                encoding='utf-8'
+    if not logger.handlers:  # Only add handlers if they don't exist
+        # Use provided level or fall back to settings
+        log_level = level or settings.LOG_LEVEL
+        logger.setLevel(log_level)
+        
+        # Create formatters
+        file_formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+        console_formatter = logging.Formatter(
+            '%(levelname)s - %(message)s'
+        )
+        
+        # Always add console handler
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(console_formatter)
+        logger.addHandler(console_handler)
+        
+        # Add file handler if log_file is provided
+        if log_file:
+            os.makedirs(settings.LOGS_DIR, exist_ok=True)
+            file_handler = logging.FileHandler(
+                os.path.join(settings.LOGS_DIR, log_file)
             )
-            file_handler.setFormatter(formatter)
+            file_handler.setFormatter(file_formatter)
             logger.addHandler(file_handler)
-        except Exception as e:
-            # Just log to console if file logging fails
-            print(f"Warning: Could not set up file logging: {str(e)}")
-            print(f"Continuing with console logging only")
     
     return logger
+
+# Create loggers for each service
+nitter_logger = setup_logger('nitter', 'nitter.log')
+nlp_logger = setup_logger('nlp', 'nlp.log')
+scorer_logger = setup_logger('scorer', 'scorer.log')
+processor_logger = setup_logger('processor', 'processor.log')
+app_logger = setup_logger('app', 'app.log')
+scraper_logger = setup_logger('scraper', 'scraper.log')
+api_logger = setup_logger('api', 'api.log')
+db_logger = setup_logger('db', 'db.log')
+
+# Export all loggers
+__all__ = [
+    'nitter_logger', 
+    'nlp_logger', 
+    'scorer_logger', 
+    'processor_logger',
+    'app_logger',
+    'scraper_logger',
+    'api_logger',
+    'db_logger',
+    'setup_logger'
+]
 
 # Get log level from environment or settings
 log_level_name = os.environ.get("LOG_LEVEL", "INFO")
@@ -64,8 +81,6 @@ except Exception:
 # Create loggers for different components with console logging only initially
 app_logger = setup_logger('app', None, level=log_level)
 scraper_logger = setup_logger('scraper', None, level=log_level)
-nitter_logger = setup_logger('nitter', None, level=log_level)
-nlp_logger = setup_logger('nlp', None, level=log_level)
 api_logger = setup_logger('api', None, level=log_level)
 db_logger = setup_logger('db', None, level=log_level)
 celery_logger = setup_logger('celery', None, level=log_level)
@@ -87,8 +102,6 @@ def configure_loggers(logs_dir):
         # Reconfigure each logger
         app_logger = setup_logger('app', os.path.join(logs_dir, 'app.log'), level=log_level)
         scraper_logger = setup_logger('scraper', os.path.join(logs_dir, 'scraper.log'), level=log_level)
-        nitter_logger = setup_logger('nitter', os.path.join(logs_dir, 'nitter.log'), level=log_level)
-        nlp_logger = setup_logger('nlp', os.path.join(logs_dir, 'nlp.log'), level=log_level)
         api_logger = setup_logger('api', os.path.join(logs_dir, 'api.log'), level=log_level)
         db_logger = setup_logger('db', os.path.join(logs_dir, 'db.log'), level=log_level)
         celery_logger = setup_logger('celery', os.path.join(logs_dir, 'celery.log'), level=log_level)
