@@ -62,6 +62,7 @@ class Person(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    title = Column(String, nullable=True)
     duke_affiliation_status = Column(String, nullable=False)
     relevance_score = Column(Integer, nullable=False)
     education = Column(JSON, nullable=True)
@@ -71,8 +72,8 @@ class Person(Base):
     linkedin_handle = Column(String, nullable=True)
     twitter_summary = Column(String, nullable=True)
     source_links = Column(JSON, nullable=True)
-    created_at = Column(DateTime, default=datetime.now)
-    updated_at = Column(DateTime, onupdate=datetime.now)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, onupdate=datetime.utcnow)
     
     # Relationship
     companies = relationship("Company", secondary=company_person_association, back_populates="people")

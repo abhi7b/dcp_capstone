@@ -51,7 +51,6 @@ class CompanyBase(BaseModel):
     """
     name: str
     duke_affiliation_status: Optional[str] = "please review"
-    duke_affiliation_score: Optional[int] = None
     relevance_score: Optional[int] = None
     summary: Optional[str] = None
     investors: Optional[List[str]] = None
@@ -72,7 +71,7 @@ class CompanyBase(BaseModel):
             raise ValueError(f"duke_affiliation_status must be one of {valid_statuses}")
         return v
 
-    @validator('duke_affiliation_score', 'relevance_score')
+    @validator('relevance_score')
     def validate_score(cls, v):
         """Validate that score is between 0 and 100."""
         if v is not None and (v < 0 or v > 100):
@@ -81,9 +80,19 @@ class CompanyBase(BaseModel):
 
     @validator('twitter_handle')
     def validate_twitter_handle(cls, v):
-        """Ensure Twitter handle starts with @."""
-        if v and not v.startswith('@'):
-            return f'@{v}'
+        """Ensure Twitter handle starts with @ and has valid format."""
+        if not v:
+            return v
+            
+        # Add @ if missing
+        if not v.startswith('@'):
+            v = f'@{v}'
+            
+        # Basic format validation (alphanumeric and underscores)
+        pattern = r'^@[A-Za-z0-9_]{1,15}$'
+        if not re.match(pattern, v):
+            raise ValueError('Twitter handle must be 1-15 alphanumeric characters or underscores after @')
+            
         return v
 
 class PersonBase(BaseModel):
@@ -142,7 +151,7 @@ class PersonUpdate(BaseModel):
     twitter_handle: Optional[str] = None
     linkedin_handle: Optional[str] = None
     source_links: Optional[List[str]] = None
-    last_updated: Optional[datetime] = datetime.now()
+    last_updated: Optional[datetime] = datetime.utcnow()
 
     # Add validators if needed for update context
 
@@ -150,7 +159,7 @@ class PersonUpdate(BaseModel):
 class PersonBasicInfo(BaseModel):
     """Schema representing minimal person info within a company response."""
     name: str
-    title: str
+    duke_affiliation_status: str  # Using a field that exists in the Person model
 
     class Config:
         from_attributes = True # Allow creating from ORM objects
@@ -164,7 +173,6 @@ class CompanyUpdate(CompanyBase):
     """Schema for updating an existing company record."""
     name: Optional[str] = None
     duke_affiliation_status: Optional[str] = None
-    duke_affiliation_score: Optional[int] = None
     relevance_score: Optional[int] = None
     summary: Optional[str] = None
     investors: Optional[List[str]] = None

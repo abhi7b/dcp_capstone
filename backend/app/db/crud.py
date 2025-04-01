@@ -1,3 +1,9 @@
+"""
+Company and API Key CRUD operations.
+
+This module contains database operations for Company and API Key entities,
+used by the application's API endpoints and background tasks.
+"""
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -9,14 +15,24 @@ from ..utils.logger import db_logger
 from datetime import datetime
 import json
 from fastapi import HTTPException
+from . import person_crud  # Import person CRUD operations
 
 # Company CRUD operations
 async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> models.Company:
-    """Create a new company"""
+    """
+    Create a new company with optional related people.
+    
+    Args:
+        db: The database session
+        company: Company data for creation, including optional people
+        
+    Returns:
+        The created Company model
+    """
+    # Create company object with fields that exist in the model
     db_company = models.Company(
         name=company.name,
         duke_affiliation_status=company.duke_affiliation_status,
-        duke_affiliation_score=company.duke_affiliation_score,
         relevance_score=company.relevance_score,
         summary=company.summary,
         investors=company.investors,
@@ -50,8 +66,8 @@ async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> mo
             if not person:
                 person = models.Person(
                     name=person_data.name,
+                    title=person_data.title,
                     duke_affiliation_status=person_data.duke_affiliation_status,
-                    duke_affiliation_score=person_data.duke_affiliation_score,
                     relevance_score=person_data.relevance_score,
                     education=person_data.education,
                     current_company=person_data.current_company,
@@ -65,8 +81,11 @@ async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> mo
                 await db.commit()
                 await db.refresh(person)
             
+            # Determine title for association - default to person's title if available, or "unknown" if not
+            title_for_association = getattr(person_data, 'title', None) or "unknown"
+            
             # Track for addition
-            people_to_add.append((person, person_data.title))
+            people_to_add.append((person, title_for_association))
         
         # Now add all the people in a separate query
         for person, title in people_to_add:
@@ -84,23 +103,33 @@ async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> mo
     return db_company
 
 async def get_company(db: AsyncSession, company_id: int) -> Optional[models.Company]:
-    """Get a company by ID"""
+    """
+    Get a company by ID.
+    
+    Args:
+        db: The database session
+        company_id: The ID of the company to retrieve
+        
+    Returns:
+        The Company model if found, None otherwise
+    """
     result = await db.execute(select(models.Company).where(models.Company.id == company_id))
     return result.scalars().first()
 
 async def get_company_by_name(db: AsyncSession, name: str) -> Optional[models.Company]:
-    """Get a company by name"""
+    """
+    Get a company by name.
+    
+    Args:
+        db: The database session
+        name: The name of the company to retrieve
+        
+    Returns:
+        The Company model if found, None otherwise
+    """
     result = await db.execute(select(models.Company).where(models.Company.name == name))
     return result.scalars().first()
 
-async def get_company_by_twitter_handle(db: AsyncSession, twitter_handle: str) -> Optional[models.Company]:
-    """Get a company by Twitter handle"""
-    # Ensure the handle starts with @ for consistency
-    if twitter_handle and not twitter_handle.startswith('@'):
-        twitter_handle = f'@{twitter_handle}'
-        
-    result = await db.execute(select(models.Company).where(models.Company.twitter_handle == twitter_handle))
-    return result.scalars().first()
 
 async def get_companies(
     db: AsyncSession, 
@@ -108,7 +137,18 @@ async def get_companies(
     limit: int = 100,
     duke_affiliation_status: Optional[str] = None
 ) -> List[models.Company]:
-    """Get a list of companies with optional filtering"""
+    """
+    Get a list of companies with optional filtering.
+    
+    Args:
+        db: The database session
+        skip: Number of records to skip (for pagination)
+        limit: Maximum number of records to return
+        duke_affiliation_status: Optional filter for Duke affiliation
+        
+    Returns:
+        List of Company models
+    """
     query = select(models.Company).offset(skip).limit(limit)
     
     if duke_affiliation_status:
@@ -122,7 +162,20 @@ async def update_company(
     company_id: int, 
     company_data: schemas.CompanyUpdate
 ) -> Optional[models.Company]:
-    """Update a company"""
+    """
+    Update a company and optionally its related people.
+    
+    Args:
+        db: The database session
+        company_id: The ID of the company to update
+        company_data: Updated company data
+        
+    Returns:
+        The updated Company model if found, None otherwise
+        
+    Raises:
+        HTTPException: If there's an error during the update process
+    """
     db_company = await get_company(db, company_id)
     if not db_company:
         return None
@@ -171,8 +224,8 @@ async def update_company(
                         # Create a new person if not found
                         db_person = models.Person(
                             name=person_data.name,
+                            title=person_data.title,
                             duke_affiliation_status=person_data.duke_affiliation_status,
-                            duke_affiliation_score=person_data.duke_affiliation_score,
                             relevance_score=person_data.relevance_score,
                             education=person_data.education,
                             current_company=person_data.current_company,
@@ -186,12 +239,15 @@ async def update_company(
                         await db.flush()
                         await db.refresh(db_person)
                     
+                    # Get title for association - default to person's title if available
+                    title_for_association = getattr(person_data, 'title', None) or "unknown"
+                    
                     # Add the association
                     await db.execute(
                         models.company_person_association.insert().values(
                             company_id=company_id,
                             person_id=db_person.id,
-                            title=person_data.title
+                            title=title_for_association
                         )
                     )
                 await db.flush()
@@ -213,139 +269,78 @@ async def update_company(
         raise HTTPException(status_code=500, detail=f"Error updating company: {e}") from e
 
 async def delete_company(db: AsyncSession, company_id: int) -> bool:
-    """Delete a company"""
-    # First check if company exists
-    company = await get_company(db, company_id)
-    if not company:
+    """
+    Delete a company by ID.
+    
+    Args:
+        db: The database session
+        company_id: The ID of the company to delete
+        
+    Returns:
+        True if the company was deleted, False if not found
+    """
+    db_company = await get_company(db, company_id)
+    if not db_company:
         return False
     
-    await db.execute(delete(models.Company).where(models.Company.id == company_id))
+    # Delete the company - note, this may cause cascade issues depending on
+    # the constraints in the database and model relationships
+    await db.delete(db_company)
+    
     await db.commit()
     return True
 
 # API Key CRUD operations
 async def create_api_key(db: AsyncSession, api_key: schemas.APIKeyCreate) -> models.APIKey:
-    """Create a new API key"""
+    """
+    Create a new API key.
+    
+    Args:
+        db: The database session
+        api_key: API key data for creation
+        
+    Returns:
+        The created APIKey model
+    """
     db_api_key = models.APIKey(
         name=api_key.name,
         rate_limit=api_key.rate_limit
     )
-    
     db.add(db_api_key)
     await db.commit()
     await db.refresh(db_api_key)
     return db_api_key
 
 async def get_api_key(db: AsyncSession, key: str) -> Optional[models.APIKey]:
-    """Get an API key by value"""
+    """
+    Get an API key by value.
+    
+    Args:
+        db: The database session
+        key: The API key to look up
+        
+    Returns:
+        The APIKey model if found, None otherwise
+    """
     result = await db.execute(select(models.APIKey).where(models.APIKey.key == key))
     return result.scalars().first()
 
 async def deactivate_api_key(db: AsyncSession, key: str) -> bool:
-    """Deactivate an API key"""
-    api_key = await get_api_key(db, key)
-    if not api_key:
+    """
+    Deactivate an API key.
+    
+    Args:
+        db: The database session
+        key: The API key to deactivate
+        
+    Returns:
+        True if the key was deactivated, False if not found
+    """
+    db_api_key = await get_api_key(db, key)
+    if not db_api_key:
         return False
     
-    await db.execute(
-        update(models.APIKey)
-        .where(models.APIKey.key == key)
-        .values(is_active=False)
-    )
-    
+    db_api_key.is_active = False
     await db.commit()
-    return True
-
-# Person CRUD operations
-async def create_person(db: AsyncSession, person: schemas.PersonCreate) -> models.Person:
-    """Create a new person independently."""
-    # Check if person already exists by name (optional, decide if names must be unique)
-    # existing_person = await get_person_by_name(db, name=person.name)
-    # if existing_person:
-    #     # Handle duplicate name scenario if necessary (e.g., raise error, update existing)
-    #     # For now, we allow duplicate names as people might share names
-    #     pass 
-
-    db_person = models.Person(
-        name=person.name,
-        duke_affiliation_status=person.duke_affiliation_status,
-        duke_affiliation_score=person.duke_affiliation_score,
-        relevance_score=person.relevance_score,
-        education=person.education,
-        current_company=person.current_company,
-        previous_companies=person.previous_companies,
-        twitter_handle=person.twitter_handle,
-        linkedin_handle=person.linkedin_handle,
-        twitter_summary=person.twitter_summary, # Assuming this is a simple string or dict now
-        source_links=person.source_links
-        # Note: Company association is NOT handled here
-    )
-    db.add(db_person)
-    await db.commit()
-    await db.refresh(db_person)
-    return db_person
-
-async def get_person(db: AsyncSession, person_id: int) -> Optional[models.Person]:
-    """Get a person by ID."""
-    # Use eager loading for companies if needed frequently when getting a person
-    # from sqlalchemy.orm import selectinload
-    # result = await db.execute(select(models.Person).options(selectinload(models.Person.companies)).where(models.Person.id == person_id))
-    result = await db.execute(select(models.Person).where(models.Person.id == person_id))
-    return result.scalars().first()
-
-async def get_person_by_name(db: AsyncSession, name: str) -> Optional[models.Person]:
-    """Get a person by name."""
-    result = await db.execute(select(models.Person).where(models.Person.name == name))
-    # If multiple people can have the same name, use .first() or adjust logic
-    return result.scalars().first()
-
-async def get_persons(
-    db: AsyncSession, 
-    skip: int = 0, 
-    limit: int = 100,
-    duke_affiliation_status: Optional[str] = None
-) -> List[models.Person]:
-    """Get a list of people with optional filtering."""
-    query = select(models.Person).offset(skip).limit(limit)
     
-    if duke_affiliation_status:
-        query = query.where(models.Person.duke_affiliation_status == duke_affiliation_status)
-    
-    result = await db.execute(query)
-    return result.scalars().all()
-
-async def update_person(
-    db: AsyncSession, 
-    person_id: int, 
-    person_data: schemas.PersonUpdate # Need to define PersonUpdate schema
-) -> Optional[models.Person]:
-    """Update a person's details. Does not handle company associations."""
-    db_person = await get_person(db, person_id)
-    if not db_person:
-        return None
-
-    update_data = person_data.dict(exclude_unset=True)
-    
-    # Update fields
-    for key, value in update_data.items():
-        setattr(db_person, key, value)
-        
-    await db.commit()
-    await db.refresh(db_person)
-    return db_person
-
-async def delete_person(db: AsyncSession, person_id: int) -> bool:
-    """Delete a person. Does not automatically handle company associations (they might remain)."""
-    db_person = await get_person(db, person_id)
-    if not db_person:
-        return False
-        
-    # Decide on cascade behavior for associations if person is deleted
-    # By default, SQLAlchemy might prevent deletion if associations exist,
-    # Or nullify the foreign key depending on relationship settings.
-    # Explicitly deleting associations might be needed depending on requirements.
-    # await db.execute(delete(models.company_person_association).where(models.company_person_association.c.person_id == person_id))
-    
-    await db.delete(db_person) # Use db.delete for ORM object
-    await db.commit()
     return True 
