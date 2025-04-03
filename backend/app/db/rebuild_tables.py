@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 """
-Database Rebuild Script
-
-This script drops all existing tables and recreates them based on the models.
-It also creates a default API key for development.
+Script to rebuild database tables with updated schema.
 """
 
 import os
@@ -13,6 +10,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy import text
+import asyncio
 
 # Add project root to system path for imports when running as script
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
@@ -25,63 +24,37 @@ def _compile_drop_table(element, compiler, **kwargs):
 # Import models and settings
 from backend.app.db.models import Base, APIKey
 from backend.app.utils.config import settings
+from ..utils.logger import get_logger
+from .session import engine
 
-def rebuild_tables():
-    """Rebuild all database tables and create an API key"""
-    # Create a sync engine for database operations
-    db_url = settings.DATABASE_URL.replace("asyncpg", "psycopg2")
-    engine = create_engine(db_url)
-    
-    print(f"Connected to database.")
-    
-    # Drop all existing tables
-    print("Dropping all existing tables...")
-    Base.metadata.drop_all(engine)
-    
-    # Create new tables based on models
-    print("Creating new tables...")
-    Base.metadata.create_all(engine)
-    
-    print("Database tables rebuilt successfully!")
-    
-    # Create a new API key
-    print("Creating default API key...")
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    
+logger = get_logger("rebuild_tables")
+
+async def rebuild_tables():
+    """Drop and recreate all tables with updated schema."""
     try:
-        # Generate a new API key
-        api_key = str(uuid.uuid4())
+        # Drop all tables
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.drop_all)
+            logger.info("Dropped all existing tables")
         
-        # Create new API key record
-        new_key = APIKey(
-            key=api_key,
-            name="Development API Key",
-            is_active=True,
-            rate_limit=1000
-        )
-        
-        # Add to database and commit
-        session.add(new_key)
-        session.commit()
-        
-        print(f"API Key created: {api_key}")
-        
+        # Create tables with updated schema
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+            logger.info("Created tables with updated schema")
+            
     except Exception as e:
-        session.rollback()
-        print(f"Error creating API key: {str(e)}")
-    finally:
-        session.close()
+        logger.error(f"Error rebuilding tables: {str(e)}")
+        raise
 
 if __name__ == "__main__":
-    print("\n🔧 Duke VC Insight Engine - Database Setup\n")
-    print("This script will:")
+    print("\n🔧 Duke VC Insight Engine - Database Setup")
+    print("\nThis script will:")
     print("  1. DROP ALL TABLES in your Supabase database")
     print("  2. Create new tables based on your models")
-    print("  3. Generate a default API key\n")
-    
-    confirm = input("⚠️  Type 'YES' to proceed: ")
+    print("\n⚠️  Type 'YES' to proceed: ")
+    confirm = input()
     if confirm.upper() == "YES":
-        rebuild_tables()
+        asyncio.run(rebuild_tables())
+        print("\n✅ Database tables rebuilt successfully!")
     else:
-        print("Operation cancelled.") 
+        print("\n❌ Operation cancelled.") 

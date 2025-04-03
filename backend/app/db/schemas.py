@@ -42,26 +42,37 @@ class TwitterSummaryBase(BaseModel):
     engagement_score: Optional[int] = None
     status: str = "available"  # "available" or "unavailable"
 
+# Define a minimal schema for people associated with companies
+class CompanyPersonAssociation(BaseModel):
+    """Schema representing a person associated with a company."""
+    name: str
+    title: Optional[str] = None
+    duke_affiliation_status: str
+
+    @validator('duke_affiliation_status')
+    def validate_affiliation_status(cls, v):
+        """Validate that affiliation status is one of the allowed values."""
+        valid_statuses = ["confirmed", "please review", "no"]
+        if v not in valid_statuses:
+            raise ValueError(f"duke_affiliation_status must be one of {valid_statuses}")
+        return v
+
 # Company schemas
 class CompanyBase(BaseModel):
-    """
-    Base schema for company data.
-    
-    Contains fields common to all company-related schemas.
-    """
+    """Base schema for company data."""
     name: str
-    duke_affiliation_status: Optional[str] = "please review"
+    duke_affiliation_status: str
     relevance_score: Optional[int] = None
     summary: Optional[str] = None
-    investors: Optional[List[str]] = None
+    investors: Optional[str] = Field(None, description="Comma-separated list of investors")
     funding_stage: Optional[str] = None
     industry: Optional[str] = None
     founded: Optional[str] = None
     location: Optional[str] = None
     twitter_handle: Optional[str] = None
     linkedin_handle: Optional[str] = None
-    twitter_summary: Optional[TwitterSummaryBase] = None
-    source_links: Optional[List[str]] = None
+    twitter_summary: Optional[str] = Field(None, description="Summary of Twitter activity")
+    source_links: Optional[str] = Field(None, description="Comma-separated list of source URLs")
 
     @validator('duke_affiliation_status')
     def validate_affiliation_status(cls, v):
@@ -96,18 +107,33 @@ class CompanyBase(BaseModel):
         return v
 
 class PersonBase(BaseModel):
-    """Shared base attributes for a person."""
-    name: str = Field(..., description="Full name of the person.")
-    title: Optional[str] = Field(None, description="Primary job title.")
-    duke_affiliation_status: str = Field("no", description="Duke affiliation status: confirmed, please review, no.")
-    relevance_score: Optional[int] = Field(None, description="Calculated relevance score (0-100).")
-    education: Optional[List[Dict[str, Any]]] = Field(None, description="List of educational institutions.")
-    current_company: Optional[str] = Field(None, description="Name of the current primary company.")
-    previous_companies: Optional[List[str]] = Field(None, description="List of previous company names.")
-    twitter_handle: Optional[str] = Field(None, description="Twitter handle (e.g., @handle).")
-    linkedin_handle: Optional[str] = Field(None, description="Full LinkedIn profile URL.")
-    source_links: Optional[List[str]] = Field(None, description="List of source URLs.")
-    last_updated: Optional[datetime] = Field(None, description="Timestamp of the last update.")
+    """Base schema for person data."""
+    name: str
+    title: Optional[str] = None
+    duke_affiliation_status: str
+    relevance_score: int
+    education: Optional[str] = Field(None, description="Comma-separated list of educational institutions")
+    current_company: Optional[str] = None
+    previous_companies: Optional[str] = Field(None, description="Comma-separated list of previous companies")
+    twitter_handle: Optional[str] = None
+    linkedin_handle: Optional[str] = None
+    twitter_summary: Optional[str] = Field(None, description="Summary of Twitter activity")
+    source_links: Optional[str] = Field(None, description="Comma-separated list of source URLs")
+
+    @validator('duke_affiliation_status')
+    def validate_affiliation_status(cls, v):
+        """Validate that affiliation status is one of the allowed values."""
+        valid_statuses = ["confirmed", "please review", "no"]
+        if v not in valid_statuses:
+            raise ValueError(f"duke_affiliation_status must be one of {valid_statuses}")
+        return v
+
+    @validator('relevance_score')
+    def validate_score(cls, v):
+        """Validate that score is between 0 and 100."""
+        if v is not None and (v < 0 or v > 100):
+            raise ValueError('Score must be between 0 and 100')
+        return v
 
     class Config:
         orm_mode = True
@@ -145,12 +171,12 @@ class PersonUpdate(BaseModel):
     title: Optional[str] = None
     duke_affiliation_status: Optional[str] = None
     relevance_score: Optional[int] = None
-    education: Optional[List[Dict[str, Any]]] = None
+    education: Optional[str] = None
     current_company: Optional[str] = None
-    previous_companies: Optional[List[str]] = None
+    previous_companies: Optional[str] = None
     twitter_handle: Optional[str] = None
     linkedin_handle: Optional[str] = None
-    source_links: Optional[List[str]] = None
+    source_links: Optional[str] = None
     last_updated: Optional[datetime] = datetime.utcnow()
 
     # Add validators if needed for update context
@@ -166,7 +192,7 @@ class PersonBasicInfo(BaseModel):
 
 class CompanyCreate(CompanyBase):
     """Schema for creating a new company record."""
-    people: Optional[List[PersonBase]] = None
+    people: Optional[List[CompanyPersonAssociation]] = None
     raw_data_path: Optional[str] = None
 
 class CompanyUpdate(CompanyBase):
@@ -175,21 +201,21 @@ class CompanyUpdate(CompanyBase):
     duke_affiliation_status: Optional[str] = None
     relevance_score: Optional[int] = None
     summary: Optional[str] = None
-    investors: Optional[List[str]] = None
+    investors: Optional[str] = None
     funding_stage: Optional[str] = None
     industry: Optional[str] = None
     founded: Optional[str] = None
     location: Optional[str] = None
     twitter_handle: Optional[str] = None
     linkedin_handle: Optional[str] = None
-    twitter_summary: Optional[TwitterSummaryBase] = None
-    source_links: Optional[List[str]] = None
-    people: Optional[List[PersonBase]] = None
+    twitter_summary: Optional[str] = None
+    source_links: Optional[str] = None
+    people: Optional[List[CompanyPersonAssociation]] = None
 
 class CompanyInDB(CompanyBase):
     """Schema representing a company as stored in the database."""
     id: int
-    people: Optional[List[PersonInDB]] = None
+    people: Optional[List[CompanyPersonAssociation]] = None
 
     class Config:
         from_attributes = True
@@ -197,7 +223,7 @@ class CompanyInDB(CompanyBase):
 class CompanyResponse(CompanyBase):
     """Schema for company API responses with formatted timestamps."""
     id: int
-    people: Optional[List[PersonBasicInfo]] = None
+    people: Optional[List[CompanyPersonAssociation]] = None
     last_updated: Optional[str] = None
 
     @root_validator(pre=True)

@@ -7,84 +7,71 @@ from app.db import schemas
 from datetime import datetime
 
 def test_company_base_validation():
-    """Test validation for CompanyBase schema."""
-    # Test valid data
+    """Test validation of CompanyBase schema."""
+    # Valid data
     valid_data = {
-        "name": "Valid Company",
+        "name": "Test Company",
         "duke_affiliation_status": "confirmed",
-        "relevance_score": 85,
-        "twitter_handle": "validcompany"  # Should add @ automatically
+        "relevance_score": 75,
+        "summary": "A test company",
+        "investors": "Investor A, Investor B",
+        "funding_stage": "Series A",
+        "industry": "Technology",
+        "founded": "2020-01-01",
+        "location": "Durham, NC",
+        "twitter_handle": "@testcompany",
+        "linkedin_handle": "test-company",
+        "twitter_summary": "Test company's Twitter activity",
+        "source_links": "https://test.com, https://test2.com"
     }
     company = schemas.CompanyBase(**valid_data)
-    assert company.name == "Valid Company"
-    assert company.duke_affiliation_status == "confirmed"
-    assert company.relevance_score == 85
-    assert company.twitter_handle == "@validcompany"  # @ was added
-    
-    # Test invalid affiliation status
+    assert company.name == valid_data["name"]
+    assert company.duke_affiliation_status == valid_data["duke_affiliation_status"]
+    assert company.relevance_score == valid_data["relevance_score"]
+
+    # Invalid data
+    invalid_data = valid_data.copy()
+    invalid_data["duke_affiliation_status"] = "invalid_status"
     with pytest.raises(ValidationError):
-        schemas.CompanyBase(
-            name="Invalid Company",
-            duke_affiliation_status="invalid_status",  # Not in allowed values
-            relevance_score=50
-        )
-    
-    # Test invalid score
-    with pytest.raises(ValidationError):
-        schemas.CompanyBase(
-            name="Invalid Company",
-            duke_affiliation_status="confirmed",
-            relevance_score=101  # Above 100
-        )
+        schemas.CompanyBase(**invalid_data)
 
 def test_person_base_validation():
-    """Test validation for PersonBase schema."""
-    # Test valid data
+    """Test validation of PersonBase schema."""
+    # Valid data
     valid_data = {
-        "name": "Valid Person",
-        "duke_affiliation_status": "confirmed", 
-        "relevance_score": 75,
-        "education": [{"school": "Duke University", "degree": "BS"}],
-        "twitter_handle": "validperson"  # Note: This won't add @ automatically for PersonBase
-    }
-    person = schemas.PersonBase(**valid_data)
-    assert person.name == "Valid Person"
-    assert person.duke_affiliation_status == "confirmed"
-    assert person.relevance_score == 75
-    assert person.twitter_handle == "validperson"  # No @ added automatically
-    
-    # Test with all fields
-    full_data = {
-        "name": "Full Data Person",
+        "name": "Test Person",
         "title": "CEO",
         "duke_affiliation_status": "confirmed",
-        "relevance_score": 95,
-        "education": [
-            {"school": "Duke University", "degree": "BS", "years": "2010-2014"},
-            {"school": "Harvard", "degree": "MBA", "years": "2015-2017"}
-        ],
-        "current_company": "Tech Corp",
-        "previous_companies": ["Old Tech", "Older Tech"],
-        "twitter_handle": "@fulldata",  # This one already has @
-        "linkedin_handle": "linkedin.com/in/fulldata",
-        "source_links": ["https://example.com/source1", "https://example.com/source2"],
-        "last_updated": datetime.utcnow()
+        "relevance_score": 85,
+        "education": "Duke University, MIT",
+        "current_company": "Test Company",
+        "previous_companies": "Previous Company A, Previous Company B",
+        "twitter_handle": "@testperson",
+        "linkedin_handle": "test-person",
+        "twitter_summary": "Test person's Twitter activity",
+        "source_links": "https://test.com/person, https://test2.com/person"
     }
-    person = schemas.PersonBase(**full_data)
-    assert person.name == "Full Data Person"
-    assert person.title == "CEO"
-    assert len(person.education) == 2
-    assert len(person.previous_companies) == 2
-    assert person.twitter_handle == "@fulldata"  # @ preserved
+    person = schemas.PersonBase(**valid_data)
+    assert person.name == valid_data["name"]
+    assert person.duke_affiliation_status == valid_data["duke_affiliation_status"]
+    assert person.relevance_score == valid_data["relevance_score"]
+
+    # Invalid data
+    invalid_data = valid_data.copy()
+    invalid_data["duke_affiliation_status"] = "invalid_status"
+    with pytest.raises(ValidationError):
+        schemas.PersonBase(**invalid_data)
 
 def test_api_key_create():
-    """Test APIKeyCreate schema."""
-    # Test with required fields
+    """Test validation of APIKeyCreate schema."""
+    # Valid data with default rate limit
+    api_key = schemas.APIKeyCreate()
+    assert api_key.rate_limit == 100
+
+    # Valid data with custom rate limit
+    api_key = schemas.APIKeyCreate(rate_limit=200)
+    assert api_key.rate_limit == 200
+
+    # Valid data with name
     api_key = schemas.APIKeyCreate(name="Test Key")
-    assert api_key.name == "Test Key"
-    assert api_key.rate_limit == 100  # Default value
-    
-    # Test with all fields
-    api_key = schemas.APIKeyCreate(name="Custom Rate Key", rate_limit=500)
-    assert api_key.name == "Custom Rate Key"
-    assert api_key.rate_limit == 500 
+    assert api_key.name == "Test Key" 

@@ -1,10 +1,25 @@
 import os
+import json
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 from typing import Dict, List, Optional, Any, Union
 
 # Load environment variables from .env file
 load_dotenv()
+
+def parse_nitter_instances(env_value: str) -> List[str]:
+    """Parse NITTER_INSTANCES from environment variable with fallback"""
+    try:
+        if not env_value:
+            return ["https://nitter.net"]
+        # Try to parse as JSON array
+        instances = json.loads(env_value)
+        if not isinstance(instances, list):
+            raise ValueError("NITTER_INSTANCES must be a JSON array")
+        return instances
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"Warning: Invalid NITTER_INSTANCES format: {e}")
+        return ["https://nitter.net"]
 
 class Settings(BaseSettings):
     """
@@ -35,6 +50,7 @@ class Settings(BaseSettings):
     
     # Twitter/Nitter
     TWITTER_NITTER_BASE_URL: str = os.getenv("TWITTER_NITTER_BASE_URL", "https://nitter.net")
+    NITTER_INSTANCES: List[str] = parse_nitter_instances(os.getenv("NITTER_INSTANCES", ""))
     TWITTER_API_KEY: str = os.getenv("TWITTER_API_KEY", "")
     TWITTER_API_SECRET: str = os.getenv("TWITTER_API_SECRET", "")
     TWITTER_ACCESS_TOKEN: str = os.getenv("TWITTER_ACCESS_TOKEN", "")
@@ -52,28 +68,23 @@ class Settings(BaseSettings):
     # Logging
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     
-    # Get user home directory - used as fallback
-    HOME_DIR: str = os.path.expanduser("~")
+    # Get project root directory
+    PROJECT_ROOT: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
     
-    # File paths - avoid using /app paths
-    BASE_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
-    if BASE_DIR.startswith("/app"):
-        BASE_DIR = os.path.join(HOME_DIR, "duke_vc_insight_engine")
+    # Set backend directory
+    BACKEND_DIR: str = os.path.join(PROJECT_ROOT, "backend")
     
-    # Set backend directory as fixed location for data
-    BACKEND_DIR: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
-    
-    # Set all data directories as subdirectories of BACKEND_DIR/data
-    BASE_DATA_DIR: str = os.path.join(BACKEND_DIR, "data")
-    RAW_DATA_DIR: str = os.path.join(BASE_DATA_DIR, "raw")
-    JSON_INPUTS_DIR: str = os.path.join(BASE_DATA_DIR, "json_inputs")
-    LOGS_DIR: str = os.getenv("LOGS_DIR", os.path.join(BASE_DATA_DIR, "logs"))
-    PROCESSED_DATA_DIR: str = os.path.join(BASE_DATA_DIR, "processed")
+    # Set all data directories relative to backend
+    DATA_DIR: str = os.path.join(BACKEND_DIR, "app", "data")
+    RAW_DATA_DIR: str = os.path.join(DATA_DIR, "raw")
+    JSON_INPUTS_DIR: str = os.path.join(DATA_DIR, "json_inputs")
+    LOGS_DIR: str = os.path.join(DATA_DIR, "logs")
+    PROCESSED_DATA_DIR: str = os.path.join(DATA_DIR, "processed")
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         # Create all data directories
-        for dir_path in [self.BASE_DATA_DIR, self.RAW_DATA_DIR, self.JSON_INPUTS_DIR, 
+        for dir_path in [self.DATA_DIR, self.RAW_DATA_DIR, self.JSON_INPUTS_DIR, 
                         self.LOGS_DIR, self.PROCESSED_DATA_DIR]:
             os.makedirs(dir_path, exist_ok=True)
     

@@ -1,3 +1,6 @@
+"""
+Logger configuration for the Duke VC Insight Engine.
+"""
 import os
 import sys
 import logging
@@ -52,6 +55,8 @@ app_logger = setup_logger('app', 'app.log')
 scraper_logger = setup_logger('scraper', 'scraper.log')
 api_logger = setup_logger('api', 'api.log')
 db_logger = setup_logger('db', 'db.log')
+storage_logger = setup_logger('storage', 'storage.log')
+person_processor_logger = setup_logger('person_processor', 'person_processor.log')
 
 # Export all loggers
 __all__ = [
@@ -63,7 +68,9 @@ __all__ = [
     'scraper_logger',
     'api_logger',
     'db_logger',
-    'setup_logger'
+    'storage_logger',
+    'setup_logger',
+    'person_processor_logger'
 ]
 
 # Get log level from environment or settings
@@ -84,7 +91,12 @@ scraper_logger = setup_logger('scraper', None, level=log_level)
 api_logger = setup_logger('api', None, level=log_level)
 db_logger = setup_logger('db', None, level=log_level)
 celery_logger = setup_logger('celery', None, level=log_level)
-
+scorer_logger = setup_logger('scorer', None, level=log_level)
+nitter_logger = setup_logger('nitter', None, level=log_level)
+nlp_logger = setup_logger('nlp', None, level=log_level)
+processor_logger = setup_logger('processor', None, level=log_level)
+storage_logger = setup_logger('storage', None, level=log_level)
+person_processor_logger = setup_logger('person_processor', None, level=log_level)
 # Track if loggers have been reconfigured
 _loggers_configured = False
 
@@ -105,7 +117,13 @@ def configure_loggers(logs_dir):
         api_logger = setup_logger('api', os.path.join(logs_dir, 'api.log'), level=log_level)
         db_logger = setup_logger('db', os.path.join(logs_dir, 'db.log'), level=log_level)
         celery_logger = setup_logger('celery', os.path.join(logs_dir, 'celery.log'), level=log_level)
-        
+        scorer_logger = setup_logger('scorer', os.path.join(logs_dir, 'scorer.log'), level=log_level)
+        nitter_logger = setup_logger('nitter', os.path.join(logs_dir, 'nitter.log'), level=log_level)
+        nlp_logger = setup_logger('nlp', os.path.join(logs_dir, 'nlp.log'), level=log_level)
+        processor_logger = setup_logger('processor', os.path.join(logs_dir, 'processor.log'), level=log_level)
+        storage_logger = setup_logger('storage', os.path.join(logs_dir, 'storage.log'), level=log_level)
+        person_processor_logger = setup_logger('person_processor', os.path.join(logs_dir, 'person_processor.log'), level=log_level)
+
         app_logger.info(f"Loggers configured with directory: {logs_dir}")
         _loggers_configured = True
     except Exception as e:
@@ -125,7 +143,11 @@ def get_logger(name, level=None):
         'nlp': nlp_logger,
         'api': api_logger,
         'db': db_logger,
-        'celery': celery_logger
+        'celery': celery_logger,
+        'scorer': scorer_logger,
+        'processor': processor_logger,
+        'storage': storage_logger,
+        'person_processor': person_processor_logger
     }
     
     if name in known_loggers:

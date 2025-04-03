@@ -9,7 +9,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 
 from ..utils.config import settings
 from ..utils.logger import scraper_logger
-from ..utils.query_utils import QueryBuilder
+from .query_utils import QueryBuilder
 
 class SERPScraper:
     """
@@ -22,14 +22,14 @@ class SERPScraper:
         self.query_builder = QueryBuilder()
         scraper_logger.info("SERPScraper initialized")
     
-    def _save_raw_data(self, data: Dict[str, Any], entity_name: str) -> str:
+    def _save_raw_data(self, data: Dict[str, Any], entity_name: str, query_type: str = "combined") -> str:
         """Save raw JSON data to file and return the file path"""
         # Create timestamp and sanitize entity name for filename
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         sanitized_name = entity_name.replace('"', '').replace(' ', '_')[:50]  # Limit length
         
         # Create filename and path
-        filename = f"serp_{sanitized_name}.json"
+        filename = f"serp_{query_type}_{sanitized_name}.json"
         file_path = os.path.join(self.raw_data_dir, filename)
         
         # Ensure directory exists
@@ -173,7 +173,7 @@ class SERPScraper:
             scraper_logger.warning(f"No results found for company: {company_name}")
             
         # Save all results to a single file
-        file_path = self._save_raw_data(combined_results, company_name)
+        file_path = self._save_raw_data(combined_results, company_name, "company")
         combined_results["_file_path"] = file_path
             
         return combined_results
@@ -256,7 +256,7 @@ class SERPScraper:
             scraper_logger.warning(f"No results found for founder: {founder_name}")
         
         # Save all results to a single file
-        file_path = self._save_raw_data(combined_results, founder_name)
+        file_path = self._save_raw_data(combined_results, founder_name, "founder")
         combined_results["_file_path"] = file_path
             
         return combined_results
@@ -313,8 +313,8 @@ class SERPScraper:
         scraper_logger.info(f"Found {total_results} Duke-related results for {person_name}")
         
         # Save all results to a single file
-        file_path = self._save_raw_data(combined_results, f"{person_name}_duke_affiliation")
+        file_path = self._save_raw_data(combined_results, person_name, "duke_affiliation")
         combined_results["_file_path"] = file_path
             
         return combined_results
-    
+

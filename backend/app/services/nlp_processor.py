@@ -1,70 +1,56 @@
+import logging
 import json
-import os
-from datetime import datetime
-from typing import Dict, List, Optional, Any
-from tenacity import retry, stop_after_attempt, wait_exponential
-from openai import AsyncOpenAI
-
+from typing import Dict, List, Any, Optional, Tuple
+from tenacity import retry, stop_after_attempt, wait_fixed
 from ..utils.config import settings
 from ..utils.logger import nlp_logger
-from .company_scorer import Scorer
+from ..utils.storage import StorageService
+from openai import AsyncOpenAI
 from .nitter import NitterScraper
 from .nitter_nlp import NitterNLP
+from .company_scorer import CompanyScorer
+from ..db.models import Company
+from ..db.schemas import CompanyCreate, PersonBase
+from .query_utils import QueryBuilder
+from .scraper import SERPScraper
+
+logger = logging.getLogger("nlp_processor")
 
 class NLPProcessor:
     """
     NLP Processing service using OpenAI for extracting structured data.
-    Implements a three-step process for company data processing:
-    1. Extract company info and identify key people
-    2. Determine Duke affiliation for each person
-    3. Calculate final company Duke affiliation status and relevance score
+    Implements a pipeline to extract company data and determine Duke affiliations.
     """
     
     def __init__(self):
         self.openai_api_key = settings.OPENAI_API_KEY
         self.openai_model = settings.OPENAI_MODEL
-        self.json_output_dir = settings.JSON_INPUTS_DIR
-        self.scorer = Scorer()
+        self.scorer = CompanyScorer()
         self.nitter_scraper = NitterScraper()
         self.nitter_nlp = NitterNLP()
+        self.scraper = SERPScraper()
         self.client = AsyncOpenAI(api_key=self.openai_api_key)
-        nlp_logger.info(f"Initialized NLPProcessor with model: {self.openai_model}")
-    
-    def _save_json_data(self, data: Dict[str, Any], prefix: str, data_type: str = "final") -> str:
-        """Save JSON data to appropriate directory based on type"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{prefix}_{timestamp}.json"
+        self.storage = StorageService()
         
-        # Determine directory based on data type
-        if data_type == "raw":
-            save_dir = os.path.join(self.json_output_dir, "..", "raw")
-        elif data_type == "processed":
-            save_dir = os.path.join(self.json_output_dir, "..", "processed")
-        else:  # final
-            save_dir = self.json_output_dir
-            
-        file_path = os.path.join(save_dir, filename)
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        
-        nlp_logger.info(f"Saved {data_type} data to {file_path}")
-        return file_path
+        nlp_logger.info(f"NLPProcessor initialized with model: {self.openai_model}")
     
     @retry(
         stop=stop_after_attempt(3),
-        wait=wait_exponential(multiplier=1, min=1, max=10)
+        wait=wait_fixed(2)
     )
-    async def _process_with_llm(self, messages: List[Dict[str, str]]) -> Dict[str, Any]:
+    async def _process_with_llm(self, messages: List[Dict[str, str]], response_format=None) -> Dict[str, Any]:
         """Process messages with OpenAI LLM"""
         try:
-            response = await self.client.chat.completions.create(
-                model=self.openai_model,
-                messages=messages,
-                temperature=0.2,
-                response_format={ "type": "json_object" }
-            )
+            params = {
+                "model": self.openai_model,
+                "messages": messages,
+                "temperature": 0.2
+            }
+            
+            if response_format:
+                params["response_format"] = { "type": response_format }
+            
+            response = await self.client.chat.completions.create(**params)
             
             content = response.choices[0].message.content
             try:
@@ -76,14 +62,115 @@ class NLPProcessor:
         except Exception as e:
             nlp_logger.error(f"LLM processing failed: {str(e)}")
             return {"error": str(e), "raw_content": None}
-    
-    async def process_company_step1(self, serp_results: Dict[str, Any]) -> Dict[str, Any]:
-        """Extract company info and key people from SERP results"""
-        company_name = serp_results.get("search_parameters", {}).get("q", "Unknown Company")
-        if '"' in company_name:
-            company_name = company_name.split('"')[1]
+
+    def _preprocess_company_data(self, company_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Preprocess company data to ensure required fields and formats."""
+        # Set defaults for required fields
+        company_data.setdefault("name", "")
+        company_data.setdefault("duke_affiliation_status", "no")
+        company_data.setdefault("relevance_score", 0)
         
-        nlp_logger.info(f"STEP 1: Processing company data for: {company_name}")
+        # Convert list fields to comma-separated strings
+        if "investors" in company_data:
+            if isinstance(company_data["investors"], list):
+                company_data["investors"] = ", ".join(str(investor) for investor in company_data["investors"])
+            elif company_data["investors"] is None:
+                company_data["investors"] = ""
+        
+        if "source_links" in company_data:
+            if isinstance(company_data["source_links"], list):
+                company_data["source_links"] = ", ".join(str(link) for link in company_data["source_links"])
+            elif company_data["source_links"] is None:
+                company_data["source_links"] = ""
+        
+        # Handle Twitter summary
+        if "twitter_summary" not in company_data or company_data["twitter_summary"] is None:
+            company_data["twitter_summary"] = ""
+        elif isinstance(company_data["twitter_summary"], dict):
+            company_data["twitter_summary"] = str(company_data["twitter_summary"].get("summary", ""))
+        
+        return company_data
+
+    async def process_company(self, company_name: str, serp_results: Dict[str, Any]) -> Dict[str, Any]:
+        """Process company data through the complete pipeline"""
+        nlp_logger.info(f"Processing company: {company_name}")
+        
+        # Step 1: Extract company information from SERP results
+        company_data = await self._extract_company_info(company_name, serp_results)
+        if "error" in company_data:
+            return company_data
+            
+        # Save intermediate company data
+        self.storage.save_processed_data(
+            company_data,
+            f"company_{company_name}",
+            "intermediate"
+        )
+        
+        # Step 2: Process each person's education
+        processed_people = []
+        for person in company_data.get("people", []):
+            person_data = await self._process_person_education(person)
+            processed_people.append(person_data)
+            
+        # Save intermediate person data
+        self.storage.save_processed_data(
+            {"people": processed_people},
+            f"company_{company_name}",
+            "people"
+        )
+        
+        # Step 3: Get Twitter data if handle exists
+        twitter_urgency_score = None
+        twitter_summary = None
+        if company_data.get("twitter_handle"):
+            try:
+                raw_tweets = await self.nitter_scraper.get_raw_tweets(company_data["twitter_handle"])
+                if not raw_tweets.get("twitter_unavailable", True):
+                    twitter_analysis = await self.nitter_nlp.analyze_tweets(raw_tweets["raw_tweets"])
+                    twitter_summary = twitter_analysis[0]
+                    twitter_urgency_score = twitter_analysis[1]
+                    
+                    # Save Twitter analysis
+                    twitter_data = {
+                        "summary": twitter_summary,
+                        "urgency_score": twitter_urgency_score
+                    }
+                    self.storage.save_processed_data(
+                        twitter_data,
+                        "nitter_analysis",
+                        company_name
+                    )
+            except Exception as e:
+                nlp_logger.error(f"Twitter analysis failed: {str(e)}")
+                twitter_summary = None
+                twitter_urgency_score = None
+                
+        # Step 4: Determine Duke affiliation based on people
+        company_data["duke_affiliation_status"] = self._determine_company_affiliation(processed_people)
+        
+        # Step 5: Calculate relevance score
+        company_data["relevance_score"] = self.scorer.calculate_relevance_score(
+            company_data, processed_people, twitter_urgency_score
+        )
+        
+        # Add Twitter summary to final data (just the summary text, not the score)
+        if twitter_summary:
+            company_data["twitter_summary"] = twitter_summary
+        
+        # Step 6: Save final company data
+        final_path = self.storage.save_final_data(
+            company_data,
+            "company",
+            company_name
+        )
+        nlp_logger.info(f"Saved final data to {final_path}")
+        
+        return company_data
+
+    async def _extract_company_info(self, company_name: str, serp_results: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract company information from SERP results"""
+        nlp_logger.info(f"Extracting company info for: {company_name}")
         
         # Extract snippets from SERP results
         snippets = [
@@ -93,12 +180,7 @@ class NLPProcessor:
         ]
         
         if not snippets:
-            return {
-                "name": company_name, 
-                "error": "No data found",
-                "duke_affiliation_status": "no",
-                "people": []
-            }
+            return {"error": "No data found"}
         
         messages = [
             {"role": "system", "content": "You are a VC research analyst extracting company information. Return valid JSON matching the specified structure."},
@@ -113,7 +195,7 @@ class NLPProcessor:
                 "industry": "Primary industry",
                 "founded": "YYYY or YYYY-MM-DD",
                 "location": "HQ location",
-                "twitter_handle": "@handle",
+                "twitter_handle": "handle_without_at",
                 "linkedin_handle": "URL",
                 "source_links": ["URL1", "URL2"],
                 "people": [
@@ -132,40 +214,54 @@ class NLPProcessor:
         ]
         
         try:
-            company_data = await self._process_with_llm(messages)
+            company_data = await self._process_with_llm(messages, "json_object")
             if "error" in company_data:
-                return {
-                    "name": company_name,
-                    "error": company_data["error"],
-                    "duke_affiliation_status": "no",
-                    "people": []
-                }
-            
-            company_data.setdefault("twitter_summary", None)
+                return company_data
+                
+            # Ensure all required fields exist
+            company_data.setdefault("name", company_name)
+            company_data.setdefault("summary", None)
+            company_data.setdefault("investors", None)
+            company_data.setdefault("funding_stage", None)
+            company_data.setdefault("industry", None)
+            company_data.setdefault("founded", None)
+            company_data.setdefault("location", None)
+            company_data.setdefault("twitter_handle", None)
+            company_data.setdefault("linkedin_handle", None)
+            company_data.setdefault("source_links", None)
             company_data.setdefault("people", [])
             
-            self._save_json_data(company_data, f"company_{company_name}_step1", "processed")
             return company_data
             
         except Exception as e:
-            nlp_logger.error(f"Step 1 failed for {company_name}: {str(e)}")
-            return {
-                "name": company_name, 
-                "error": str(e),
-                "duke_affiliation_status": "no",
-                "people": []
-            }
-    
-    async def process_person_step2(self, person: Dict[str, str], duke_search_results: Dict[str, Any]) -> Dict[str, Any]:
-        """Determine Duke affiliation for a person"""
+            nlp_logger.error(f"Company info extraction failed: {str(e)}")
+            return {"error": str(e)}
+
+    async def _process_person_education(self, person: Dict[str, Any]) -> Dict[str, Any]:
+        """Process a person's education history"""
         person_name = person["name"]
         person_title = person["title"]
         
-        nlp_logger.info(f"STEP 2: Processing Duke affiliation for: {person_name}")
+        nlp_logger.info(f"Processing education for: {person_name}")
         
+        # Get Duke-specific queries for this person
+        duke_queries = QueryBuilder.get_person_duke_affiliation_queries(person_name)
+        
+        # Run SERP search for each query and collect results
+        all_results = []
+        for query in duke_queries:
+            try:
+                serp_results = await self.scraper.search(query)
+                if serp_results and "organic_results" in serp_results:
+                    all_results.extend(serp_results["organic_results"])
+            except Exception as e:
+                nlp_logger.error(f"SERP search failed for query '{query}': {str(e)}")
+                continue
+        
+        # Extract snippets from all search results
         snippets = [
             f"TITLE: {result.get('title', '')}\nURL: {result.get('link', '')}\nSNIPPET: {result.get('snippet', '')}\n"
-            for result in duke_search_results.get("organic_results", [])
+            for result in all_results
             if result.get("snippet")
         ]
         
@@ -178,172 +274,58 @@ class NLPProcessor:
             }
         
         messages = [
-            {"role": "system", "content": "You are a Duke University affiliation verification specialist."},
+            {"role": "system", "content": "You are a helpful assistant that determines if a person has an affiliation with Duke University based on search results."},
             {"role": "user", "content": f"""
-            Analyze if {person_name} ({person_title}) has Duke University affiliation.
-            Return a JSON object with ONLY these fields:
+            Analyze these search results for {person_name} and determine if they have any connection to Duke University.
+            
+            Return a JSON object with these fields:
             {{
                 "name": "{person_name}",
                 "title": "{person_title}",
-                "duke_affiliation_status": "confirmed|please review|no",
+                "duke_affiliation_status": "confirmed", "please review", or "no",
                 "education": [
-                    {{"school": "University Name", "degree": "Degree", "years": "Years"}}
+                    {{
+                        "school": "University Name",
+                        "degree": "Degree type",
+                        "field": "Field of study",
+                        "year": "Year (if available)"
+                    }}
                 ]
             }}
             
-            CRITERIA:
-            - "confirmed": Clear evidence of Duke attendance/graduation
-            - "please review": Ambiguous Duke connection
-            - "no": No Duke affiliation found
+            IMPORTANT GUIDELINES:
+            - "confirmed" means clear evidence of Duke affiliation (student, alumni, faculty, etc.)
+            - "please review" means some indication but not definitive
+            - "no" means no evidence of Duke connection
+            - For education, include ALL education history found, not just Duke
+            - Return a complete education list even if duke_affiliation_status is "no"
             
-            TEXT TO ANALYZE:
+            SEARCH RESULTS:
             {chr(10).join(snippets)}
             """}
         ]
         
         try:
-            person_data = await self._process_with_llm(messages)
-            self._save_json_data(person_data, f"person_{person_name}_step2", "processed")
+            person_data = await self._process_with_llm(messages, "json_object")
             return person_data
             
         except Exception as e:
-            nlp_logger.error(f"Step 2 failed for {person_name}: {str(e)}")
+            nlp_logger.error(f"Person education processing failed for {person_name}: {str(e)}")
             return {
                 "name": person_name,
                 "title": person_title,
                 "duke_affiliation_status": "please review",
                 "education": []
             }
-    
-    async def process_company_step3(self, 
-                                  company_data: Dict[str, Any], 
-                                  processed_people: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """Finalize company data with Twitter analysis and scoring"""
-        company_name = company_data["name"]
-        nlp_logger.info(f"STEP 3: Finalizing data for: {company_name}")
-        
-        # Get Twitter data if handle exists
-        twitter_handle = company_data.get("twitter_handle")
-        if twitter_handle:
-            try:
-                raw_tweets = await self.nitter_scraper.get_raw_tweets(twitter_handle)
-                if not raw_tweets.get("twitter_unavailable"):
-                    company_data["twitter_summary"] = await self.nitter_nlp.analyze_tweets(raw_tweets)
-            except Exception as e:
-                nlp_logger.error(f"Twitter analysis failed for {twitter_handle}: {str(e)}")
-                company_data["twitter_summary"] = None
-        
-        # Determine company Duke affiliation status
+
+    def _determine_company_affiliation(self, processed_people: List[Dict[str, Any]]) -> str:
+        """Determine company's Duke affiliation status based on its people"""
         has_confirmed = any(p["duke_affiliation_status"] == "confirmed" for p in processed_people)
         has_review = any(p["duke_affiliation_status"] == "please review" for p in processed_people)
         
-        company_data["duke_affiliation_status"] = (
-            "confirmed" if has_confirmed else "please review" if has_review else "no"
-        )
-        
-        # Calculate relevance score
-        company_data["relevance_score"] = self.scorer.calculate_company_relevance_score(
-            company_data, processed_people
-        )
-        
-        # Organize people into founders and executives for display
-        company_data["people"] = {
-            "founders": [
-                {
-                    "name": p["name"],
-                    "title": p.get("title", "Founder"),
-                    "duke_affiliation_status": p["duke_affiliation_status"],
-                    "education": p.get("education", [])
-                }
-                for p in processed_people
-                if "founder" in p.get("title", "").lower() or "ceo" in p.get("title", "").lower()
-            ],
-            "executives": [
-                {
-                    "name": p["name"],
-                    "title": p.get("title", "Executive"),
-                    "duke_affiliation_status": p["duke_affiliation_status"],
-                    "education": p.get("education", [])
-                }
-                for p in processed_people
-                if "founder" not in p.get("title", "").lower() and "ceo" not in p.get("title", "").lower()
-            ]
-        }
-        
-        self._save_json_data(company_data, f"company_{company_name}_final", "final")
-        return company_data
-    
-    async def process_company_pipeline(self,
-                                    company_serp_results: Dict[str, Any],
-                                    person_duke_searches: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
-        """Run complete company processing pipeline"""
-        company_data = await self.process_company_step1(company_serp_results)
-        if "error" in company_data:
-            return company_data
-        
-        processed_people = []
-        for person in company_data.get("people", []):
-            person_name = person["name"]
-            duke_search = person_duke_searches.get(person_name, {})
-            person_data = await self.process_person_step2(person, duke_search)
-            processed_people.append(person_data)
-        
-        return await self.process_company_step3(company_data, processed_people)
-
-# Test case
-if __name__ == "__main__":    
-    import asyncio
-    
-    # Mock SERP results
-    mock_company_serp = {
-        "search_parameters": {"q": "Acme AI"},
-        "organic_results": [
-            {
-                "title": "Acme AI raises Series A funding",
-                "link": "https://example.com/news",
-                "snippet": "Acme AI, founded by Duke graduate John Smith, raises $10M Series A. The AI startup, based in Durham, NC, is revolutionizing machine learning."
-            }
-        ]
-    }
-    
-    # Mock Duke search results for person
-    mock_duke_search = {
-        "organic_results": [
-            {
-                "title": "Duke Alumni Success Stories",
-                "link": "https://duke.edu/alumni",
-                "snippet": "John Smith graduated from Duke University's Computer Science program in 2020."
-            }
-        ]
-    }
-    
-    mock_person_searches = {
-        "John Smith": mock_duke_search
-    }
-    
-    async def run_test():
-        processor = NLPProcessor()
-        result = await processor.process_company_pipeline(
-            mock_company_serp,
-            mock_person_searches
-        )
-        
-        print("\nTest Results:")
-        print(f"Company: {result['name']}")
-        print(f"Duke Affiliation: {result['duke_affiliation_status']}")
-        print(f"Relevance Score: {result.get('relevance_score', 'Not calculated')}")
-        
-        print("\nFounders:")
-        for founder in result.get('people', {}).get('founders', []):
-            print(f"- {founder['name']} ({founder['title']}): {founder['duke_affiliation_status']}")
-        
-        print("\nExecutives:")
-        for executive in result.get('people', {}).get('executives', []):
-            print(f"- {executive['name']} ({executive['title']}): {executive['duke_affiliation_status']}")
-        
-        if result.get('twitter_summary'):
-            print("\nTwitter Analysis:")
-            print(f"Summary: {result['twitter_summary'].get('summary', 'Not available')}")
-            print(f"Urgency Score: {result['twitter_summary'].get('urgency_score', 'Not available')}")
-    
-    asyncio.run(run_test()) 
+        if has_confirmed:
+            return "confirmed"
+        elif has_review:
+            return "please review"
+        else:
+            return "no" 

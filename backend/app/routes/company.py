@@ -1,132 +1,217 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Optional
+from sqlalchemy import select
+from typing import Optional, List
+import logging
 
 from ..db.session import get_db
-from ..db import crud, schemas
+from ..db.models import Company
+from ..db.schemas import CompanyResponse, CompanyCreate, CompanyUpdate
+from ..db.migrate_json_to_db import process_company_data, process_company_people
 from ..services.scraper import SERPScraper
 from ..services.nlp_processor import NLPProcessor
-from ..utils.logger import api_logger
-from ..routes.auth import verify_api_key
+from ..services.nitter import NitterScraper
+from ..services.nitter_nlp import NitterNLP
+from ..services.company_scorer import CompanyScorer
+from ..utils.storage import StorageService
+from ..utils.logger import get_logger
+from ..utils.config import settings
 
-# Initialize router
-router = APIRouter(prefix="/api/company", tags=["company"])
+router = APIRouter(
+    prefix="/companies",
+    tags=["companies"],
+    responses={404: {"description": "Not found"}}
+)
 
-# Initialize services
-serp_scraper = SERPScraper()
-nlp_processor = NLPProcessor()
+logger = get_logger("company_routes")
 
-@router.get("/search/", response_model=schemas.CompanyResponse)
-async def search_company(
-    name: str = Query(..., description="Company name to search for"),
+@router.get("/{name}", response_model=CompanyResponse)
+async def get_company(
+    name: str,
+    force_refresh: bool = Query(False, description="Force refresh data from sources"),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Search for a company by name, scraping if not found in database.
-    This endpoint handles both retrieval and creation of company data.
+    Get company information using a three-layered search approach:
+    1. Check database for existing entry (unless force_refresh is True)
+    2. If not found or force_refresh, scrape and process new data
+    3. Store processed data in database
     """
-    api_logger.info(f"Searching for company: {name}")
-    
-    # Check if company exists in database by name
-    company = await crud.get_company_by_name(db, name)
-    if company:
-        api_logger.info(f"Company found in database by name: {name}")
-        return company
-    
-    # Company not found by name, proceed with scraping
-    api_logger.info(f"Company not found in database by name, scraping: {name}")
-    
     try:
-        # Query SERP API for company details
-        company_serp = serp_scraper.search_company(name)
+        # Layer 1: Check database (unless force_refresh is True)
+        if not force_refresh:
+            result = await db.execute(
+                select(Company).where(Company.name.ilike(f"%{name}%"))
+            )
+            company = result.scalars().first()
+            
+            if company:
+                return CompanyResponse.from_orm(company)
+            
+        # Layer 2: Initialize services for data collection and processing
+        scraper = SERPScraper()
+        processor = NLPProcessor()
+        nitter_scraper = NitterScraper()
+        nitter_nlp = NitterNLP()
+        company_scorer = CompanyScorer()
+        storage = StorageService()
         
-        # Check if we got any results
-        if not company_serp.get("organic_results"):
-            api_logger.warning(f"No search results found for company: {name}")
-            raise HTTPException(status_code=404, detail="No information found for this company")
+        # Get SERP results
+        serp_results = await scraper.search_company(name)
+        if not serp_results or "organic_results" not in serp_results:
+            raise HTTPException(status_code=404, detail=f"No information found for company: {name}")
+            
+        # Save raw SERP data
+        storage.save_raw_data(serp_results, "serp_company", name)
         
-        # Get Duke affiliation search results for each person
-        person_duke_searches = {}
-        company_data = await nlp_processor.process_company_step1(company_serp)
+        # Process company data
+        company_data = await processor.process_company(name, serp_results)
+        if not company_data:
+            raise HTTPException(status_code=404, detail=f"Could not process company data for: {name}")
+            
+        # Save intermediate data
+        storage.save_processed_data(company_data, "company", f"{name}_intermediate")
         
-        if "error" in company_data:
-            raise HTTPException(status_code=404, detail=company_data["error"])
-        
-        # Search for Duke affiliation for each person
-        for person in company_data.get("people", []):
-            person_name = person["name"]
-            duke_search = serp_scraper.search_person_duke_affiliation(person_name)
-            person_duke_searches[person_name] = duke_search
-        
-        # Process the complete company pipeline
-        company_data = await nlp_processor.process_company_pipeline(
-            company_serp,
-            person_duke_searches
-        )
-        
-        # Create structured company object for database
-        company_create = schemas.CompanyCreate(
-            name=company_data["name"],
-            duke_affiliation_status=company_data["duke_affiliation_status"],
-            relevance_score=int(company_data.get("relevance_score", 0)),
-            summary=company_data.get("summary"),
-            investors=company_data.get("investors", []),
-            funding_stage=company_data.get("funding_stage"),
-            industry=company_data.get("industry"),
-            founded=company_data.get("founded"),
-            location=company_data.get("location"),
-            twitter_handle=company_data.get("twitter_handle"),
-            linkedin_handle=company_data.get("linkedin_handle"),
-            twitter_summary=company_data.get("twitter_summary", {}),
-            source_links=company_data.get("source_links", [])
-        )
-        
-        # Save to database
-        db_company = await crud.create_company(db, company_create)
-        
-        # Create person records and associations
-        for person_type, people in company_data.get("people", {}).items():
-            for person_data in people:
-                # Create or get person
-                person_create = schemas.PersonCreate(
-                    name=person_data["name"],
-                    duke_affiliation_status=person_data["duke_affiliation_status"],
-                    relevance_score=int(person_data.get("relevance_score", 0)),
-                    education=person_data.get("education", []),
-                    current_company=company_data["name"],
-                    previous_companies=person_data.get("previous_companies", []),
-                    twitter_handle=person_data.get("twitter_handle"),
-                    linkedin_handle=person_data.get("linkedin_handle"),
-                    twitter_summary=str(person_data.get("twitter_summary", "")),
-                    source_links=person_data.get("source_links", [])
-                )
+        # Get and process Twitter data if handle exists
+        twitter_urgency_score = None
+        if company_data.get("twitter_handle"):
+            nitter_results = await nitter_scraper.get_raw_tweets(name)
+            if nitter_results and "raw_tweets" in nitter_results:
+                storage.save_raw_data(nitter_results, "nitter", name)
                 
-                # Create person and association
-                await crud.create_person_with_company(
-                    db=db,
-                    person=person_create,
-                    company_id=db_company.id,
-                    title=person_data["title"]
-                )
+                # Analyze tweets
+                summary, urgency_score = await nitter_nlp.analyze_tweets(nitter_results["raw_tweets"])
+                twitter_urgency_score = urgency_score
+                
+                # Save Twitter analysis
+                nitter_analysis = {
+                    "summary": summary,
+                    "urgency_score": urgency_score
+                }
+                storage.save_processed_data(nitter_analysis, "nitter_analysis", name)
+                company_data["twitter_summary"] = summary
         
-        api_logger.info(f"Company saved to database: {db_company.name} (ID: {db_company.id})")
-        return db_company
+        # Process people data
+        if "people" in company_data:
+            storage.save_processed_data({"people": company_data["people"]}, "company", f"{name}_people")
+            
+        # Calculate final score
+        company_data["relevance_score"] = company_scorer.calculate_relevance_score(
+            company_data=company_data,
+            processed_people=company_data.get("people", []),
+            twitter_urgency_score=twitter_urgency_score
+        )
+        
+        # Save final data
+        storage.save_data(company_data, "company", name, settings.JSON_INPUTS_DIR)
+        
+        # Layer 3: Store in database
+        company = await process_company_data(company_data, db)
+        if not company:
+            raise HTTPException(status_code=500, detail="Failed to store company data")
+            
+        # Store associated people
+        if "people" in company_data:
+            await process_company_people(company, company_data["people"], db)
+            
+        return CompanyResponse.from_orm(company)
         
     except Exception as e:
-        api_logger.error(f"Error searching for company {name}: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error processing company information: {str(e)}")
+        logger.error(f"Error processing company {name}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/{company_id}", response_model=schemas.Message)
-async def delete_company(company_id: int, db: AsyncSession = Depends(get_db)):
+@router.get("/", response_model=List[CompanyResponse])
+async def list_companies(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100),
+    duke_affiliated: Optional[bool] = None,
+    min_score: Optional[int] = Query(None, ge=0, le=100),
+    db: AsyncSession = Depends(get_db)
+):
     """
-    Delete a company by ID.
-    This is useful for removing incorrect entries or obsolete data.
+    List companies with optional filtering by Duke affiliation and minimum score.
     """
-    api_logger.info(f"Deleting company: {company_id}")
-    deleted = await crud.delete_company(db, company_id)
-    if not deleted:
-        api_logger.warning(f"Company not found for deletion: {company_id}")
-        raise HTTPException(status_code=404, detail="Company not found")
-    
-    return {"message": f"Company {company_id} deleted successfully"} 
+    try:
+        query = select(Company)
+        
+        if duke_affiliated is not None:
+            query = query.where(Company.duke_affiliation_status == "confirmed" if duke_affiliated else Company.duke_affiliation_status != "confirmed")
+            
+        if min_score is not None:
+            query = query.where(Company.relevance_score >= min_score)
+            
+        query = query.offset(skip).limit(limit)
+        
+        result = await db.execute(query)
+        companies = result.scalars().all()
+        
+        return [CompanyResponse.from_orm(company) for company in companies]
+        
+    except Exception as e:
+        logger.error(f"Error listing companies: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/", response_model=CompanyResponse)
+async def create_company(
+    company: CompanyCreate,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Create a new company entry manually.
+    """
+    try:
+        # Check if company exists
+        result = await db.execute(
+            select(Company).where(Company.name.ilike(f"%{company.name}%"))
+        )
+        existing = result.scalars().first()
+        if existing:
+            raise HTTPException(status_code=400, detail=f"Company {company.name} already exists")
+            
+        # Process company data
+        company_dict = company.dict()
+        new_company = await process_company_data(company_dict, db)
+        if not new_company:
+            raise HTTPException(status_code=500, detail="Failed to create company")
+            
+        # Process associated people if any
+        if company.people:
+            await process_company_people(new_company, company.people, db)
+            
+        return CompanyResponse.from_orm(new_company)
+        
+    except Exception as e:
+        logger.error(f"Error creating company: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/{company_id}", response_model=CompanyResponse)
+async def update_company(
+    company_id: int,
+    company_update: CompanyUpdate,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Update an existing company entry.
+    """
+    try:
+        # Check if company exists
+        result = await db.execute(
+            select(Company).where(Company.id == company_id)
+        )
+        existing = result.scalars().first()
+        if not existing:
+            raise HTTPException(status_code=404, detail=f"Company with ID {company_id} not found")
+            
+        # Update company data
+        update_dict = company_update.dict(exclude_unset=True)
+        for key, value in update_dict.items():
+            setattr(existing, key, value)
+            
+        await db.commit()
+        await db.refresh(existing)
+        
+        return CompanyResponse.from_orm(existing)
+        
+    except Exception as e:
+        logger.error(f"Error updating company {company_id}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e)) 

@@ -14,15 +14,14 @@ from datetime import datetime
 
 Base = declarative_base()
 
-# Association table for many-to-many relationships with title
+# Association table for company-person relationships
 company_person_association = Table(
     'company_person_association',
     Base.metadata,
     Column('company_id', Integer, ForeignKey('companies.id'), primary_key=True),
-    Column('person_id', Integer, ForeignKey('persons.id'), primary_key=True),
-    Column('title', String, nullable=False)  # Role within the company
-    # Column('company_name', String, nullable=True), # Removed company name
-    # Column('person_name', String, nullable=True)  # Removed person name
+    Column('name', String, primary_key=True),  # Person's name
+    Column('title', String, nullable=False),  # Role within the company
+    Column('duke_affiliation_status', String, nullable=False)  # Duke affiliation status for scoring
 )
 
 class Company(Base):
@@ -30,7 +29,8 @@ class Company(Base):
     Company model representing startup/company entities.
     
     This model stores information about companies including their
-    Duke affiliation status, founders, and other relevant details.
+    Duke affiliation status and other relevant details.
+    Associated people are stored directly in the company_person_association table.
     """
     __tablename__ = "companies"
     
@@ -39,25 +39,26 @@ class Company(Base):
     duke_affiliation_status = Column(String, nullable=False)
     relevance_score = Column(Integer, nullable=True)
     summary = Column(String, nullable=True)
-    investors = Column(JSON, nullable=True)
+    investors = Column(String, nullable=True)
     funding_stage = Column(String, nullable=True)
     industry = Column(String, nullable=True)
     founded = Column(String, nullable=True)
     location = Column(String, nullable=True)
     twitter_handle = Column(String, nullable=True)
     linkedin_handle = Column(String, nullable=True)
-    twitter_summary = Column(JSON, nullable=True)
-    source_links = Column(JSON, nullable=True)
+    twitter_summary = Column(String, nullable=True)
+    source_links = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    people = relationship(
-        "Person",
-        secondary=company_person_association,
-        back_populates="companies"
-    )
+    # Remove the relationship with Person model since we're storing people directly in the association table
+    # people = relationship("Person", secondary=company_person_association, back_populates="companies")
 
 class Person(Base):
+    """
+    Person model representing individuals searched through the person route.
+    This model is independent of company associations.
+    """
     __tablename__ = "persons"
     
     id = Column(Integer, primary_key=True, index=True)
@@ -65,18 +66,18 @@ class Person(Base):
     title = Column(String, nullable=True)
     duke_affiliation_status = Column(String, nullable=False)
     relevance_score = Column(Integer, nullable=False)
-    education = Column(JSON, nullable=True)
+    education = Column(String, nullable=True)
     current_company = Column(String, nullable=True)
-    previous_companies = Column(JSON, nullable=True)
+    previous_companies = Column(String, nullable=True)
     twitter_handle = Column(String, nullable=True)
     linkedin_handle = Column(String, nullable=True)
     twitter_summary = Column(String, nullable=True)
-    source_links = Column(JSON, nullable=True)
+    source_links = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, onupdate=datetime.utcnow)
     
-    # Relationship
-    companies = relationship("Company", secondary=company_person_association, back_populates="people")
+    # Remove the relationship with Company model since it's no longer needed
+    # companies = relationship("Company", secondary=company_person_association, back_populates="people")
 
 class APIKey(Base):
     """

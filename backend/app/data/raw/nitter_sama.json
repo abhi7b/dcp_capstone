@@ -1,0 +1,86 @@
+{
+  "handle": "sama",
+  "raw_tweets": [
+    {
+      "content": "prompt: sam altman as a cricket player in anime style",
+      "date": "1h"
+    },
+    {
+      "content": "what's happening with ai adoption in india right now is amazing to watch.\n\nwe love to see the explosion of creativity--india is outpacing the world.",
+      "date": "6h"
+    },
+    {
+      "content": "",
+      "date": "21h"
+    },
+    {
+      "content": "lol i feel like a YC founder in \"build in public\" mode again",
+      "date": "22h"
+    },
+    {
+      "content": "y'all are not ready for images v2...",
+      "date": "22h"
+    },
+    {
+      "content": "whatever.",
+      "date": "Apr 1"
+    },
+    {
+      "content": "ok that one didn't work but\n\n-restart-0331-final-final2-restart-forreal-omfg3-YOLO\n\nis gonna hit, i know it",
+      "date": "Apr 1"
+    },
+    {
+      "content": "when the run name ends like this you know it's surely going to work this time\n\n-restart-0331-final-final2-restart-forreal-omfg3",
+      "date": "Apr 1"
+    },
+    {
+      "content": "working as fast we can to really get stuff humming; if anyone has GPU capacity in 100k chunks we can get asap please call!",
+      "date": "Apr 1"
+    },
+    {
+      "content": "we are getting things under control, but you should expect new releases from openai to be delayed, stuff to break, and for service to sometimes be slow as we deal with capacity challenges.",
+      "date": "Apr 1"
+    },
+    {
+      "content": "chatgpt image gen now rolled out to all free users!",
+      "date": "Apr 1"
+    },
+    {
+      "content": "we will not do anything silly like saying that you cant use our open model if your service has more than 700 million monthly active users.\n\nwe want everyone to use it!",
+      "date": "Mar 31"
+    },
+    {
+      "content": "ChatGPT delivered the best🫶\n\n#Ghibli #IndiaPost",
+      "date": "Mar 27"
+    },
+    {
+      "content": "🇮🇳",
+      "date": "Mar 31"
+    },
+    {
+      "content": "Safety is a core focus of our open-weight model’s development, from pre-training to release. While open models bring unique challenges, we’re guided by our Preparedness Framework and will not release models we believe pose catastrophic risks.",
+      "date": "Mar 31"
+    },
+    {
+      "content": "TL;DR: we are excited to release a powerful new open-weight language model with reasoning in the coming months, and we want to talk to devs about how to make it maximally useful: openai.com/open-model-feedba…\n\nwe are excited to make this a very, very good model!\n\n__\n\nwe are planning to release our first open-weigh language model since GPT-2.\n\nwe’ve been thinking about this for a long time but other priorities took precedence. now it feels important to do.\n\nbefore release, we will evaluate this model according out our preparedness framework, like we would for any other model. and we will do extra work given that we know this model will be modified post-release.\n\nwe still have some decisions to make, so we are hosting developer events to gather feedback and later play with early prototypes. we’ll start in SF in a couple of weeks followed by sessions in europe and APAC. if you are interested in joining, please sign up at the link above.\n\nwe’re excited to see what developers build and how large companies and governments use it where they prefer to run a model themselves.",
+      "date": "Mar 31"
+    },
+    {
+      "content": "the chatgpt launch 26 months ago was one of the craziest viral moments i'd ever seen, and we added one million users in five days.\n\nwe added one million users in the last hour.",
+      "date": "Mar 31"
+    },
+    {
+      "content": "can yall please chill on generating images this is insane our team needs sleep",
+      "date": "Mar 30"
+    },
+    {
+      "content": "The 4o image gen demand has been absolutely incredible. Been super fun to watch the Sora feed fill up with great content .\n\nOur GPUs are also melting in Sora land unfortunately so you may see longer wait times / capacity issues over coming days. We’ll be working hard to get back into a healthy state.",
+      "date": "Mar 28"
+    },
+    {
+      "content": "if chatgpt were an n64 mario app",
+      "date": "Mar 28"
+    }
+  ],
+  "twitter_unavailable": false
+}

@@ -1,0 +1,86 @@
+{
+  "handle": "OpenAI",
+  "raw_tweets": [
+    {
+      "content": "4o image generation has arrived.\n\nIt's beginning to roll out today in ChatGPT and Sora to all Plus, Pro, Team, and Free users.",
+      "date": "Mar 25"
+    },
+    {
+      "content": "You can also chat with Monday ⚫\n\n-Make sure you have the latest version of the ChatGPT app\n-Paid users can find Monday in the sidebar\n-Free users can find Monday in the 'By ChatGPT' section inside 'Explore GPTs'",
+      "date": "16h"
+    },
+    {
+      "content": "The new Monday voice is now available to everyone.\n\nTo access the new voice, open voice mode and tap the voice picker in the top right corner.",
+      "date": "23h"
+    },
+    {
+      "content": "No joke, there's a new voice in ChatGPT.",
+      "date": "23h"
+    },
+    {
+      "content": "chatgpt image gen now rolled out to all free users!",
+      "date": "Apr 1"
+    },
+    {
+      "content": "// i lead model behavior at openai, and wanted to share some thoughts & nuance that went into setting policy for 4o image generation.\n\nfeatures capital letters (!) bc i published it as a blog post:\n\n--\nThis week, we launched native image generation in ChatGPT through 4o.\n\nIt was a special launch for many reasons — one of which our CEO Sam highlighted as \"a new high-water mark for us in allowing creative freedom.\"\n\nI wanted to unpack that a bit, as it could be easily missed by those not deep in AI or closely following our evolving thoughts on model behavior (wh… what do you mean you haven’t read the sixty-page Model Spec in your free time??).\n\ntl;dr we’re shifting from blanket refusals in sensitive areas to a more precise approach focused on preventing real-world harm. The goal is to embrace humility: recognizing how much we don't know, and positioning ourselves to adapt as we learn.\n\nImages are visceral\nThere's something uniquely powerful and visceral about images; they can deliver unmatched delight and shock. Unlike text, images transcend language barriers and evoke varied emotional responses. They can clarify complex ideas instantly.\n\nPrecisely because images carry so much impact, we felt even more heft — relative to other launches — in shaping policy and behavior.\n\nEvolving perspectives on launching what feels like a new capability\n\nWhen it comes to launching (what feels like) a new capability, our perspective has evolved across multiple launches:\n\n1. Trusting user creativity over our own assumptions.\nAI lab employees should not be the arbiters of what people should and shouldn’t be allowed to create. We’re always humbled after launch, discovering use cases we never imagined — or even ones that seem so obvious in hindsight but didn’t occur to us from our limited perspectives.\n\n2. Seeing risks clearly, but not losing sight of everyday value to users.\nIt’s easy to fixate on potential harms, and broad restrictions always feel safest (and easiest!). We often catch ourselves questioning, “do we really need better meme capabilities when the same memes could be used to offend or hurt people?”. But I think that framing itself is flawed. It implies that subtle, everyday benefits must justify themselves against hypothetical worst-case scenarios, which undervalues how these small moments of delight, humor, and connection genuinely improve people’s lives.\n\n3. Valuing unknown, unimaginable possibilities.\nMaybe due to our cognitive bias against loss aversion, we rarely consider the negative impacts of inaction; some people refer to it as “invisible graveyards” although that’s a bit too morbid and extreme. There are second order or indirect impacts unlocked by a new capability: all the positive interactions, innovations, and ideas from people that never materialize simply because we feared the worst-case scenario.\n\nHow we thought about policy decisions for Day 1\n\nNavigating these challenges is hard, but we aimed to maximize creative freedom while preventing real harm. Some examples from our launch decisions:\n\n- Public figures: We know it can be tricky with public figures—especially when the lines blur between news, satire, and the interests of the person being depicted. We want our policies to apply fairly and equally to everyone, regardless of their “status”. But rather than be the arbiters of who is “important enough”, we decided to create an opt-out list to allow anyone who can be depicted by our models to decide for themselves.\n\n- “Offensive” content: When it comes to “offensive” content, we pushed ourselves to reflect on whether any discomfort was stemming from our personal opinions or preferences vs. potential for real-world harm. Without clear guidelines, the model previously refused requests like \"make this person’s eyes look more Asian\" or \"make this person heavier,\" unintentionally implying these attributes were inherently offensive.\n\n- Hate symbols: We recognize symbols like swastikas carry deep and painful history. At the same time, we understand they can also appear in genuinely educational or cultural contexts. Completely banning them could erase meaningful conversations and intellectual exploration. Instead, we're iterating on technical methods to better identify and refuse harmful misuse.\n\n- Minors: Whenever a policy decision involved younger users, we decided to play it safe: choosing stronger protections and tighter guardrails for people under 18 across research and product.\n\nUltimately, these considerations — coupled with our progress toward more precise technical levers — led us toward more permissive policies. We recognize this might be misinterpreted as \"OpenAI lowering its safety standards,” but personally, I don’t think that does justice to the team’s extensive research, thoughtful debates, and genuine love & care for users and society.\n\nMy colleague Jason Kwon once passed onto me:\n“Ships are safest in the harbor; the safest model is the one that refuses everything. But that’s not what ships or models are for.”\n\nThe future is built with imagination and adventure. As we continue our research and learn from society, we believe we can continue to find ways to responsibly increase user freedom. When (not if!) our policies evolve, updating them based on real-world feedback isn’t failure; that’s the point of iterative deployment.\n\nPlease keep sharing your feedback and creations — they genuinely help us improve!",
+      "date": "Mar 27"
+    },
+    {
+      "content": "The updated GPT-4o is available now to all paid users. Free users will see it over the next few weeks.",
+      "date": "Mar 27"
+    },
+    {
+      "content": "GPT-4o got an another update in ChatGPT!\n\nWhat's different?\n\n- Better at following detailed instructions, especially prompts containing multiple requests\n- Improved capability to tackle complex technical and coding problems\n- Improved intuition and creativity\n- Fewer emojis 🙃",
+      "date": "Mar 27"
+    },
+    {
+      "content": "it's super fun seeing people love images in chatgpt.\n\nbut our GPUs are melting.\n\nwe are going to temporarily introduce some rate limits while we work on making it more efficient. hopefully won't be long!\n\nchatgpt free tier will get 3 generations per day soon.",
+      "date": "Mar 27"
+    },
+    {
+      "content": "Now rolled out to all Plus, Pro, and Team users globally.",
+      "date": "Mar 26"
+    },
+    {
+      "content": "Create or transform images into a variety of styles with 4o image generation.",
+      "date": "Mar 25"
+    },
+    {
+      "content": "Creating and customizing images is as simple as chatting using GPT‑4o—just describe what you need, including any specifics like aspect ratio, exact colors using hex codes, or a transparent background.",
+      "date": "Mar 25"
+    },
+    {
+      "content": "4o’s ability to precisely blend text with imagery turns image generation into a tool for visual communication.",
+      "date": "Mar 25"
+    },
+    {
+      "content": "GPT‑4o’s image generation follows complex prompts with attention to detail.",
+      "date": "Mar 25"
+    },
+    {
+      "content": "GPT-4o can build upon images and text in chat context, ensuring consistency throughout.",
+      "date": "Mar 25"
+    },
+    {
+      "content": "GPT-4o image generation excels at accurately rendering text, precisely following prompts, and leveraging 4o’s inherent knowledge base and chat context. openai.com/index/introducing…",
+      "date": "Mar 25"
+    },
+    {
+      "content": "Available soon for Enterprise and Edu, as well as for developers using the API.",
+      "date": "Mar 25"
+    },
+    {
+      "content": "4o image generation in ChatGPT and Sora\n\nopenai.com/live/",
+      "date": "Mar 25"
+    },
+    {
+      "content": "",
+      "date": "Mar 25"
+    },
+    {
+      "content": "🗣️\n00:00 Intro\n01:32 Audio agents\n03:27 Speech-to-text\n06:18 Text-to-speech\n08:48 Agents SDK\n\nRead more in our blog post: openai.com/index/introducing…",
+      "date": "Mar 20"
+    }
+  ],
+  "twitter_unavailable": false
+}

@@ -1,0 +1,34 @@
+{
+  "error": "Your account has run out of searches.",
+  "organic_results": [],
+  "query_summary": {
+    "company_info": {
+      "query": "OpenAI company overview",
+      "results_count": 0
+    },
+    "funding_info": {
+      "query": "OpenAI funding rounds series seed investment site:crunchbase.com OR site:pitchbook.com",
+      "results_count": 0
+    },
+    "leadership": {
+      "query": "OpenAI co-founders leadership management team",
+      "results_count": 0
+    },
+    "market_info": {
+      "query": "OpenAI market size competitors industry",
+      "results_count": 0
+    },
+    "social_media": {
+      "query": "OpenAI twitterOpenAI linkedin",
+      "results_count": 0
+    },
+    "founding_date": {
+      "query": "OpenAI company history founded year",
+      "results_count": 0
+    },
+    "duke_connection": {
+      "query": "OpenAI Duke University alumni founder executive",
+      "results_count": 0
+    }
+  }
+}

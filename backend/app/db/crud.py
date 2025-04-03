@@ -20,7 +20,8 @@ from . import person_crud  # Import person CRUD operations
 # Company CRUD operations
 async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> models.Company:
     """
-    Create a new company with optional related people.
+    Create a new company. Associated people are only used for scoring and association,
+    not added as Person entries.
     
     Args:
         db: The database session
@@ -42,7 +43,7 @@ async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> mo
         location=company.location,
         twitter_handle=company.twitter_handle,
         linkedin_handle=company.linkedin_handle,
-        twitter_summary=company.twitter_summary.dict() if company.twitter_summary else None,
+        twitter_summary=company.twitter_summary,
         source_links=company.source_links,
     )
     
@@ -52,50 +53,20 @@ async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> mo
     
     # Process people only if provided and not empty
     if company.people and len(company.people) > 0:
-        people_to_add = []
-        
-        # Add people if provided
+        # Store the association data for each person
         for person_data in company.people:
-            # Check if person already exists
-            person_result = await db.execute(
-                select(models.Person).where(models.Person.name == person_data.name)
-            )
-            person = person_result.scalars().first()
-            
-            # Create new person if not exists
-            if not person:
-                person = models.Person(
-                    name=person_data.name,
-                    title=person_data.title,
-                    duke_affiliation_status=person_data.duke_affiliation_status,
-                    relevance_score=person_data.relevance_score,
-                    education=person_data.education,
-                    current_company=person_data.current_company,
-                    previous_companies=getattr(person_data, 'previous_companies', []),
-                    twitter_handle=person_data.twitter_handle,
-                    linkedin_handle=person_data.linkedin_handle,
-                    twitter_summary=person_data.twitter_summary,
-                    source_links=getattr(person_data, 'source_links', [])
-                )
-                db.add(person)
-                await db.commit()
-                await db.refresh(person)
-            
-            # Determine title for association - default to person's title if available, or "unknown" if not
+            # Get title for association - default to person's title if available
             title_for_association = getattr(person_data, 'title', None) or "unknown"
             
-            # Track for addition
-            people_to_add.append((person, title_for_association))
-        
-        # Now add all the people in a separate query
-        for person, title in people_to_add:
-            # Add the relationship through a junction table query
-            stmt = models.company_person_association.insert().values(
-                company_id=db_company.id,
-                person_id=person.id,
-                title=title
+            # Add the association with just the name and title
+            await db.execute(
+                models.company_person_association.insert().values(
+                    company_id=db_company.id,
+                    name=person_data.name,  # Store name directly in association
+                    title=title_for_association,
+                    duke_affiliation_status=person_data.duke_affiliation_status  # Store affiliation status for scoring
+                )
             )
-            await db.execute(stmt)
         
         await db.commit()
         await db.refresh(db_company)
@@ -163,7 +134,8 @@ async def update_company(
     company_data: schemas.CompanyUpdate
 ) -> Optional[models.Company]:
     """
-    Update a company and optionally its related people.
+    Update a company. Associated people are only used for scoring and association,
+    not added as Person entries.
     
     Args:
         db: The database session
@@ -214,40 +186,16 @@ async def update_company(
             # 2. Add new associations
             if people_data:  # Only process if there are people to add
                 for person_data in people_data:
-                    # Find or create the person
-                    result = await db.execute(
-                        select(models.Person).where(models.Person.name == person_data.name)
-                    )
-                    db_person = result.scalars().first()
-                    
-                    if not db_person:
-                        # Create a new person if not found
-                        db_person = models.Person(
-                            name=person_data.name,
-                            title=person_data.title,
-                            duke_affiliation_status=person_data.duke_affiliation_status,
-                            relevance_score=person_data.relevance_score,
-                            education=person_data.education,
-                            current_company=person_data.current_company,
-                            previous_companies=getattr(person_data, 'previous_companies', []),
-                            twitter_handle=person_data.twitter_handle,
-                            linkedin_handle=person_data.linkedin_handle,
-                            twitter_summary=person_data.twitter_summary,
-                            source_links=getattr(person_data, 'source_links', [])
-                        )
-                        db.add(db_person)
-                        await db.flush()
-                        await db.refresh(db_person)
-                    
                     # Get title for association - default to person's title if available
                     title_for_association = getattr(person_data, 'title', None) or "unknown"
                     
-                    # Add the association
+                    # Add the association with just the name and title
                     await db.execute(
                         models.company_person_association.insert().values(
                             company_id=company_id,
-                            person_id=db_person.id,
-                            title=title_for_association
+                            name=person_data.name,  # Store name directly in association
+                            title=title_for_association,
+                            duke_affiliation_status=person_data.duke_affiliation_status  # Store affiliation status for scoring
                         )
                     )
                 await db.flush()
@@ -255,10 +203,9 @@ async def update_company(
         # Commit all changes
         await db.commit()
         
-        # Reload the company with its people
+        # Reload the company
         result = await db.execute(
             select(models.Company)
-            .options(selectinload(models.Company.people))
             .where(models.Company.id == company_id)
         )
         return result.scalars().first()
@@ -283,12 +230,22 @@ async def delete_company(db: AsyncSession, company_id: int) -> bool:
     if not db_company:
         return False
     
-    # Delete the company - note, this may cause cascade issues depending on
-    # the constraints in the database and model relationships
-    await db.delete(db_company)
-    
-    await db.commit()
-    return True
+    try:
+        # First delete all associated people from the association table
+        await db.execute(
+            delete(models.company_person_association)
+            .where(models.company_person_association.c.company_id == company_id)
+        )
+        
+        # Then delete the company
+        await db.delete(db_company)
+        await db.commit()
+        return True
+        
+    except Exception as e:
+        await db.rollback()
+        db_logger.error(f"Error deleting company ID {company_id}: {e}")
+        raise HTTPException(status_code=500, detail=f"Error deleting company: {e}") from e
 
 # API Key CRUD operations
 async def create_api_key(db: AsyncSession, api_key: schemas.APIKeyCreate) -> models.APIKey:
@@ -343,4 +300,46 @@ async def deactivate_api_key(db: AsyncSession, key: str) -> bool:
     db_api_key.is_active = False
     await db.commit()
     
-    return True 
+    return True
+
+def company_to_dict(company: models.Company) -> Dict[str, Any]:
+    """Convert a Company model instance to a dictionary."""
+    return {
+        "id": company.id,
+        "name": company.name,
+        "duke_affiliation_status": company.duke_affiliation_status,
+        "relevance_score": company.relevance_score,
+        "summary": company.summary,
+        "investors": company.investors or "",
+        "funding_stage": company.funding_stage,
+        "industry": company.industry,
+        "founded": company.founded,
+        "location": company.location,
+        "twitter_handle": company.twitter_handle,
+        "linkedin_handle": company.linkedin_handle,
+        "twitter_summary": company.twitter_summary or "",
+        "source_links": company.source_links or "",
+        "created_at": company.created_at,
+        "updated_at": company.updated_at,
+        "people": [person_to_dict(person) for person in company.people] if company.people else []
+    }
+
+def person_to_dict(person: models.Person) -> Dict[str, Any]:
+    """Convert a Person model instance to a dictionary."""
+    return {
+        "id": person.id,
+        "name": person.name,
+        "title": person.title,
+        "duke_affiliation_status": person.duke_affiliation_status,
+        "relevance_score": person.relevance_score,
+        "education": person.education or "",
+        "current_company": person.current_company,
+        "previous_companies": person.previous_companies or "",
+        "twitter_handle": person.twitter_handle,
+        "linkedin_handle": person.linkedin_handle,
+        "twitter_summary": person.twitter_summary or "",
+        "source_links": person.source_links or "",
+        "created_at": person.created_at,
+        "updated_at": person.updated_at,
+        "companies": [{"id": c.id, "name": c.name} for c in person.companies] if person.companies else []
+    } 

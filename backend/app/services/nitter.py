@@ -1,41 +1,22 @@
 import json
-import os
-from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, List
 import aiohttp
 from bs4 import BeautifulSoup
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 import asyncio
+
 from ..utils.logger import nitter_logger
 from ..utils.config import settings
+from ..utils.storage import StorageService
 
 class NitterScraper:
     """Service for fetching raw tweets using Nitter as a proxy"""
     
     def __init__(self):
         # List of Nitter instances to try
-        self.instances = [
-            "https://nitter.net",
-            "https://nitter.privacydev.net",
-            "https://nitter.poast.org",
-            "https://nitter.woodland.cafe"
-        ]
-        self.raw_data_dir = settings.RAW_DATA_DIR
-        nitter_logger.info("NitterScraper initialized with multiple instances")
-    
-    def _save_raw_data(self, data: Dict[str, Any], handle: str) -> str:
-        """Save raw JSON data to file and return the file path"""
-        sanitized_handle = handle.replace('@', '').replace('/', '_')
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"nitter_{sanitized_handle}_{timestamp}.json"
-        file_path = os.path.join(self.raw_data_dir, filename)
-        
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        
-        nitter_logger.info(f"Raw Nitter data saved to {file_path}")
-        return file_path
+        self.instances = settings.NITTER_INSTANCES
+        self.storage = StorageService()
+        nitter_logger.info("NitterScraper initialized")
     
     @retry(
         stop=stop_after_attempt(3),
@@ -63,6 +44,12 @@ class NitterScraper:
         handle = handle.replace('@', '')
         nitter_logger.info(f"Fetching raw tweets for: {handle} (limit: {limit})")
         
+        # Check for cached data
+        recent_data = self.storage.load_data("nitter", handle, settings.RAW_DATA_DIR)
+        if recent_data:
+            recent_data["_file_path"] = self.storage.get_file_path("nitter", handle, settings.RAW_DATA_DIR)
+            return recent_data
+        
         # Try each Nitter instance
         for instance in self.instances:
             profile_url = f"{instance}/{handle}"
@@ -86,25 +73,24 @@ class NitterScraper:
                     
                     # Get tweet metadata
                     date_elem = tweet_elem.select_one('.tweet-date')
-                    stats_elem = tweet_elem.select_one('.tweet-stats')
                     
                     raw_tweets.append({
                         "content": content_elem.text.strip(),
-                        "date": date_elem.text if date_elem else None,
-                        "stats": stats_elem.text if stats_elem else None,
-                        "html": str(tweet_elem)
+                        "date": date_elem.text if date_elem else None
                     })
                 
                 if raw_tweets:
                     nitter_logger.info(f"Successfully fetched {len(raw_tweets)} tweets from {instance}")
                     result_data = {
                         "handle": handle,
-                        "instance": instance,
                         "raw_tweets": raw_tweets,
                         "twitter_unavailable": False
                     }
-                    file_path = self._save_raw_data(result_data, handle)
+                    
+                    # Save raw data
+                    file_path = self.storage.save_raw_data(result_data, "nitter", handle)
                     result_data["_file_path"] = file_path
+                    
                     return result_data
                     
             except Exception as e:
@@ -118,21 +104,3 @@ class NitterScraper:
             "raw_tweets": [],
             "twitter_unavailable": True
         }
-
-if __name__ == "__main__":
-    import asyncio
-    
-    # Simple test using existing config
-    async def test():
-        scraper = NitterScraper()
-        test_handle = "OpenAI"
-        result = await scraper.get_raw_tweets(test_handle, limit=5)
-        
-        print(f"\nTest Results for @{test_handle}:")
-        print(f"Twitter Available: {not result['twitter_unavailable']}")
-        print(f"Tweets Found: {len(result['raw_tweets'])}")
-        if result['raw_tweets']:
-            print("\nFirst Tweet Content:")
-            print(result['raw_tweets'][0]['content'][:100] + "...")
-    
-    asyncio.run(test())

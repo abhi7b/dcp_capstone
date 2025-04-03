@@ -1,0 +1,153 @@
+{
+  "organic_results": [
+    {
+      "title": "Sam Altman - Wikipedia",
+      "link": "https://en.wikipedia.org/wiki/Sam_Altman",
+      "snippet": "Samuel H. Altman (born April 22, 1985) is an American entrepreneur, investor, and programmer. He is the CEO of OpenAI, a research laboratory that aims to promote and develop friendly artificial intelligence in a way that benefits humanity as a whole. Previously, he was president of Y Combinator from 2014 to 2019.",
+      "position": 1,
+      "source": "wikipedia.org"
+    },
+    {
+      "title": "Sam Altman (@sama) | Twitter",
+      "link": "https://twitter.com/sama",
+      "snippet": "CEO of @OpenAI. Previously president of @YCombinator, co-founder of @Loopt. Building towards AGI. Stanford dropout. Investor in companies like Airbnb, Reddit, and Stripe.",
+      "position": 2,
+      "source": "twitter.com"
+    },
+    {
+      "title": "Sam Altman | LinkedIn",
+      "link": "https://www.linkedin.com/in/samaltman/",
+      "snippet": "CEO at OpenAI. Former President of Y Combinator. Co-founder of Loopt. Stanford University dropout. Early investor in companies like Airbnb, Reddit, and Stripe.",
+      "position": 3,
+      "source": "linkedin.com"
+    },
+    {
+      "title": "Sam Altman's Journey: From Y Combinator to OpenAI CEO",
+      "link": "https://techcrunch.com/2023/03/15/sam-altman-openai-ceo-profile/",
+      "snippet": "A detailed profile of Sam Altman's career trajectory, from his early days at Y Combinator to leading OpenAI. The article covers his vision for AI development and his role in shaping the future of technology.",
+      "position": 4,
+      "source": "techcrunch.com",
+      "date": "2023-03-15"
+    },
+    {
+      "title": "OpenAI CEO Sam Altman on AI Safety and Future of Technology",
+      "link": "https://www.wired.com/2023/04/sam-altman-openai-interview/",
+      "snippet": "In an exclusive interview, Sam Altman discusses OpenAI's approach to AI safety, the challenges of developing advanced AI systems, and his vision for the future of technology.",
+      "position": 5,
+      "source": "wired.com",
+      "date": "2023-04-20"
+    },
+    {
+      "title": "Sam Altman's Investment Portfolio and Venture Capital Strategy",
+      "link": "https://www.crunchbase.com/person/sam-altman",
+      "snippet": "Comprehensive overview of Sam Altman's investments and venture capital activities, including his early investments in companies like Airbnb, Reddit, and Stripe, as well as his current focus on AI startups.",
+      "position": 6,
+      "source": "crunchbase.com"
+    }
+  ],
+  "query_summary": {
+    "bio_info": {
+      "query": "Sam Altman biography entrepreneur",
+      "results_count": 156,
+      "top_results": [
+        "CEO of OpenAI",
+        "Former President of Y Combinator",
+        "Co-founder of Loopt",
+        "Stanford University dropout",
+        "Early investor in major tech companies"
+      ]
+    },
+    "company_info": {
+      "query": "Sam Altman founder CEO company startups",
+      "results_count": 89,
+      "top_results": [
+        "OpenAI CEO",
+        "Y Combinator President (2014-2019)",
+        "Loopt co-founder",
+        "Investor in Airbnb, Reddit, Stripe",
+        "AI technology leader"
+      ]
+    },
+    "education": {
+      "query": "Sam Altman education university degree alumni",
+      "results_count": 45,
+      "top_results": [
+        "Stanford University (dropped out)",
+        "John Burroughs School (high school)",
+        "Computer Science studies",
+        "Self-taught programmer",
+        "No formal degree"
+      ]
+    },
+    "social_media": {
+      "query": "Sam Altman twitter linkedin profiles",
+      "results_count": 23,
+      "top_results": [
+        "Twitter: @sama",
+        "LinkedIn: samaltman",
+        "Active on Twitter",
+        "Regular tech commentary",
+        "AI and technology updates"
+      ]
+    },
+    "funding_history": {
+      "query": "Sam Altman funding raised investors venture capital",
+      "results_count": 67,
+      "top_results": [
+        "OpenAI funding rounds",
+        "Loopt acquisition",
+        "Y Combinator investments",
+        "Personal investment portfolio",
+        "Venture capital activities"
+      ]
+    },
+    "duke_connection": {
+      "query": "Sam Altman Duke University alumni",
+      "results_count": 3,
+      "top_results": [
+        "No direct Duke University connection found",
+        "Stanford University background",
+        "No evidence of Duke affiliation"
+      ]
+    }
+  },
+  "metadata": {
+    "query": "Sam Altman",
+    "search_type": "person",
+    "timestamp": "2024-04-02T20:00:00Z",
+    "total_results": 156,
+    "search_engine": "google",
+    "language": "en",
+    "region": "US",
+    "time_taken": 0.45,
+    "cached": false,
+    "pagination": {
+      "current_page": 1,
+      "total_pages": 16,
+      "results_per_page": 10
+    }
+  },
+  "related_queries": [
+    "Sam Altman net worth",
+    "Sam Altman age",
+    "Sam Altman wife",
+    "Sam Altman OpenAI salary",
+    "Sam Altman investments",
+    "Sam Altman Twitter",
+    "Sam Altman LinkedIn",
+    "Sam Altman education",
+    "Sam Altman Y Combinator",
+    "Sam Altman Loopt"
+  ],
+  "knowledge_graph": {
+    "name": "Sam Altman",
+    "description": "American entrepreneur and CEO of OpenAI",
+    "born": "April 22, 1985",
+    "nationality": "American",
+    "occupation": ["Entrepreneur", "Investor", "Programmer"],
+    "known_for": ["CEO of OpenAI", "Former President of Y Combinator", "Co-founder of Loopt"],
+    "companies": ["OpenAI", "Y Combinator", "Loopt"],
+    "education": ["Stanford University (dropped out)"],
+    "notable_investments": ["Airbnb", "Reddit", "Stripe"]
+  }
+}

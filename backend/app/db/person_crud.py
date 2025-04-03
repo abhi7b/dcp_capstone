@@ -39,6 +39,11 @@ async def create_person(db: AsyncSession, person: schemas.PersonCreate) -> model
     if "last_updated" in person_dict:
         person_dict.pop("last_updated")
     
+    # Set created_at and updated_at fields
+    now = datetime.utcnow()
+    person_dict["created_at"] = now
+    person_dict["updated_at"] = now
+    
     # Create the person object
     db_person = models.Person(**person_dict)
     
@@ -130,4 +135,51 @@ async def delete_person(db: AsyncSession, person_id: int) -> bool:
     
     await db.delete(db_person)
     await db.commit()
-    return True 
+    return True
+
+async def update_person(
+    db: AsyncSession, 
+    person_id: int, 
+    person_data: schemas.PersonUpdate
+) -> Optional[models.Person]:
+    """
+    Update a person.
+    
+    This function is used by the update API endpoint to modify
+    a person's information in the database.
+    
+    Args:
+        db: The database session
+        person_id: The ID of the person to update
+        person_data: Updated person data
+        
+    Returns:
+        The updated Person model if found, None otherwise
+    """
+    db_person = await get_person(db, person_id)
+    if not db_person:
+        return None
+
+    # Create a dict of updated fields
+    update_data = person_data.dict(exclude_unset=True)
+    
+    # Handle specific field conversions if needed
+    if "twitter_summary" in update_data and update_data["twitter_summary"]:
+        if hasattr(update_data["twitter_summary"], "dict"):
+            update_data["twitter_summary"] = update_data["twitter_summary"].dict()
+
+    try:
+        # Update the person
+        await db.execute(
+            update(models.Person)
+            .where(models.Person.id == person_id)
+            .values(**update_data)
+        )
+        await db.commit()
+        
+        # Refresh and return the updated person
+        return await get_person(db, person_id)
+    except Exception as e:
+        db_logger.error(f"Error updating person {person_id}: {str(e)}")
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error updating person: {str(e)}") 
