@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# dcp_capstone
-=======
 # Duke Capital Partners AI Insight Engine
 
 An AI-powered service to identify and filter investment opportunities by focusing on new companies, startups, and their founders, with a particular emphasis on Duke alumni.
