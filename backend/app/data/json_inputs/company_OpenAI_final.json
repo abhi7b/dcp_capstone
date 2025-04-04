@@ -1,0 +1,56 @@
+{
+  "name": "OpenAI",
+  "summary": "OpenAI is an AI research and deployment company dedicated to ensuring that artificial general intelligence benefits all of humanity. Founded in December 2015, it aims to develop and direct artificial intelligence in ways that benefit humanity as a whole.",
+  "investors": [
+    "Microsoft",
+    "Elon Musk",
+    "Peter Thiel",
+    "Reid Hoffman",
+    "Jessica Livingston",
+    "Amazon Web Services",
+    "Infosys",
+    "Y Combinator"
+  ],
+  "funding_stage": null,
+  "industry": "Artificial Intelligence",
+  "founded": "2015-12-01",
+  "location": "San Francisco, California",
+  "twitter_handle": "openai",
+  "linkedin_handle": "https://www.linkedin.com/company/openai",
+  "source_links": [
+    "https://openai.com/about/",
+    "https://en.wikipedia.org/wiki/OpenAI",
+    "https://www.linkedin.com/company/openai",
+    "https://www.crunchbase.com/organization/openai",
+    "https://www.techtarget.com/searchenterpriseai/definition/OpenAI"
+  ],
+  "people": [
+    {
+      "name": "Sam Altman",
+      "title": "CEO"
+    },
+    {
+      "name": "Greg Brockman",
+      "title": "President & Co-Founder"
+    },
+    {
+      "name": "Ilya Sutskever",
+      "title": "Co-Founder & Chief Scientist"
+    },
+    {
+      "name": "Brad Lightcap",
+      "title": "Chief Operating Officer"
+    },
+    {
+      "name": "Mira Murati",
+      "title": "Chief Technology Officer"
+    },
+    {
+      "name": "Aaron Chatterji",
+      "title": "Chief Economist"
+    }
+  ],
+  "duke_affiliation_status": "confirmed",
+  "relevance_score": 83,
+  "twitter_summary": "OpenAI has launched 4o image generation capabilities in ChatGPT and Sora, which are now available to all users, including free users. The new features include a voice option and improved functionality for handling complex prompts. The company is also focusing on evolving its policy regarding content generation, emphasizing user creativity while ensuring safety. Additionally, there are temporary rate limits due to high engagement and GPU usage, and further updates are expected for enterprise and educational users."
+}

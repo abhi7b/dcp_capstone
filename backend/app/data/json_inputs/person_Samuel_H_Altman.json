@@ -1,0 +1,30 @@
+{
+  "name": "Samuel H. Altman",
+  "title": "CEO",
+  "duke_affiliation_status": "no",
+  "relevance_score": 45,
+  "education": [
+    {
+      "school": "Stanford University",
+      "degree": "null",
+      "field": "null",
+      "year": "null"
+    }
+  ],
+  "current_company": "OpenAI",
+  "previous_companies": [
+    "Y Combinator (President)",
+    "Loopt (Co-founder)"
+  ],
+  "twitter_handle": "sama",
+  "linkedin_handle": "https://www.linkedin.com/in/samaltman/",
+  "source_links": [
+    "https://en.wikipedia.org/wiki/Sam_Altman",
+    "https://twitter.com/sama",
+    "https://www.linkedin.com/in/samaltman/",
+    "https://techcrunch.com/2023/03/15/sam-altman-openai-ceo-profile/",
+    "https://www.wired.com/2023/04/sam-altman-openai-interview/",
+    "https://www.crunchbase.com/person/sam-altman"
+  ],
+  "twitter_summary": "The tweets highlight significant developments at OpenAI, including the rollout of ChatGPT's image generation feature to all free users and the anticipation of a new open-weight language model. There is a notable focus on AI adoption in India, with the country reportedly outpacing global trends in creativity. OpenAI is experiencing high demand for its image generation capabilities, leading to capacity challenges and potential delays in service. The company is also engaging with developers to gather feedback on the new model and is planning events in various regions to facilitate this. Overall, there is a sense of urgency due to high user engagement and the need to manage service capacity."
+}
