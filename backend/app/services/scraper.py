@@ -1,3 +1,16 @@
+"""
+SERP Scraper Module
+
+Service for scraping search engine results using SERP API.
+Handles search queries, result parsing, and rate limiting.
+
+Key Features:
+- Search result scraping
+- Query optimization
+- Result parsing
+- Rate limiting
+"""
+
 import json
 import os
 import time
@@ -8,19 +21,21 @@ from serpapi import GoogleSearch
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 from ..utils.config import settings
-from ..utils.logger import scraper_logger
+from ..utils.logger import scraper_logger as logger
 from .query_utils import QueryBuilder
 
 class SERPScraper:
     """
-    Service for scraping search engine results using SERP API
+    Service for scraping search engine results.
+    Handles API interaction and result processing.
     """
     
     def __init__(self):
+        """Initialize scraper with API key."""
         self.api_key = settings.SERPAPI_KEY
         self.raw_data_dir = settings.RAW_DATA_DIR
         self.query_builder = QueryBuilder()
-        scraper_logger.info("SERPScraper initialized")
+        logger.info("SERPScraper initialized")
     
     def _save_raw_data(self, data: Dict[str, Any], entity_name: str, query_type: str = "combined") -> str:
         """Save raw JSON data to file and return the file path"""
@@ -39,7 +54,7 @@ class SERPScraper:
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         
-        scraper_logger.info(f"Raw SERP data saved to {file_path}")
+        logger.info(f"Raw SERP data saved to {file_path}")
         return file_path
     
     @retry(
@@ -59,7 +74,7 @@ class SERPScraper:
         Returns:
             Dictionary containing search results
         """
-        scraper_logger.info(f"Executing SERP search for query: {query}")
+        logger.info(f"Executing SERP search for query: {query}")
         
         # Build search parameters
         params = {
@@ -76,7 +91,7 @@ class SERPScraper:
         
         try:
             # Execute search
-            scraper_logger.debug(f"SERP API params: {params}")
+            logger.debug(f"SERP API params: {params}")
             search = GoogleSearch(params)
             results = search.get_dict()
             
@@ -86,12 +101,12 @@ class SERPScraper:
             
             # Log results summary
             organic_results_count = len(results.get("organic_results", []))
-            scraper_logger.info(f"SERP search returned {organic_results_count} organic results")
+            logger.info(f"SERP search returned {organic_results_count} organic results")
             
             return results
         
         except Exception as e:
-            scraper_logger.error(f"SERP search failed: {str(e)}")
+            logger.error(f"SERP search failed: {str(e)}")
             raise
     
     async def search_company(self, company_name: str, max_results_per_query: int = 10) -> Dict[str, Any]:
@@ -111,7 +126,7 @@ class SERPScraper:
         
         # Start with company info query as primary search
         primary_query = company_queries["company_info"][0]
-        scraper_logger.info(f"Executing primary company query: {primary_query}")
+        logger.info(f"Executing primary company query: {primary_query}")
         primary_results = await self.search(primary_query, max_results=max_results_per_query)
         
         # Create a composite results dictionary that will contain all organic results
@@ -140,7 +155,7 @@ class SERPScraper:
         for category in additional_categories:
             if category in company_queries and company_queries[category]:
                 query = company_queries[category][0]
-                scraper_logger.info(f"Running {category} query: {query}")
+                logger.info(f"Running {category} query: {query}")
                 category_results = await self.search(query, max_results=max_results_per_query)
                 
                 # Record query and results count
@@ -152,7 +167,7 @@ class SERPScraper:
                 # Add unique results to our combined set
                 if "organic_results" in category_results and category_results["organic_results"]:
                     new_results = category_results["organic_results"]
-                    scraper_logger.info(f"Found {len(new_results)} results for {category}")
+                    logger.info(f"Found {len(new_results)} results for {category}")
                     
                     # Add to our combined results, avoiding duplicates by URL
                     existing_urls = [r.get("link") for r in combined_results["organic_results"]]
@@ -165,12 +180,12 @@ class SERPScraper:
         combined_results["query_summary"] = query_results
         
         total_results = len(combined_results.get("organic_results", []))
-        scraper_logger.info(f"Combined results from multiple queries: {total_results} total results")
+        logger.info(f"Combined results from multiple queries: {total_results} total results")
         
         if total_results > 0:
-            scraper_logger.info(f"Found {total_results} total results for company: {company_name}")
+            logger.info(f"Found {total_results} total results for company: {company_name}")
         else:
-            scraper_logger.warning(f"No results found for company: {company_name}")
+            logger.warning(f"No results found for company: {company_name}")
             
         # Save all results to a single file
         file_path = self._save_raw_data(combined_results, company_name, "company")
@@ -195,7 +210,7 @@ class SERPScraper:
         
         # Start with bio info query as primary search
         primary_query = founder_queries["bio_info"][0]
-        scraper_logger.info(f"Executing primary founder query: {primary_query}")
+        logger.info(f"Executing primary founder query: {primary_query}")
         primary_results = await self.search(primary_query, max_results=max_results_per_query)
         
         # Create a composite results dictionary that will contain all organic results
@@ -223,7 +238,7 @@ class SERPScraper:
         for category in additional_categories:
             if category in founder_queries and founder_queries[category]:
                 query = founder_queries[category][0]
-                scraper_logger.info(f"Running {category} query: {query}")
+                logger.info(f"Running {category} query: {query}")
                 category_results = await self.search(query, max_results=max_results_per_query)
                 
                 # Record query and results count
@@ -235,7 +250,7 @@ class SERPScraper:
                 # Add unique results to our combined set
                 if "organic_results" in category_results and category_results["organic_results"]:
                     new_results = category_results["organic_results"]
-                    scraper_logger.info(f"Found {len(new_results)} results for {category}")
+                    logger.info(f"Found {len(new_results)} results for {category}")
                     
                     # Add to our combined results, avoiding duplicates by URL
                     existing_urls = [r.get("link") for r in combined_results["organic_results"]]
@@ -248,12 +263,12 @@ class SERPScraper:
         combined_results["query_summary"] = query_results
         
         total_results = len(combined_results.get("organic_results", []))
-        scraper_logger.info(f"Combined results from multiple queries: {total_results} total results")
+        logger.info(f"Combined results from multiple queries: {total_results} total results")
         
         if total_results > 0:
-            scraper_logger.info(f"Found {total_results} total results for founder: {founder_name}")
+            logger.info(f"Found {total_results} total results for founder: {founder_name}")
         else:
-            scraper_logger.warning(f"No results found for founder: {founder_name}")
+            logger.warning(f"No results found for founder: {founder_name}")
         
         # Save all results to a single file
         file_path = self._save_raw_data(combined_results, founder_name, "founder")
@@ -272,7 +287,7 @@ class SERPScraper:
         Returns:
             Dictionary containing results from Duke-specific searches
         """
-        scraper_logger.info(f"Searching for Duke affiliation evidence for: {person_name}")
+        logger.info(f"Searching for Duke affiliation evidence for: {person_name}")
         
         # Get Duke-specific queries
         duke_queries = self.query_builder.get_person_duke_affiliation_queries(person_name)
@@ -286,7 +301,7 @@ class SERPScraper:
         # Run each Duke-specific query (these are more focused, so we run all of them)
         for i, query in enumerate(duke_queries):
             query_key = f"duke_query_{i+1}"
-            scraper_logger.info(f"Running Duke affiliation query {i+1}: {query}")
+            logger.info(f"Running Duke affiliation query {i+1}: {query}")
             
             # Run the search
             query_results = await self.search(query, max_results=max_results_per_query)
@@ -310,7 +325,7 @@ class SERPScraper:
                         existing_urls.append(result.get("link"))
         
         total_results = len(combined_results.get("organic_results", []))
-        scraper_logger.info(f"Found {total_results} Duke-related results for {person_name}")
+        logger.info(f"Found {total_results} Duke-related results for {person_name}")
         
         # Save all results to a single file
         file_path = self._save_raw_data(combined_results, person_name, "duke_affiliation")

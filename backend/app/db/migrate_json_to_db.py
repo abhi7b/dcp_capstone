@@ -13,10 +13,8 @@ from sqlalchemy import select, text
 
 from .session import async_session
 from .models import Company, Person
-from ..utils.logger import get_logger
+from ..utils.logger import db_logger as logger
 from ..utils.config import settings
-
-logger = get_logger("migration")
 
 def preprocess_json_field(value: Any) -> Any:
     """Preprocess JSON fields to ensure proper format."""

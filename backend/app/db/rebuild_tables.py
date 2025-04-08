@@ -6,12 +6,16 @@ Script to rebuild database tables with updated schema.
 import os
 import sys
 import uuid
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.schema import DropTable
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import text
 import asyncio
+from sqlalchemy.ext.asyncio import create_async_engine
+from ..utils.logger import db_logger as logger
+from ..utils.config import settings
+from . import models
 
 # Add project root to system path for imports when running as script
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
@@ -24,10 +28,7 @@ def _compile_drop_table(element, compiler, **kwargs):
 # Import models and settings
 from backend.app.db.models import Base, APIKey
 from backend.app.utils.config import settings
-from ..utils.logger import get_logger
 from .session import engine
-
-logger = get_logger("rebuild_tables")
 
 async def rebuild_tables():
     """Drop and recreate all tables with updated schema."""
@@ -55,6 +56,6 @@ if __name__ == "__main__":
     confirm = input()
     if confirm.upper() == "YES":
         asyncio.run(rebuild_tables())
-        print("\n✅ Database tables rebuilt successfully!")
+        print("\nDatabase tables rebuilt successfully!")
     else:
-        print("\n❌ Operation cancelled.") 
+        print("\nOperation cancelled.") 

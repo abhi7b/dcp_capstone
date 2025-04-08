@@ -1,3 +1,16 @@
+"""
+Nitter NLP Module
+
+Service for analyzing Twitter data scraped through Nitter.
+Performs sentiment analysis, topic extraction, and urgency scoring.
+
+Key Features:
+- Tweet analysis
+- Sentiment scoring
+- Topic extraction
+- Urgency detection
+"""
+
 import json
 from typing import Dict, Any, List, Tuple
 from openai import AsyncOpenAI
@@ -8,11 +21,12 @@ from ..utils.config import settings
 
 class NitterNLP:
     """
-    Service for analyzing tweets using OpenAI to generate summaries
-    and calculate urgency scores.
+    Service for analyzing Twitter content using NLP.
+    Processes tweets for insights and scoring.
     """
     
     def __init__(self):
+        """Initialize NLP processor."""
         self.openai_api_key = settings.OPENAI_API_KEY
         self.openai_model = settings.OPENAI_MODEL
         self.client = AsyncOpenAI(api_key=self.openai_api_key)
@@ -24,8 +38,13 @@ class NitterNLP:
     )
     async def analyze_tweets(self, tweets: List[Dict[str, Any]]) -> Tuple[str, int]:
         """
-        Analyze tweets to generate a summary and calculate urgency score.
-        Returns a tuple of (summary, urgency_score).
+        Analyze tweet content for insights.
+        
+        Args:
+            tweets: List of tweet dictionaries
+            
+        Returns:
+            Tuple of (summary, urgency_score)
         """
         if not tweets:
             return "No tweets available.", 50
@@ -91,3 +110,5 @@ class NitterNLP:
         except Exception as e:
             nitter_logger.error(f"Error analyzing tweets: {str(e)}")
             return "Error analyzing tweets.", 50
+
+    

@@ -1,9 +1,14 @@
 """
-Person CRUD operations.
+Person CRUD Operations Module
 
-This module contains database operations for Person entities,
-used by the application's API endpoints and background tasks.
-It focuses on operations for search, retrieval, and deletion of person records.
+This module provides specialized CRUD operations for Person entities.
+Includes methods for searching, filtering, and managing person records.
+
+Key Features:
+- Person-specific database operations
+- Search functionality
+- Relationship management
+- Bulk operations support
 """
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -12,7 +17,7 @@ from sqlalchemy import update, delete
 from sqlalchemy.orm import selectinload
 from . import models, schemas
 from typing import List, Optional, Dict, Any, Union
-from ..utils.logger import db_logger
+from ..utils.logger import db_logger as logger
 from datetime import datetime
 import json
 from fastapi import HTTPException
@@ -180,6 +185,6 @@ async def update_person(
         # Refresh and return the updated person
         return await get_person(db, person_id)
     except Exception as e:
-        db_logger.error(f"Error updating person {person_id}: {str(e)}")
+        logger.error(f"Error updating person {person_id}: {str(e)}")
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Error updating person: {str(e)}") 

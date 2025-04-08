@@ -1,15 +1,33 @@
 """
-Duke VC Insight Engine - App Package
+Duke VC Insight Engine - Backend Application
 
-This package contains the core application modules for the Duke VC Insight Engine.
-It organizes the API components, database integration, and service infrastructure
-into a modular and maintainable structure.
+This package implements a FastAPI-based backend service for identifying and analyzing
+Duke-affiliated startups and investment opportunities. The application is structured
+into modular components that handle different aspects of the data pipeline.
 
-Modules:
-- main: FastAPI application entrypoint and configuration
-- routes: API route definitions for companies, founders, and auth
-- services: Core processing services for data collection and analysis
+Core Components:
+- main: FastAPI application setup, middleware, and API documentation
+- routes: REST API endpoints for companies, founders, and authentication
+- services: Core processing services (SERP, NLP, scoring, caching)
 - db: Database models, schemas, and CRUD operations
-- utils: Utility functions for configuration, logging, and common tasks
-- tasks: Background processing with Celery
-""" 
+- tasks: Background processing tasks for data collection and updates
+- utils: Configuration, logging, and helper utilities
+- data: Data storage for raw inputs, processed outputs, and logs
+
+
+For detailed setup and usage instructions, see the project README.
+For API documentation, visit /api/docs when the server is running.
+"""
+
+# Version
+__version__ = "1.0.0"
+
+# Package exports
+__all__ = [
+    "main",           # FastAPI application
+    "routes",         # API endpoints
+    "services",       # Core services
+    "db",            # Database operations
+    "tasks",         # Background tasks
+    "utils",         # Utilities
+] 

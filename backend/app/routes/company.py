@@ -1,3 +1,16 @@
+"""
+Company Routes Module
+
+This module handles company-related API endpoints for searching, creating,
+updating, and managing company information.
+
+Key Features:
+- Company search and retrieval
+- CRUD operations
+- Data validation
+- Cache management
+"""
+
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -13,111 +26,146 @@ from ..services.nlp_processor import NLPProcessor
 from ..services.nitter import NitterScraper
 from ..services.nitter_nlp import NitterNLP
 from ..services.company_scorer import CompanyScorer
+from ..services.redis import redis_service
 from ..utils.storage import StorageService
-from ..utils.logger import get_logger
+from ..utils.logger import api_logger as logger
 from ..utils.config import settings
+from .auth import verify_api_key
 
 router = APIRouter(
-    prefix="/companies",
-    tags=["companies"],
-    responses={404: {"description": "Not found"}}
+    prefix="/api/company",
+    tags=["Companies"],
+    dependencies=[Depends(verify_api_key)]
 )
 
-logger = get_logger("company_routes")
-
-@router.get("/{name}", response_model=CompanyResponse)
-async def get_company(
+@router.get("/search/{name}", response_model=CompanyResponse)
+async def search_company(
     name: str,
     force_refresh: bool = Query(False, description="Force refresh data from sources"),
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Get company information using a three-layered search approach:
-    1. Check database for existing entry (unless force_refresh is True)
-    2. If not found or force_refresh, scrape and process new data
-    3. Store processed data in database
+    Search for company information using a three-layered approach.
+    
+    Args:
+        name: Company name to search for
+        force_refresh: If True, bypass cache and fetch fresh data
+        db: Database session
+        
+    Returns:
+        CompanyResponse containing company information
+        
+    Raises:
+        HTTPException(404): If company not found
+        HTTPException(500): For processing errors
     """
     try:
-        # Layer 1: Check database (unless force_refresh is True)
+        # Layer 1: Check Redis cache (unless force_refresh is True)
         if not force_refresh:
+            cached_data = await redis_service.get(f"company:{name}")
+            if cached_data:
+                logger.info(f"Cache hit for company: {name}")
+                return CompanyResponse(**cached_data)
+            
+            # Layer 2: Check database
             result = await db.execute(
                 select(Company).where(Company.name.ilike(f"%{name}%"))
             )
             company = result.scalars().first()
             
             if company:
+                # Cache the database result
+                await redis_service.set(
+                    f"company:{name}",
+                    company.dict(),
+                    expire=3600  # 1 hour cache
+                )
                 return CompanyResponse.from_orm(company)
-            
-        # Layer 2: Initialize services for data collection and processing
+        
+        # Layer 3: Scrape and process new data
         scraper = SERPScraper()
-        processor = NLPProcessor()
-        nitter_scraper = NitterScraper()
+        nlp = NLPProcessor()
+        nitter = NitterScraper()
         nitter_nlp = NitterNLP()
-        company_scorer = CompanyScorer()
+        scorer = CompanyScorer()
         storage = StorageService()
         
-        # Get SERP results
-        serp_results = await scraper.search_company(name)
-        if not serp_results or "organic_results" not in serp_results:
-            raise HTTPException(status_code=404, detail=f"No information found for company: {name}")
-            
-        # Save raw SERP data
-        storage.save_raw_data(serp_results, "serp_company", name)
-        
-        # Process company data
-        company_data = await processor.process_company(name, serp_results)
+        # Scrape company data
+        company_data = await scraper.search_company(name)
         if not company_data:
-            raise HTTPException(status_code=404, detail=f"Could not process company data for: {name}")
-            
-        # Save intermediate data
-        storage.save_processed_data(company_data, "company", f"{name}_intermediate")
+            raise HTTPException(status_code=404, detail="Company not found")
         
-        # Get and process Twitter data if handle exists
-        twitter_urgency_score = None
-        if company_data.get("twitter_handle"):
-            nitter_results = await nitter_scraper.get_raw_tweets(name)
-            if nitter_results and "raw_tweets" in nitter_results:
-                storage.save_raw_data(nitter_results, "nitter", name)
-                
-                # Analyze tweets
-                summary, urgency_score = await nitter_nlp.analyze_tweets(nitter_results["raw_tweets"])
-                twitter_urgency_score = urgency_score
-                
-                # Save Twitter analysis
-                nitter_analysis = {
-                    "summary": summary,
-                    "urgency_score": urgency_score
-                }
-                storage.save_processed_data(nitter_analysis, "nitter_analysis", name)
-                company_data["twitter_summary"] = summary
+        # Process with NLP
+        processed_data = await nlp.process_company(company_data)
         
-        # Process people data
-        if "people" in company_data:
-            storage.save_processed_data({"people": company_data["people"]}, "company", f"{name}_people")
-            
-        # Calculate final score
-        company_data["relevance_score"] = company_scorer.calculate_relevance_score(
-            company_data=company_data,
-            processed_people=company_data.get("people", []),
-            twitter_urgency_score=twitter_urgency_score
+        # Get Twitter data if available
+        if processed_data.get("twitter_handle"):
+            tweets = await nitter.get_tweets(processed_data["twitter_handle"])
+            if tweets:
+                tweet_analysis = await nitter_nlp.analyze_tweets(tweets)
+                processed_data["recent_tweets"] = tweet_analysis
+        
+        # Score company
+        scored_data = await scorer.score_company(processed_data)
+        
+        # Store in database
+        company = Company(**scored_data)
+        db.add(company)
+        await db.commit()
+        await db.refresh(company)
+        
+        # Cache the result
+        await redis_service.set(
+            f"company:{name}",
+            company.dict(),
+            expire=3600  # 1 hour cache
         )
         
-        # Save final data
-        storage.save_data(company_data, "company", name, settings.JSON_INPUTS_DIR)
-        
-        # Layer 3: Store in database
-        company = await process_company_data(company_data, db)
-        if not company:
-            raise HTTPException(status_code=500, detail="Failed to store company data")
-            
-        # Store associated people
-        if "people" in company_data:
-            await process_company_people(company, company_data["people"], db)
-            
         return CompanyResponse.from_orm(company)
         
     except Exception as e:
-        logger.error(f"Error processing company {name}: {str(e)}")
+        logger.error(f"Error getting company {name}: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/{company_id}", status_code=200)
+async def delete_company(
+    company_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Delete a company by ID.
+    
+    Args:
+        company_id: ID of company to delete
+        db: Database session
+        
+    Returns:
+        Success message
+        
+    Raises:
+        HTTPException(404): If company not found
+        HTTPException(500): For database errors
+    """
+    try:
+        # Delete from database
+        result = await db.execute(
+            select(Company).where(Company.id == company_id)
+        )
+        company = result.scalars().first()
+        
+        if company:
+            await db.delete(company)
+            await db.commit()
+            
+            # Clear cache
+            await redis_service.delete(f"company:{company.name}")
+            
+            return {"message": "Company deleted successfully"}
+        
+        raise HTTPException(status_code=404, detail="Company not found")
+        
+    except Exception as e:
+        logger.error(f"Error deleting company {company_id}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/", response_model=List[CompanyResponse])
@@ -129,7 +177,20 @@ async def list_companies(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    List companies with optional filtering by Duke affiliation and minimum score.
+    List companies with optional filtering.
+    
+    Args:
+        skip: Number of records to skip (pagination)
+        limit: Maximum number of records to return
+        duke_affiliated: Filter by Duke affiliation status
+        min_score: Filter by minimum relevance score
+        db: Database session
+        
+    Returns:
+        List of CompanyResponse objects
+        
+    Raises:
+        HTTPException(500): For database errors
     """
     try:
         query = select(Company)

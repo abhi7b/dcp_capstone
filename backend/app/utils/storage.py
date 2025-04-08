@@ -1,3 +1,11 @@
+"""
+Storage Service Module
+
+Provides centralized service for handling all file operations.
+Handles raw data, processed data, and JSON input files.
+
+"""
+
 import os
 import json
 from typing import Dict, Any, Optional

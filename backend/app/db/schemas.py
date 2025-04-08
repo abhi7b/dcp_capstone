@@ -1,10 +1,14 @@
 """
-Pydantic schemas for API request and response validation.
+Database Schemas Module
 
-This module defines schemas that are used for:
-1. Validating incoming request data
-2. Defining the structure of API responses
-3. Converting between database models and API interfaces
+This module defines Pydantic models for request/response validation and serialization.
+Includes schemas for Person and Company entities with their relationships.
+
+Key Features:
+- Input validation
+- Response serialization
+- Nested relationship handling
+- Optional and required field definitions
 """
 from pydantic import BaseModel, Field, validator, root_validator
 from typing import List, Optional, Dict, Any, Union
@@ -283,6 +287,7 @@ class TokenData(BaseModel):
 
 # Simple response schema for messages
 class Message(BaseModel):
+    """Schema for API response messages."""
     message: str
 
 # Need to update forward refs after all models are defined

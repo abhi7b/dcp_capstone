@@ -3,6 +3,12 @@ Company and API Key CRUD operations.
 
 This module contains database operations for Company and API Key entities,
 used by the application's API endpoints and background tasks.
+
+Key Features:
+- Async database operations
+- Error handling and logging
+- Transaction management
+- Relationship handling
 """
 from sqlalchemy.orm import Session
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,11 +17,12 @@ from sqlalchemy import update, delete
 from sqlalchemy.orm import selectinload
 from . import models, schemas
 from typing import List, Optional, Dict, Any, Union
-from ..utils.logger import db_logger
+from ..utils.logger import db_logger as logger
 from datetime import datetime
 import json
 from fastapi import HTTPException
 from . import person_crud  # Import person CRUD operations
+
 
 # Company CRUD operations
 async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> models.Company:
@@ -212,7 +219,7 @@ async def update_company(
         
     except Exception as e:
         await db.rollback()
-        db_logger.error(f"Error updating company ID {company_id}: {e}")
+        logger.error(f"Error updating company ID {company_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Error updating company: {e}") from e
 
 async def delete_company(db: AsyncSession, company_id: int) -> bool:
@@ -244,7 +251,7 @@ async def delete_company(db: AsyncSession, company_id: int) -> bool:
         
     except Exception as e:
         await db.rollback()
-        db_logger.error(f"Error deleting company ID {company_id}: {e}")
+        logger.error(f"Error deleting company ID {company_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Error deleting company: {e}") from e
 
 # API Key CRUD operations

@@ -1,9 +1,23 @@
-import logging
+"""
+NLP Processor Module
+
+Natural Language Processing service for analyzing and extracting
+information from text data using OpenAI's language models.
+
+Key Features:
+- Text analysis
+- Entity extraction
+- Content classification
+- Sentiment analysis
+"""
+
+import openai
+from typing import Dict, Any, List, Tuple, Optional
 import json
-from typing import Dict, List, Any, Optional, Tuple
+import logging
 from tenacity import retry, stop_after_attempt, wait_fixed
 from ..utils.config import settings
-from ..utils.logger import nlp_logger
+from ..utils.logger import nlp_logger as logger
 from ..utils.storage import StorageService
 from openai import AsyncOpenAI
 from .nitter import NitterScraper
@@ -14,15 +28,14 @@ from ..db.schemas import CompanyCreate, PersonBase
 from .query_utils import QueryBuilder
 from .scraper import SERPScraper
 
-logger = logging.getLogger("nlp_processor")
-
 class NLPProcessor:
     """
-    NLP Processing service using OpenAI for extracting structured data.
-    Implements a pipeline to extract company data and determine Duke affiliations.
+    Service for processing text data using OpenAI's language models.
+    Handles entity extraction, classification, and text analysis.
     """
     
     def __init__(self):
+        """Initialize OpenAI client with API key."""
         self.openai_api_key = settings.OPENAI_API_KEY
         self.openai_model = settings.OPENAI_MODEL
         self.scorer = CompanyScorer()
@@ -32,7 +45,7 @@ class NLPProcessor:
         self.client = AsyncOpenAI(api_key=self.openai_api_key)
         self.storage = StorageService()
         
-        nlp_logger.info(f"NLPProcessor initialized with model: {self.openai_model}")
+        logger.info(f"NLPProcessor initialized with model: {self.openai_model}")
     
     @retry(
         stop=stop_after_attempt(3),
@@ -56,11 +69,11 @@ class NLPProcessor:
             try:
                 return json.loads(content)
             except json.JSONDecodeError:
-                nlp_logger.error(f"Failed to parse LLM response as JSON: {content}")
+                logger.error(f"Failed to parse LLM response as JSON: {content}")
                 return {"error": "Failed to parse response", "raw_content": content}
                 
         except Exception as e:
-            nlp_logger.error(f"LLM processing failed: {str(e)}")
+            logger.error(f"LLM processing failed: {str(e)}")
             return {"error": str(e), "raw_content": None}
 
     def _preprocess_company_data(self, company_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -93,7 +106,7 @@ class NLPProcessor:
 
     async def process_company(self, company_name: str, serp_results: Dict[str, Any]) -> Dict[str, Any]:
         """Process company data through the complete pipeline"""
-        nlp_logger.info(f"Processing company: {company_name}")
+        logger.info(f"Processing company: {company_name}")
         
         # Step 1: Extract company information from SERP results
         company_data = await self._extract_company_info(company_name, serp_results)
@@ -142,7 +155,7 @@ class NLPProcessor:
                         company_name
                     )
             except Exception as e:
-                nlp_logger.error(f"Twitter analysis failed: {str(e)}")
+                logger.error(f"Twitter analysis failed: {str(e)}")
                 twitter_summary = None
                 twitter_urgency_score = None
                 
@@ -164,13 +177,13 @@ class NLPProcessor:
             "company",
             company_name
         )
-        nlp_logger.info(f"Saved final data to {final_path}")
+        logger.info(f"Saved final data to {final_path}")
         
         return company_data
 
     async def _extract_company_info(self, company_name: str, serp_results: Dict[str, Any]) -> Dict[str, Any]:
         """Extract company information from SERP results"""
-        nlp_logger.info(f"Extracting company info for: {company_name}")
+        logger.info(f"Extracting company info for: {company_name}")
         
         # Extract snippets from SERP results
         snippets = [
@@ -234,7 +247,7 @@ class NLPProcessor:
             return company_data
             
         except Exception as e:
-            nlp_logger.error(f"Company info extraction failed: {str(e)}")
+            logger.error(f"Company info extraction failed: {str(e)}")
             return {"error": str(e)}
 
     async def _process_person_education(self, person: Dict[str, Any]) -> Dict[str, Any]:
@@ -242,7 +255,7 @@ class NLPProcessor:
         person_name = person["name"]
         person_title = person["title"]
         
-        nlp_logger.info(f"Processing education for: {person_name}")
+        logger.info(f"Processing education for: {person_name}")
         
         # Get Duke-specific queries for this person
         duke_queries = QueryBuilder.get_person_duke_affiliation_queries(person_name)
@@ -255,7 +268,7 @@ class NLPProcessor:
                 if serp_results and "organic_results" in serp_results:
                     all_results.extend(serp_results["organic_results"])
             except Exception as e:
-                nlp_logger.error(f"SERP search failed for query '{query}': {str(e)}")
+                logger.error(f"SERP search failed for query '{query}': {str(e)}")
                 continue
         
         # Extract snippets from all search results
@@ -310,7 +323,7 @@ class NLPProcessor:
             return person_data
             
         except Exception as e:
-            nlp_logger.error(f"Person education processing failed for {person_name}: {str(e)}")
+            logger.error(f"Person education processing failed for {person_name}: {str(e)}")
             return {
                 "name": person_name,
                 "title": person_title,

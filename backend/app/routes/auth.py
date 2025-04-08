@@ -1,4 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+"""
+Authentication Routes Module
+
+This module handles API authentication and authorization using API keys.
+Provides endpoints for managing API keys and middleware for request verification.
+
+Key Features:
+- API key management
+- Request authentication
+- Rate limiting
+- Access control
+"""
+
+from fastapi import APIRouter, Depends, HTTPException, status, Security, Request
 from fastapi.security import APIKeyHeader
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -19,7 +32,7 @@ from ..utils.storage import StorageService
 API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 # Initialize router
-router = APIRouter(prefix="/api/auth", tags=["auth"])
+router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
 logger = get_logger("auth_routes")
 
@@ -27,16 +40,25 @@ logger = get_logger("auth_routes")
 rate_limit_cache = {}
 
 async def verify_api_key(
-    api_key_header: str = Depends(API_KEY_HEADER),
+    request: Request,
+    api_key: str = Security(API_KEY_HEADER),
     db: AsyncSession = Depends(get_db)
 ) -> schemas.APIKeyResponse:
     """
-    Validate API key using a three-layered approach:
-    1. Check in-memory cache for rate limiting
-    2. Validate key format and basic properties
-    3. Verify key in database and check expiration
+    Verify API key and rate limits for incoming requests.
+    
+    Args:
+        request: FastAPI request object
+        api_key: API key from request header
+        db: Database session
+        
+    Returns:
+        Validated API key
+        
+    Raises:
+        HTTPException: If API key is invalid or rate limit exceeded
     """
-    if not api_key_header:
+    if not api_key:
         logger.warning("API key missing in request")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -45,7 +67,7 @@ async def verify_api_key(
         )
     
     # Layer 1: Rate limiting check
-    cache_key = f"rate_limit:{api_key_header}"
+    cache_key = f"rate_limit:{api_key}"
     current_time = time.time()
     minute_start = int(current_time / 60) * 60  # Start of current minute
     
@@ -60,8 +82,8 @@ async def verify_api_key(
     rate_limit_cache[cache_key]["count"] += 1
     
     # Layer 2: Basic validation
-    if len(api_key_header) < 32:  # Minimum length check
-        logger.warning(f"Invalid API key format: {api_key_header[:8]}...")
+    if len(api_key) < 32:  # Minimum length check
+        logger.warning(f"Invalid API key format: {api_key[:8]}...")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid API key format",
@@ -70,12 +92,12 @@ async def verify_api_key(
     
     # Layer 3: Database validation
     result = await db.execute(
-        select(APIKey).where(APIKey.key == api_key_header)
+        select(APIKey).where(APIKey.key == api_key)
     )
-    api_key = result.scalars().first()
+    api_key_obj = result.scalars().first()
     
-    if not api_key or not api_key.is_active:
-        logger.warning(f"Invalid or inactive API key: {api_key_header[:8]}...")
+    if not api_key_obj or not api_key_obj.is_active:
+        logger.warning(f"Invalid or inactive API key: {api_key[:8]}...")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or inactive API key",
@@ -83,8 +105,8 @@ async def verify_api_key(
         )
     
     # Check if API key is expired
-    if api_key.expires_at and api_key.expires_at < datetime.now():
-        logger.warning(f"Expired API key: {api_key_header[:8]}...")
+    if api_key_obj.expires_at and api_key_obj.expires_at < datetime.now():
+        logger.warning(f"Expired API key: {api_key[:8]}...")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="API key has expired",
@@ -92,15 +114,15 @@ async def verify_api_key(
         )
     
     # Check rate limit from database
-    if rate_limit_cache[cache_key]["count"] > api_key.rate_limit:
-        logger.warning(f"Rate limit exceeded for API key: {api_key_header[:8]}...")
+    if rate_limit_cache[cache_key]["count"] > api_key_obj.rate_limit:
+        logger.warning(f"Rate limit exceeded for API key: {api_key[:8]}...")
         raise HTTPException(
             status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-            detail=f"Rate limit exceeded. Maximum {api_key.rate_limit} requests per minute allowed.",
+            detail=f"Rate limit exceeded. Maximum {api_key_obj.rate_limit} requests per minute allowed.",
         )
     
-    logger.debug(f"API key validated: {api_key_header[:8]}...")
-    return api_key
+    logger.debug(f"API key validated: {api_key[:8]}...")
+    return api_key_obj
 
 # API key management endpoints
 @router.post("/keys", response_model=schemas.APIKeyResponse)
@@ -109,10 +131,17 @@ async def create_api_key(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Create a new API key with three-layered validation:
-    1. Validate input data
-    2. Check for existing keys
-    3. Generate and store new key
+    Create a new API key.
+    
+    Args:
+        api_key: API key creation data
+        db: Database session
+        
+    Returns:
+        Created API key details
+        
+    Raises:
+        HTTPException: If creation fails
     """
     try:
         # Layer 1: Input validation
@@ -149,10 +178,17 @@ async def deactivate_api_key(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Deactivate an API key with three-layered validation:
-    1. Validate key format
-    2. Check key existence
-    3. Perform deactivation
+    Deactivate an existing API key.
+    
+    Args:
+        key: API key to deactivate
+        db: Database session
+        
+    Returns:
+        Success/failure message
+        
+    Raises:
+        HTTPException: If key not found or deactivation fails
     """
     try:
         # Layer 1: Basic validation

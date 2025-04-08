@@ -1,16 +1,15 @@
 """
-SQLAlchemy ORM models for the Duke VC Insight Engine database.
+Database Models Module
 
-This module defines the database schema using SQLAlchemy ORM.
-It includes models for companies, founders, executives, and API keys.
+This module defines SQLAlchemy ORM models for the application's database schema.
+Models include Person and Company entities with their relationships and fields.
 """
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table, DateTime, Text, JSON, Float, ARRAY
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
 from datetime import datetime
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -24,13 +23,18 @@ company_person_association = Table(
     Column('duke_affiliation_status', String, nullable=False)  # Duke affiliation status for scoring
 )
 
+# Association table for many-to-many relationship between Person and Company
+person_company = Table(
+    'person_company',
+    Base.metadata,
+    Column('person_id', Integer, ForeignKey('people.id')),
+    Column('company_id', Integer, ForeignKey('companies.id'))
+)
+
 class Company(Base):
     """
-    Company model representing startup/company entities.
-    
-    This model stores information about companies including their
-    Duke affiliation status and other relevant details.
-    Associated people are stored directly in the company_person_association table.
+    Company model representing organizations in the database.
+    Stores company information, metrics, and relationships.
     """
     __tablename__ = "companies"
     
@@ -56,8 +60,8 @@ class Company(Base):
 
 class Person(Base):
     """
-    Person model representing individuals searched through the person route.
-    This model is independent of company associations.
+    Person model representing individuals in the database.
+    Stores personal information, affiliations, and scores.
     """
     __tablename__ = "persons"
     

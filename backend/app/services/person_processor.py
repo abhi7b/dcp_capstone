@@ -1,4 +1,16 @@
-import logging
+"""
+Person Processor Module
+
+Service for processing and analyzing person-related data from various sources.
+Extracts, validates, and enriches person information.
+
+Key Features:
+- Data extraction
+- Profile enrichment
+- Affiliation verification
+- Information validation
+"""
+
 import json
 import os
 import re
@@ -7,7 +19,7 @@ from typing import Dict, List, Optional, Any
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 from ..utils.config import settings
-from ..utils.logger import nlp_logger
+from ..utils.logger import person_processor_logger as logger
 from ..utils.storage import StorageService
 from openai import AsyncOpenAI
 from .founder_scorer import FounderScorer
@@ -15,7 +27,6 @@ from .nitter import NitterScraper
 from .nitter_nlp import NitterNLP
 from ..db.schemas import PersonBase, PersonInDB
 
-logger = logging.getLogger("person_processor")
 
 # Combined person extraction prompt with education and Duke affiliation
 PERSON_EXTRACTION_PROMPT = """You are a VC research analyst extracting structured information about individuals, especially entrepreneurs and business leaders.
@@ -63,11 +74,12 @@ IMPORTANT GUIDELINES:
 
 class PersonProcessor:
     """
-    Standalone processor for person/founder data extraction.
-    This processor is used only for the /api/founder endpoint.
+    Service for processing person data from search results and other sources.
+    Handles data extraction, validation, and enrichment of person profiles.
     """
     
     def __init__(self):
+        """Initialize processor with NLP service."""
         self.openai_api_key = settings.OPENAI_API_KEY
         self.openai_model = settings.OPENAI_MODEL
         self.founder_scorer = FounderScorer()

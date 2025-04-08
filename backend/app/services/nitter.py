@@ -1,22 +1,41 @@
+"""
+Nitter Scraper Module
+
+Service for scraping Twitter data through Nitter instances.
+Handles tweet extraction, rate limiting, and error handling.
+
+Key Features:
+- Tweet scraping
+- Rate limiting
+- Instance rotation
+- Error handling
+"""
+
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 import aiohttp
 from bs4 import BeautifulSoup
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 import asyncio
+import random
 
-from ..utils.logger import nitter_logger
+from ..utils.logger import nitter_logger as logger
 from ..utils.config import settings
 from ..utils.storage import StorageService
 
+
 class NitterScraper:
-    """Service for fetching raw tweets using Nitter as a proxy"""
+    """
+    Service for scraping Twitter data through Nitter instances.
+    Handles instance rotation and retry logic.
+    """
     
     def __init__(self):
-        # List of Nitter instances to try
+        """Initialize scraper with Nitter instances."""
         self.instances = settings.NITTER_INSTANCES
+        self.max_retries = 3
         self.storage = StorageService()
-        nitter_logger.info("NitterScraper initialized")
+        logger.info("NitterScraper initialized")
     
     @retry(
         stop=stop_after_attempt(3),
@@ -42,7 +61,7 @@ class NitterScraper:
     async def get_raw_tweets(self, handle: str, limit: int = 20) -> Dict[str, Any]:
         """Get raw tweets from a user's profile page"""
         handle = handle.replace('@', '')
-        nitter_logger.info(f"Fetching raw tweets for: {handle} (limit: {limit})")
+        logger.info(f"Fetching raw tweets for: {handle} (limit: {limit})")
         
         # Check for cached data
         recent_data = self.storage.load_data("nitter", handle, settings.RAW_DATA_DIR)
@@ -59,7 +78,7 @@ class NitterScraper:
                 tweet_elements = soup.select('.timeline-item')
                 
                 if not tweet_elements:
-                    nitter_logger.warning(f"No tweets found on {instance} for {handle}")
+                    logger.warning(f"No tweets found on {instance} for {handle}")
                     continue
                 
                 raw_tweets = []
@@ -80,7 +99,7 @@ class NitterScraper:
                     })
                 
                 if raw_tweets:
-                    nitter_logger.info(f"Successfully fetched {len(raw_tweets)} tweets from {instance}")
+                    logger.info(f"Successfully fetched {len(raw_tweets)} tweets from {instance}")
                     result_data = {
                         "handle": handle,
                         "raw_tweets": raw_tweets,
@@ -94,11 +113,11 @@ class NitterScraper:
                     return result_data
                     
             except Exception as e:
-                nitter_logger.warning(f"Failed to fetch from {instance}: {str(e)}")
+                logger.warning(f"Failed to fetch from {instance}: {str(e)}")
                 continue
         
         # If all instances fail
-        nitter_logger.error(f"All Nitter instances failed for {handle}")
+        logger.error(f"All Nitter instances failed for {handle}")
         return {
             "handle": handle,
             "raw_tweets": [],

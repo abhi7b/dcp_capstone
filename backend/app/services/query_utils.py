@@ -1,8 +1,30 @@
-from typing import List, Dict, Optional
+"""
+Query Builder Module
+
+Provides utilities for constructing and managing search queries.
+Handles query formatting, sanitization, and template management.
+"""
+
+from typing import List, Dict, Optional, Any
+import re
+
+from ..utils.logger import query_utils_logger as logger
+from ..utils.config import settings
 
 class QueryBuilder:
-    """Utility class to build optimized search queries for various purposes"""
-    
+    """
+    Utility for building optimized search queries.
+    Handles parameter construction and query formatting.
+    """
+
+    def __init__(self):
+        """Initialize query builder with default parameters."""
+        self.default_params = {
+            "num": 10,
+            "hl": "en",
+            "gl": "us"
+        }
+
     @staticmethod
     def get_company_queries(company_name: str, include_duke: bool = False) -> Dict[str, List[str]]:
         """

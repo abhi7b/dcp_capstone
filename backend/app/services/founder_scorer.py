@@ -1,9 +1,20 @@
+"""
+Founder Scorer Module
+
+Calculates relevance scores for founders and executives based on
+various factors including Duke affiliation, role, and activity.
+
+Key Features:
+- Multi-factor scoring
+- Duke affiliation weighting
+- Role-based scoring
+- Activity analysis
+"""
+
 import logging
 from typing import Dict, Any, Optional
 from datetime import datetime
-from ..utils.logger import scorer_logger
-
-logger = logging.getLogger("founder_scorer")
+from ..utils.logger import scorer_logger as logger
 
 class FounderScorer:
     """
@@ -18,9 +29,16 @@ class FounderScorer:
     
     def calculate_relevance_score(self, 
                                 person_data: Dict[str, Any],
-                                twitter_urgency_score: Optional[int] = None) -> int:
+                                twitter_urgency_score: Optional[float] = None) -> float:
         """
-        Calculate final founder relevance score (0-100)
+        Calculate overall relevance score for a person.
+        
+        Args:
+            person_data: Dictionary containing person information
+            twitter_urgency_score: Optional Twitter activity score
+            
+        Returns:
+            Normalized relevance score (0-100)
         """
         # Calculate component scores
         duke_score = self._calculate_duke_affiliation_score(person_data)
@@ -49,7 +67,13 @@ class FounderScorer:
     
     def _calculate_duke_affiliation_score(self, person_data: Dict[str, Any]) -> int:
         """
-        Calculate Duke affiliation score based on education history
+        Calculate Duke affiliation score component.
+        
+        Args:
+            person_data: Dictionary containing person information
+            
+        Returns:
+            Duke affiliation score (0-100)
         """
         try:
             # Get education history
@@ -77,12 +101,18 @@ class FounderScorer:
             
             return duke_score
         except Exception as e:
-            scorer_logger.error(f"Error calculating Duke affiliation score: {str(e)}")
+            logger.error(f"Error calculating Duke affiliation score: {str(e)}")
             return 0
     
     def _calculate_role_importance(self, person_data: Dict[str, Any]) -> int:
         """
-        Calculate role importance score based on title
+        Calculate role importance score component.
+        
+        Args:
+            person_data: Dictionary containing person information
+            
+        Returns:
+            Role importance score (0-100)
         """
         title = person_data.get("title", "").lower()
         
@@ -105,7 +135,13 @@ class FounderScorer:
             
     def _calculate_twitter_score(self, person_data: Dict[str, Any]) -> int:
         """
-        Calculate score based on Twitter urgency
+        Calculate activity and engagement score component.
+        
+        Args:
+            person_data: Dictionary containing person information
+            
+        Returns:
+            Activity score (0-100)
         """
         # If twitter_urgency_score is available, use it directly
         twitter_urgency_score = person_data.get("twitter_urgency_score")
@@ -115,4 +151,3 @@ class FounderScorer:
         # If no urgency score available, return middle score
         return 50
 
-# Test case removed as requested

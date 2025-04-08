@@ -1,3 +1,11 @@
+"""
+Configuration Module
+
+This module provides configuration settings for the application.
+It loads environment variables from a .env file and provides default values.
+
+"""
+
 import os
 import json
 from pydantic_settings import BaseSettings

@@ -4,7 +4,7 @@ Main application module for Duke VC Insight Engine.
 This module initializes the FastAPI application and includes all routes.
 It also sets up API documentation, CORS middleware, and error handlers.
 """
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, status, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
@@ -18,12 +18,11 @@ from typing import Dict, Any
 
 from .routes import company, person, auth
 from .utils.config import settings
-from .utils.logger import get_logger, configure_loggers
-from .db.session import check_db_connection
+from .utils.logger import configure_loggers
+from .db.session import check_db_connection, engine
 from .db.models import Base
-from .db.session import engine
-
-logger = get_logger("app")
+from .utils.logger import app_logger as logger
+from .services.redis import redis_service
 
 # Request logging middleware
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
@@ -60,6 +59,32 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             )
             raise
 
+# Rate limiting middleware
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    """Middleware for enforcing rate limits per API key."""
+    
+    async def dispatch(self, request: Request, call_next):
+        api_key = request.headers.get("X-API-Key")
+        if not api_key:
+            return JSONResponse(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                content={"error": "API key required"}
+            )
+            
+        # Check rate limit using Redis
+        rate_key = f"rate_limit:{api_key}"
+        current = await redis_service.get(rate_key) or 0
+        
+        if current >= settings.RATE_LIMIT_PER_MINUTE:
+            return JSONResponse(
+                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                content={"error": "Rate limit exceeded"}
+            )
+            
+        # Increment counter with 60s expiry
+        await redis_service.set(rate_key, current + 1, expire=60)
+        return await call_next(request)
+
 # Create FastAPI app with custom metadata for docs
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -89,6 +114,7 @@ app = FastAPI(
 
 # Add middleware
 app.add_middleware(RequestLoggingMiddleware)
+app.add_middleware(RateLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -97,10 +123,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(company.router)  # Now mounted at /companies
-app.include_router(person.router)   # Now mounted at /api/person
-app.include_router(auth.router)     # Now mounted at /api/auth
+# Include routers with updated paths
+app.include_router(company.router, prefix="/api/company")
+app.include_router(person.router, prefix="/api/founder")
+app.include_router(auth.router, prefix="/api/auth")
 
 # Custom exception handlers
 @app.exception_handler(HTTPException)
@@ -217,22 +243,40 @@ async def root():
 
 @app.get("/api/health", tags=["Health"])
 async def health_check():
-    """Health check endpoint with system status."""
+    """Health check endpoint with comprehensive system status."""
     try:
+        # Check database connection
         db_status = await check_db_connection()
         
+        # Check Redis connection
+        redis_status = await redis_service.get("health_check") is not None
+                
         # Get data refresh status
-        last_refresh = datetime.now().strftime("%Y-%m-%d")  # TODO: Get from status table
+        last_refresh = await redis_service.get("last_refresh_date") or datetime.now().strftime("%Y-%m-%d")
         next_refresh = (datetime.now().replace(hour=0, minute=0, second=0) + 
                        timedelta(days=3)).strftime("%Y-%m-%d")
         
+        # Get API usage stats
+        total_requests_24h = await redis_service.get("total_requests_24h") or 0
+        active_api_keys = await redis_service.get("active_api_keys") or 0
+        
         return {
-            "status": "healthy",
+            "status": "healthy" if all([db_status, redis_status]) else "degraded",
             "version": settings.VERSION,
-            "database": {
-                "status": "connected" if db_status else "disconnected",
-                "last_refresh": last_refresh,
-                "next_refresh": next_refresh
+            "components": {
+                "database": {
+                    "status": "connected" if db_status else "disconnected",
+                    "last_refresh": last_refresh,
+                    "next_refresh": next_refresh
+                },
+                "redis": {
+                    "status": "connected" if redis_status else "disconnected"
+                },
+
+            },
+            "usage": {
+                "requests_24h": total_requests_24h,
+                "active_api_keys": active_api_keys
             },
             "timestamp": datetime.now().isoformat(),
             "environment": os.getenv("ENV", "development")
@@ -247,7 +291,7 @@ async def health_check():
 # Startup and shutdown events
 @app.on_event("startup")
 async def startup_event():
-    """Initialize application on startup."""
+    """Initialize application services on startup."""
     print(f"Starting {settings.PROJECT_NAME} v{settings.VERSION}")
     
     # Create all required directories
@@ -277,19 +321,23 @@ async def startup_event():
         logger.error(f"Failed to initialize database: {str(e)}")
         raise
     
-    # Verify database connection
-    db_status = await check_db_connection()
-    if db_status:
-        logger.info("Successfully connected to database")
-    else:
-        logger.error("Failed to connect to database")
-        raise Exception("Database connection failed")
+    # Initialize Redis
+    try:
+        await redis_service.set("health_check", "ok")
+        logger.info("Successfully connected to Redis")
+    except Exception as e:
+        logger.error(f"Failed to connect to Redis: {str(e)}")
+        raise
+    
+    # Initialize Celery tasks
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    """Cleanup on application shutdown."""
+    """Cleanup application services on shutdown."""
     logger.info(f"Shutting down {settings.PROJECT_NAME}")
     await engine.dispose()
+    await redis_service.clear_cache()
 
 # For local development
 if __name__ == "__main__":
