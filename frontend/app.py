@@ -44,7 +44,7 @@ if search_query:
                 st.write(f"**Sector:** {result.get('sector', 'N/A')}")
                 st.write(f"**Growth Score:** {result.get('vc_rank', 'N/A')} / 100")
                 if result.get("currently_raising"):
-                    st.success("💰 Currently raising capital! Top priority.")
+                    st.success("Currently raising capital! Top priority.")
                 else:
                     st.info("Not currently raising capital.")
 
