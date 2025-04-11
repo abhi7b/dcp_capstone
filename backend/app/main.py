@@ -24,6 +24,9 @@ from .db.models import Base
 from .utils.logger import app_logger as logger
 from .services.redis import redis_service
 
+# Development API key for local testing
+DEV_API_KEY = "7d0e4d15-898c-4138-ab42-154ef90f6e18"
+
 # Request logging middleware
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
     """Middleware for logging request information and rate limiting."""
@@ -63,9 +66,44 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """Middleware for enforcing rate limits per API key."""
     
+    # List of public endpoints that don't require API key
+    PUBLIC_ENDPOINTS = {
+        "/",
+        "/health",
+        "/docs",
+        "/redoc",
+        "/openapi.json",
+        "/favicon.ico"
+    }
+    
     async def dispatch(self, request: Request, call_next):
+        # Skip API key check for public endpoints
+        if request.url.path in self.PUBLIC_ENDPOINTS:
+            return await call_next(request)
+            
+        # Get API key from header
         api_key = request.headers.get("X-API-Key")
+        
+        # Log the API key check for debugging
+        logger.info(f"Checking API key for request to {request.url.path}")
+        logger.info(f"Environment: {os.getenv('ENVIRONMENT')}")
+        logger.info(f"API Key provided: {api_key}")
+        logger.info(f"Dev API Key: {DEV_API_KEY}")
+        
+        # Allow development API key in development environment
+        if os.getenv("ENVIRONMENT") == "development":
+            if api_key == DEV_API_KEY:
+                logger.info("Development API key accepted")
+                return await call_next(request)
+            else:
+                logger.warning(f"Invalid API key in development environment: {api_key}")
+                return JSONResponse(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    content={"error": "Invalid API key"}
+                )
+            
         if not api_key:
+            logger.warning("No API key provided")
             return JSONResponse(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 content={"error": "API key required"}
@@ -76,6 +114,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         current = await redis_service.get(rate_key) or 0
         
         if current >= settings.RATE_LIMIT_PER_MINUTE:
+            logger.warning(f"Rate limit exceeded for API key: {api_key}")
             return JSONResponse(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
                 content={"error": "Rate limit exceeded"}
@@ -83,6 +122,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             
         # Increment counter with 60s expiry
         await redis_service.set(rate_key, current + 1, expire=60)
+        logger.info(f"Request accepted for API key: {api_key}")
         return await call_next(request)
 
 # Create FastAPI app with custom metadata for docs
@@ -106,6 +146,7 @@ app = FastAPI(
     Authentication:
     - API Key required for all endpoints (X-API-Key header)
     - Rate limiting enforced per API key
+    - Development API key available for local testing
     """,
     version=settings.VERSION,
     docs_url=None,  # Disable default docs
@@ -205,30 +246,30 @@ def custom_openapi() -> Dict[str, Any]:
 app.openapi = custom_openapi
 
 # Documentation endpoints
-@app.get("/api/openapi.json", include_in_schema=False)
-async def get_openapi_schema():
-    """Serve OpenAPI schema"""
-    return app.openapi()
-
-@app.get("/api/docs", include_in_schema=False)
+@app.get("/docs", include_in_schema=False)
 async def get_documentation():
     """Serve Swagger UI documentation."""
     return get_swagger_ui_html(
-        openapi_url="/api/openapi.json",
+        openapi_url="/openapi.json",
         title=f"{settings.PROJECT_NAME} - API Documentation",
-        oauth2_redirect_url="/api/docs/oauth2-redirect",
+        oauth2_redirect_url="/docs/oauth2-redirect",
         swagger_js_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js",
         swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css",
     )
 
-@app.get("/api/redoc", include_in_schema=False)
+@app.get("/redoc", include_in_schema=False)
 async def get_redoc_documentation():
     """Serve ReDoc documentation."""
     return get_redoc_html(
-        openapi_url="/api/openapi.json",
+        openapi_url="/openapi.json",
         title=f"{settings.PROJECT_NAME} - API Reference",
         redoc_js_url="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js",
     )
+
+@app.get("/openapi.json", include_in_schema=False)
+async def get_openapi_schema():
+    """Serve OpenAPI schema"""
+    return app.openapi()
 
 @app.get("/", include_in_schema=False)
 async def root():
@@ -236,12 +277,12 @@ async def root():
     return {
         "name": settings.PROJECT_NAME,
         "version": settings.VERSION,
-        "documentation": "/api/docs",
-        "reference": "/api/redoc",
-        "health": "/api/health"
+        "documentation": "/docs",
+        "reference": "/redoc",
+        "health": "/health"
     }
 
-@app.get("/api/health", tags=["Health"])
+@app.get("/health", tags=["Health"])
 async def health_check():
     """Health check endpoint with comprehensive system status."""
     try:
@@ -272,14 +313,17 @@ async def health_check():
                 "redis": {
                     "status": "connected" if redis_status else "disconnected"
                 },
-
+                "api": {
+                    "status": "active",
+                    "rate_limit": settings.RATE_LIMIT_PER_MINUTE,
+                    "environment": os.getenv("ENVIRONMENT", "development")
+                }
             },
             "usage": {
                 "requests_24h": total_requests_24h,
                 "active_api_keys": active_api_keys
             },
-            "timestamp": datetime.now().isoformat(),
-            "environment": os.getenv("ENV", "development")
+            "timestamp": datetime.now().isoformat()
         }
     except Exception as e:
         logger.error(f"Health check failed: {str(e)}")

@@ -90,6 +90,7 @@ processor_logger = setup_logger('processor', None, level=log_level)
 storage_logger = setup_logger('storage', None, level=log_level)
 person_processor_logger = setup_logger('person_processor', None, level=log_level)
 redis_service_logger = setup_logger('redis_service', None, level=log_level)
+test_logger = setup_logger('test', None, level=log_level)
 # Track if loggers have been reconfigured
 _loggers_configured = False
 
@@ -126,6 +127,7 @@ def configure_loggers(logs_dir):
             'storage': 'storage.log',
             'person_processor': 'person_processor.log',
             'redis_service': 'redis_service.log',
+            'test': 'test.log',
         }
         
         for name, log_file in loggers_config.items():
@@ -168,6 +170,7 @@ def get_logger(name: str, level: str = None) -> logging.Logger:
         'storage': storage_logger,
         'person_processor': person_processor_logger,
         'redis_service': redis_service_logger,
+        'test': test_logger,
     }
     
     if name in known_loggers:
@@ -191,5 +194,6 @@ __all__ = [
     'person_processor_logger',
     'redis_service_logger',
     'get_logger',
-    'configure_loggers'
+    'configure_loggers',
+    'test_logger'
 ] 

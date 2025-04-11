@@ -27,7 +27,7 @@ company_person_association = Table(
 person_company = Table(
     'person_company',
     Base.metadata,
-    Column('person_id', Integer, ForeignKey('people.id')),
+    Column('person_id', Integer, ForeignKey('persons.id')),
     Column('company_id', Integer, ForeignKey('companies.id'))
 )
 

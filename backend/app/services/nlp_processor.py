@@ -287,7 +287,35 @@ class NLPProcessor:
             }
         
         messages = [
-            {"role": "system", "content": "You are a helpful assistant that determines if a person has an affiliation with Duke University based on search results."},
+            {"role": "system", "content": """You are a helpful assistant that determines if a person has an affiliation with Duke University based on search results.
+
+IMPORTANT GUIDELINES:
+1. "confirmed" means clear evidence of Duke affiliation (student, alumni, faculty, etc.)
+   - Must have explicit mention of Duke University
+   - Must be about the specific person (not someone with same name)
+   - Must be from a credible source (university website, news article, etc.)
+
+2. "please review" means some indication but not definitive
+   - Ambiguous mentions of Duke
+   - Possible name confusion
+   - Unclear source credibility
+
+3. "no" means no evidence of Duke connection
+   - No mentions of Duke
+   - Mentions of other universities only
+   - Name confusion with Duke (e.g., David Duke)
+
+4. For education, include ALL education history found, not just Duke
+   - Include school, degree, field, and year if available
+   - Be specific about Duke University vs other institutions
+   - Note any ambiguity in the information
+
+5. Special Cases:
+   - Be careful with common names (e.g., John Smith)
+   - Be careful with names containing "Duke"
+   - Verify the person's identity matches the search results
+   - Consider the credibility of the source
+"""},
             {"role": "user", "content": f"""
             Analyze these search results for {person_name} and determine if they have any connection to Duke University.
             
@@ -305,13 +333,6 @@ class NLPProcessor:
                     }}
                 ]
             }}
-            
-            IMPORTANT GUIDELINES:
-            - "confirmed" means clear evidence of Duke affiliation (student, alumni, faculty, etc.)
-            - "please review" means some indication but not definitive
-            - "no" means no evidence of Duke connection
-            - For education, include ALL education history found, not just Duke
-            - Return a complete education list even if duke_affiliation_status is "no"
             
             SEARCH RESULTS:
             {chr(10).join(snippets)}

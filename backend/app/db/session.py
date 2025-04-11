@@ -22,18 +22,17 @@ from typing import Generator
 # Create async engine for SQLAlchemy
 engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=False,  # Set to True for debugging
+    echo=settings.SQL_ECHO,  # Set to True for debugging
     future=True,
     pool_pre_ping=True,  # Basic connection health check
     pool_size=5,
-    max_overflow=10,
-    echo=settings.SQL_ECHO
+    max_overflow=10
 )
 
 # Create sync engine for migrations and scripts
 sync_engine = create_engine(
     settings.DATABASE_URL.replace("asyncpg", "psycopg2"),
-    echo=False,
+    echo=settings.SQL_ECHO,
     future=True,
     pool_recycle=3600  # Recycle connections after 1 hour
 )

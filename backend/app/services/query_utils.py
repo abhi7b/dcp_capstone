@@ -7,8 +7,6 @@ Handles query formatting, sanitization, and template management.
 
 from typing import List, Dict, Optional, Any
 import re
-
-from ..utils.logger import query_utils_logger as logger
 from ..utils.config import settings
 
 class QueryBuilder:
