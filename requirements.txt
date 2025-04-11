@@ -37,4 +37,5 @@ tenacity==8.2.3
 loguru==0.7.2
 cachetools==5.3.2
 orjson==3.9.10
-psutil==5.9.5 
+psutil==5.9.5
+uvicorn==0.29.0
