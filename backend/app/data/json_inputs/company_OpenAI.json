@@ -1,0 +1,43 @@
+{
+  "name": "OpenAI",
+  "duke_affiliation_status": "confirmed",
+  "relevance_score": 95,
+  "summary": "OpenAI is an AI research and deployment company dedicated to ensuring that general-purpose artificial intelligence benefits all of humanity.",
+  "investors": [
+    "SoftBank",
+    "Goldman Sachs",
+    "Morgan Stanley"
+  ],
+  "funding_stage": "Series A",
+  "industry": "Artificial Intelligence",
+  "founded": "2015",
+  "location": "San Francisco, California",
+  "twitter_handle": "openai",
+  "linkedin_handle": "openai",
+  "twitter_summary": "OpenAI has rolled out significant updates to ChatGPT, including memory features that allow the AI to reference past chats for personalized responses, which is currently available to Plus and Pro users (excluding certain regions). The company has also launched native image generation capabilities, which have seen high engagement with over 130 million users generating more than 700 million images in just a week. Additionally, OpenAI is open-sourcing new benchmarks like BrowseComp and PaperBench to evaluate AI agents' capabilities. The updated GPT-4o is now available for paid users, with improvements in following instructions and tackling complex tasks. OpenAI is also addressing performance issues due to high demand by introducing rate limits on image generation.",
+  "source_links": [
+    "https://openai.com/about/",
+    "https://en.wikipedia.org/wiki/OpenAI",
+    "https://www.linkedin.com/company/openai",
+    "https://www.clay.com/dossier/openai-executives",
+    "https://digitaldefynd.com/IQ/meet-the-c-suite-executive-team-of-openai/"
+  ],
+  "people": [
+    {
+      "name": "Sam Altman",
+      "title": "CEO & Co-Founder"
+    },
+    {
+      "name": "Greg Brockman",
+      "title": "President & Co-Founder"
+    },
+    {
+      "name": "Ilya Sutskever",
+      "title": "Chief Scientist"
+    },
+    {
+      "name": "Julia Villagra",
+      "title": "Chief People Officer"
+    }
+  ]
+}

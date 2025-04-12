@@ -13,11 +13,11 @@ Key Features:
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, join
 from typing import List, Optional
 
 from ..db import schemas, crud, session, person_crud
-from ..db.models import Person
+from ..db.models import Person, Company, company_person_association
 from ..services.scraper import SERPScraper
 from ..services.nitter import NitterScraper
 from ..services.person_processor import PersonProcessor
@@ -71,13 +71,25 @@ async def search_person(
             person = result.scalars().first()
             
             if person:
+                # Get associated companies
+                companies_result = await db.execute(
+                    select(Company)
+                    .join(company_person_association)
+                    .where(company_person_association.c.person_id == person.id)
+                )
+                companies = companies_result.scalars().all()
+                
+                # Prepare person data with companies
+                person_data = person.dict()
+                person_data['companies'] = [{"name": c.name} for c in companies]
+                
                 # Cache the database result
                 await redis_service.set(
                     f"person:{name}",
-                    person.dict(),
+                    person_data,
                     expire=3600  # 1 hour cache
                 )
-                return schemas.PersonResponse.from_orm(person)
+                return schemas.PersonResponse(**person_data)
         
         # Layer 3: Scrape and process new data
         scraper = SERPScraper()
@@ -136,14 +148,26 @@ async def search_person(
         if not person:
             raise HTTPException(status_code=500, detail="Failed to store person data")
             
+        # Get associated companies
+        companies_result = await db.execute(
+            select(Company)
+            .join(company_person_association)
+            .where(company_person_association.c.person_id == person.id)
+        )
+        companies = companies_result.scalars().all()
+        
+        # Prepare person data with companies
+        person_data = person.dict()
+        person_data['companies'] = [{"name": c.name} for c in companies]
+            
         # Cache the result
         await redis_service.set(
             f"person:{name}",
-            person.dict(),
+            person_data,
             expire=3600  # 1 hour cache
         )
         
-        return schemas.PersonResponse.from_orm(person)
+        return schemas.PersonResponse(**person_data)
         
     except Exception as e:
         logger.error(f"Error processing person {name}: {str(e)}")
@@ -187,47 +211,80 @@ async def list_people(
         result = await db.execute(query)
         people = result.scalars().all()
         
-        return [schemas.PersonResponse.from_orm(person) for person in people]
+        # Get associated companies for each person
+        response_list = []
+        for person in people:
+            companies_result = await db.execute(
+                select(Company)
+                .join(company_person_association)
+                .where(company_person_association.c.person_id == person.id)
+            )
+            companies = companies_result.scalars().all()
+            
+            person_data = person.dict()
+            person_data['companies'] = [{"name": c.name} for c in companies]
+            response_list.append(schemas.PersonResponse(**person_data))
+            
+        return response_list
         
     except Exception as e:
         logger.error(f"Error listing people: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.delete("/{person_id}", status_code=200, response_model=schemas.Message)
-async def delete_person(
-    person_id: int,
+@router.put("/{name}", response_model=schemas.PersonResponse)
+async def update_person_manual(
+    name: str,
+    person_update: schemas.PersonUpdate,
     db: AsyncSession = Depends(session.get_db)
 ):
     """
-    Delete a person by ID.
-    
-    Args:
-        person_id: ID of person to delete
-        db: Database session
-        
-    Returns:
-        Success message
-        
-    Raises:
-        HTTPException(404): If person not found
-        HTTPException(500): For database errors
+    Update an existing person entry manually.
+    Requires the person name and updated data.
     """
-    logger.info(f"Received request to delete person ID: {person_id}")
-    deleted = await person_crud.delete_person(db=db, person_id=person_id)
-    if not deleted:
-        logger.warning(f"Deletion failed: Person ID {person_id} not found.")
-        raise HTTPException(status_code=404, detail="Person not found")
+    try:
+        # Get person by name
+        result = await db.execute(select(Person).where(Person.name == name))
+        person = result.scalar_one_or_none()
+        if not person:
+            raise HTTPException(status_code=404, detail=f"Person {name} not found")
+            
+        # Use CRUD function to update
+        update_data = person_update.dict(exclude_unset=True)
+        updated_person = await person_crud.update_person(db, person.id, update_data)
         
-    logger.info(f"Successfully deleted person ID: {person_id}")
-    return {"message": f"Person {person_id} deleted successfully"}
+        if not updated_person:
+            raise HTTPException(status_code=500, detail="Failed to update person in database")
+            
+        # Clear cache
+        await redis_service.delete(f"person:{name}")
+        
+        # Get associated companies
+        companies_result = await db.execute(
+            select(Company)
+            .join(company_person_association)
+            .where(company_person_association.c.person_id == updated_person.id)
+        )
+        companies = companies_result.scalars().all()
+        
+        # Prepare response
+        person_data = updated_person.dict()
+        person_data['companies'] = [{"name": c.name} for c in companies]
+        
+        return schemas.PersonResponse(**person_data)
+        
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        logger.error(f"Error updating person {name}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Database error during update: {str(e)}")
 
-@router.delete("/{name}")
-async def delete_person_by_name(
+@router.delete("/{name}", status_code=200)
+async def delete_person(
     name: str,
     db: AsyncSession = Depends(session.get_db)
 ):
     """
-    Delete person by name and clear cache.
+    Delete a person by name.
     
     Args:
         name: Name of person to delete
@@ -241,23 +298,23 @@ async def delete_person_by_name(
         HTTPException(500): For database errors
     """
     try:
+        # Get person by name
+        result = await db.execute(select(Person).where(Person.name == name))
+        person = result.scalar_one_or_none()
+        if not person:
+            raise HTTPException(status_code=404, detail=f"Person {name} not found")
+            
         # Delete from database
-        result = await db.execute(
-            select(Person).where(Person.name.ilike(f"%{name}%"))
-        )
-        person = result.scalars().first()
+        await db.delete(person)
+        await db.commit()
         
-        if person:
-            await db.delete(person)
-            await db.commit()
-            
-            # Clear cache
-            await redis_service.delete(f"person:{name}")
-            
-            return {"message": "Person deleted successfully"}
+        # Clear cache
+        await redis_service.delete(f"person:{name}")
         
-        raise HTTPException(status_code=404, detail="Person not found")
+        return {"message": "Person deleted successfully"}
         
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
-        logger.error(f"Error deleting person {name}: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e)) 
+        logger.error(f"Error deleting person {name}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Database error during deletion: {str(e)}") 

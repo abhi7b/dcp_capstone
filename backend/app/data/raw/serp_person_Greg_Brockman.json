@@ -1,0 +1,487 @@
+{
+  "search_parameters": {
+    "query": "Multi-query search for Greg Brockman"
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Greg Brockman",
+      "link": "https://en.wikipedia.org/wiki/Greg_Brockman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://en.wikipedia.org/wiki/Greg_Brockman&ved=2ahUKEwiD54-f_tKMAxX6AzQIHWE8NPUQFnoECCAQAQ",
+      "displayed_link": "https://en.wikipedia.org › wiki › Greg_Brockman",
+      "thumbnail": "https://serpapi.com/searches/67fa9e6c38bd9f254997a004/images/a1add8af709c118d2d27cef98557826fdc37617d1135385eff62369a0c91e1c5.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9e6c38bd9f254997a004/images/a1add8af709c118d2d27cef98557826f2758cfa4570c7291e79ff271fe980530.png",
+      "snippet": "He began his career at Stripe in 2010, upon leaving MIT, and became their CTO in 2013. He left Stripe in 2015 to co-found OpenAI, where he also assumed the role ...",
+      "snippet_highlighted_words": [
+        "career"
+      ],
+      "missing": [
+        "professional",
+        "experience"
+      ],
+      "source": "Wikipedia"
+    },
+    {
+      "position": 2,
+      "title": "Greg Brockman - OpenAI",
+      "link": "https://www.linkedin.com/in/thegdb",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/in/thegdb&ved=2ahUKEwiD54-f_tKMAxX6AzQIHWE8NPUQFnoECCUQAQ",
+      "displayed_link": "31.8K+ followers",
+      "favicon": "https://serpapi.com/searches/67fa9e6c38bd9f254997a004/images/a1add8af709c118d2d27cef98557826f770f80104dea66b8960f26a78993ffb3.png",
+      "snippet": "I love to build. · Experience: OpenAI · Education: Massachusetts Institute of Technology · Location: San Francisco · 500+ connections on LinkedIn. View Greg ...",
+      "snippet_highlighted_words": [
+        "Experience: OpenAI"
+      ],
+      "rich_snippet": {
+        "top": {
+          "extensions": [
+            "San Francisco, California, United States",
+            "OpenAI"
+          ]
+        }
+      },
+      "source": "LinkedIn · Greg Brockman"
+    },
+    {
+      "position": 3,
+      "title": "How I became a machine learning practitioner",
+      "link": "https://blog.gregbrockman.com/how-i-became-a-machine-learning-practitioner",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://blog.gregbrockman.com/how-i-became-a-machine-learning-practitioner&ved=2ahUKEwiD54-f_tKMAxX6AzQIHWE8NPUQFnoECCEQAQ",
+      "displayed_link": "https://blog.gregbrockman.com › how-i-became-a-mac...",
+      "favicon": "https://serpapi.com/searches/67fa9e6c38bd9f254997a004/images/a1add8af709c118d2d27cef98557826f35ac3d8ba6f5b0c07dda2cfe3ccc2a53.png",
+      "date": "Jul 30, 2019",
+      "snippet": "For the first three years of OpenAI, I dreamed of becoming a machine learning expert but made little progress towards that goal.",
+      "missing": [
+        "professional",
+        "background"
+      ],
+      "source": "gregbrockman.com"
+    },
+    {
+      "position": 4,
+      "title": "UND Q & A with Greg Brockman, an innovator in Artificial ...",
+      "link": "https://blogs.und.edu/press-releases/2023/09/und-q-a-with-greg-brockman-an-innovator-in-artificial-intelligence/?print=print",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://blogs.und.edu/press-releases/2023/09/und-q-a-with-greg-brockman-an-innovator-in-artificial-intelligence/%3Fprint%3Dprint&ved=2ahUKEwiD54-f_tKMAxX6AzQIHWE8NPUQFnoECCMQAQ",
+      "displayed_link": "https://blogs.und.edu › press-releases › 2023/09 › und-...",
+      "favicon": "https://serpapi.com/searches/67fa9e6c38bd9f254997a004/images/a1add8af709c118d2d27cef98557826fb09d5bf5a34381da084dc433a828a450.png",
+      "snippet": "As a student at Red River High School in Grand Forks, Brockman took classes at UND. On Tuesday, Sept. 26, Brockman spoke about his career to more than 500 ...",
+      "snippet_highlighted_words": [
+        "Brockman",
+        "Brockman",
+        "career"
+      ],
+      "missing": [
+        "professional",
+        "background"
+      ],
+      "source": "University of North Dakota"
+    },
+    {
+      "position": 5,
+      "title": "Greg Brockman (@gdb) / X",
+      "link": "https://x.com/gdb?lang=en",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://x.com/gdb%3Flang%3Den&ved=2ahUKEwiD54-f_tKMAxX6AzQIHWE8NPUQFnoECCIQAQ",
+      "displayed_link": "https://x.com › gdb",
+      "favicon": "https://serpapi.com/searches/67fa9e6c38bd9f254997a004/images/a1add8af709c118d2d27cef98557826f75fa77644c04b63a1f7d633ebc68b6d4.png",
+      "snippet": "President & Co-Founder @OpenAI.",
+      "missing": [
+        "background"
+      ],
+      "must_include": {
+        "word": "background",
+        "link": "https://www.google.com/search?num=20&sca_esv=3da4db664be6b3a1&gl=us&q=Greg+Brockman+professional+%22background%22+experience&sa=X&ved=2ahUKEwiD54-f_tKMAxX6AzQIHWE8NPUQ5t4CegQILxAB"
+      },
+      "source": "x.com"
+    },
+    {
+      "position": 3,
+      "title": "OpenAI cofounder Greg Brockman returns to ChatGPT maker",
+      "link": "https://m.economictimes.com/tech/technology/openai-cofounder-greg-brockman-returns-to-chatgpt-maker/articleshow/115241418.cms",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://m.economictimes.com/tech/technology/openai-cofounder-greg-brockman-returns-to-chatgpt-maker/articleshow/115241418.cms&ved=2ahUKEwiXofyf_tKMAxUvODQIHcyWLIsQFnoECBYQAQ",
+      "displayed_link": "https://m.economictimes.com › Tech › Tech & Internet",
+      "favicon": "https://serpapi.com/searches/67fa9e6e245c11378948fc77/images/79d252bcbbcc746f14f48c1228667916542dddcaeff73442b02b2dcd64b25d8a.png",
+      "date": "Nov 13, 2024",
+      "snippet": "OpenAI cofounder Greg Brockman has returned to the artificial intelligence startup three months after taking a leave from his role as president.",
+      "snippet_highlighted_words": [
+        "Greg Brockman",
+        "role"
+      ],
+      "source": "The Economic Times"
+    },
+    {
+      "position": 4,
+      "title": "Greg Brockman, OpenAI Inc: Profile and Biography",
+      "link": "https://www.bloomberg.com/profile/person/21163120",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.bloomberg.com/profile/person/21163120&ved=2ahUKEwiXofyf_tKMAxUvODQIHcyWLIsQFnoECCwQAQ",
+      "displayed_link": "https://www.bloomberg.com › profile › person",
+      "favicon": "https://serpapi.com/searches/67fa9e6e245c11378948fc77/images/79d252bcbbcc746f14f48c122866791619dff3321f4303412889293471adbf22.png",
+      "snippet": "Career History ; President/Co-Founder. OpenAI Inc. 11/2023–PRESENT ; Head:New Advanced AI Research Team. Microsoft Corp. 11/2023–11/2023 ; President/Co-Founder.",
+      "snippet_highlighted_words": [
+        "President/Co-Founder"
+      ],
+      "source": "Bloomberg.com"
+    },
+    {
+      "position": 5,
+      "title": "Greg Brockman Rejoins OpenAI Amid Major Leadership ...",
+      "link": "https://opentools.ai/news/greg-brockman-rejoins-openai-amid-major-leadership-overhaul",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://opentools.ai/news/greg-brockman-rejoins-openai-amid-major-leadership-overhaul&ved=2ahUKEwiXofyf_tKMAxUvODQIHcyWLIsQFnoECEsQAQ",
+      "displayed_link": "https://opentools.ai › News",
+      "favicon": "https://serpapi.com/searches/67fa9e6e245c11378948fc77/images/79d252bcbbcc746f14f48c1228667916a3c889ef6c8505ffda84f2d5f7e7957e.png",
+      "date": "Nov 13, 2024",
+      "snippet": "OpenAI co-founder Greg Brockman returns to the company after a three-month break, stepping into a new technical leadership role.",
+      "snippet_highlighted_words": [
+        "technical leadership role"
+      ],
+      "source": "OpenTools"
+    },
+    {
+      "position": 3,
+      "title": "'So key to what I was able to do later' - UND Today",
+      "link": "https://blogs.und.edu/und-today/2023/09/so-key-to-what-i-was-able-to-do-later/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://blogs.und.edu/und-today/2023/09/so-key-to-what-i-was-able-to-do-later/&ved=2ahUKEwjs_tyg_tKMAxWMl4kEHbpGFVsQFnoECAsQAQ",
+      "displayed_link": "https://blogs.und.edu › und-today › 2023/09 › so-key-t...",
+      "favicon": "https://serpapi.com/searches/67fa9e6fe4c8164b8d78be38/images/3a4428f3a16de932ce3a81ce33ef6de86381da1a903f66b718873427d5aa6fc0.png",
+      "date": "Sep 28, 2023",
+      "snippet": "That's how Greg Brockman describes North Dakota, where he grew up, graduated from high school and attended UND.",
+      "snippet_highlighted_words": [
+        "graduated from high school"
+      ],
+      "source": "University of North Dakota"
+    },
+    {
+      "position": 4,
+      "title": "MIT ESP - Greg Brockman",
+      "link": "https://esp.mit.edu/teach/teachers/brockman/bio.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://esp.mit.edu/teach/teachers/brockman/bio.html&ved=2ahUKEwjs_tyg_tKMAxWMl4kEHbpGFVsQFnoECAwQAQ",
+      "displayed_link": "https://esp.mit.edu › teach › teachers › brockman › bio",
+      "favicon": "https://serpapi.com/searches/67fa9e6fe4c8164b8d78be38/images/3a4428f3a16de932ce3a81ce33ef6de89971389e0229925d01a59747a8a13e7f.png",
+      "snippet": "GREG BROCKMAN, MIT computer scientist. Major: Course 6. College/Employer: MIT Year of Graduation: Not available. Picture of Greg Brockman. Brief Biographical ...",
+      "snippet_highlighted_words": [
+        "MIT computer scientist"
+      ],
+      "missing": [
+        "school"
+      ],
+      "must_include": {
+        "word": "school",
+        "link": "https://www.google.com/search?num=20&sca_esv=3da4db664be6b3a1&gl=us&q=Greg+Brockman+graduated+%22school%22+college&sa=X&ved=2ahUKEwjs_tyg_tKMAxWMl4kEHbpGFVsQ5t4CegQIJRAB"
+      },
+      "source": "Massachusetts Institute of Technology"
+    },
+    {
+      "position": 5,
+      "title": "Greg Brockman - President, Chairman, & Co-Founder ...",
+      "link": "https://www.crunchbase.com/person/greg-brockman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.crunchbase.com/person/greg-brockman&ved=2ahUKEwjs_tyg_tKMAxWMl4kEHbpGFVsQFnoECA0QAQ",
+      "displayed_link": "https://www.crunchbase.com › person › greg-brockman",
+      "favicon": "https://serpapi.com/searches/67fa9e6fe4c8164b8d78be38/images/3a4428f3a16de932ce3a81ce33ef6de851691f530ceb10a6d4f23faf13ffa693.png",
+      "snippet": "Greg Brockman is the President, Chairman and Co-Founder of OpenAI. He previously worked at Stripe as a CTO. Greg Brockman attended Harvard University.",
+      "snippet_highlighted_words": [
+        "attended Harvard University"
+      ],
+      "source": "Crunchbase"
+    },
+    {
+      "position": 1,
+      "title": "Greg Brockman",
+      "link": "https://www.technologyreview.com/innovator/greg-brockman/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.technologyreview.com/innovator/greg-brockman/&ved=2ahUKEwiqwuPF_9KMAxUZIUQIHQbkC_wQFnoECBIQAQ",
+      "displayed_link": "https://www.technologyreview.com › innovator › greg-b...",
+      "favicon": "https://serpapi.com/searches/67fa9fc94201a378a16e732d/images/290a0406e7858ec54db27455115a467254d33c1d0ab71e68f615684a8f335dad.png",
+      "date": "Aug 16, 2017",
+      "snippet": "Human-like artificial intelligence is still a long way off, but Greg Brockman believes the time to start thinking about its safety is now.",
+      "snippet_highlighted_words": [
+        "Greg Brockman"
+      ],
+      "source": "MIT Technology Review"
+    },
+    {
+      "position": 2,
+      "title": "Open AI's firefighting COO is a 32-year-old ex-JPMorgan ...",
+      "link": "https://www.efinancialcareers.com/news/2023/11/open-ai-sam-altman-brad-lightcap",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.efinancialcareers.com/news/2023/11/open-ai-sam-altman-brad-lightcap&ved=2ahUKEwiqwuPF_9KMAxUZIUQIHQbkC_wQFnoECB0QAQ",
+      "displayed_link": "https://www.efinancialcareers.com › news › 2023/11 › o...",
+      "favicon": "https://serpapi.com/searches/67fa9fc94201a378a16e732d/images/290a0406e7858ec54db27455115a46727c47d40d352901448d5dabad997eb4b2.png",
+      "date": "Nov 19, 2023",
+      "snippet": "Just over a decade ago, after graduating from Duke University ... Altman co-founded OpenAI with Greg Brockman, the original CTO of Stripe.",
+      "snippet_highlighted_words": [
+        "graduating",
+        "Duke University",
+        "Greg Brockman"
+      ],
+      "missing": [
+        "alumni"
+      ],
+      "must_include": {
+        "word": "alumni",
+        "link": "https://www.google.com/search?num=20&sca_esv=3da4db664be6b3a1&gl=us&q=%22Greg+Brockman%22+%22Duke+University%22+%22alumni%22+degree+graduate&sa=X&ved=2ahUKEwiqwuPF_9KMAxUZIUQIHQbkC_wQ5t4CegQILhAB"
+      },
+      "source": "eFinancialCareers"
+    },
+    {
+      "position": 3,
+      "title": "ODSC West Speakers",
+      "link": "https://odsc.com/california/speakers/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://odsc.com/california/speakers/&ved=2ahUKEwiqwuPF_9KMAxUZIUQIHQbkC_wQFnoECBoQAQ",
+      "displayed_link": "https://odsc.com › ODSC West 2024",
+      "favicon": "https://serpapi.com/searches/67fa9fc94201a378a16e732d/images/290a0406e7858ec54db27455115a467273f0a1b3f78fc8c4db7727029d0dc81c.jpeg",
+      "snippet": "Jeremy earned his bachelor's degree in biomedical engineering from Duke University ... Greg Brockman (President, OpenAI) and Calvin French-Owen (CTO ...",
+      "snippet_highlighted_words": [
+        "degree",
+        "Duke University",
+        "Greg Brockman"
+      ],
+      "source": "Open Data Science Conference"
+    },
+    {
+      "position": 4,
+      "title": "Should I choose Yale after a mandatory gap year, or Duke ...",
+      "link": "https://www.quora.com/Should-I-choose-Yale-after-a-mandatory-gap-year-or-Duke-for-this-year-I-just-graduated-from-high-school-and-I-intend-to-go-to-med-school",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.quora.com/Should-I-choose-Yale-after-a-mandatory-gap-year-or-Duke-for-this-year-I-just-graduated-from-high-school-and-I-intend-to-go-to-med-school&ved=2ahUKEwiqwuPF_9KMAxUZIUQIHQbkC_wQFnoECBwQAQ",
+      "displayed_link": "10+ answers · 11 years ago",
+      "favicon": "https://serpapi.com/searches/67fa9fc94201a378a16e732d/images/290a0406e7858ec54db27455115a46729d6a95c69fde6e947c612d97f1235057.png",
+      "snippet": "It changes their life (Alexandr Wang, Greg Brockman come to mind). ... , Post-Graduate certificate from Duke University (2003) and. Stuart ...",
+      "snippet_highlighted_words": [
+        "Greg Brockman",
+        "Graduate",
+        "Duke University"
+      ],
+      "sitelinks": {
+        "list": [
+          {
+            "title": "Can you share any advice on how to get into top ...",
+            "link": "https://www.quora.com/Can-you-share-any-advice-on-how-to-get-into-top-universities-like-Harvard-MIT-or-Stanford-from-an-ordinary-high-school-with-average-grades-but-interesting-extracurricular-activities",
+            "answer_count": 2,
+            "date": "Jul 9, 2024"
+          },
+          {
+            "title": "I graduated high school with average grades (mostly B's ...",
+            "link": "https://www.quora.com/I-graduated-high-school-with-average-grades-mostly-Bs-and-am-taking-a-gap-year-What-should-I-do-if-I-now-want-to-go-to-a-prestigious-school-such-as-Harvard-or-Yale",
+            "answer_count": 5,
+            "date": "Sep 28, 2018"
+          }
+        ]
+      },
+      "source": "Quora"
+    },
+    {
+      "position": 5,
+      "title": "DEAN DeBiase - Chaiman - Revieve",
+      "link": "https://www.linkedin.com/in/keynotespeaker",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/in/keynotespeaker&ved=2ahUKEwiqwuPF_9KMAxUZIUQIHQbkC_wQFnoECBsQAQ",
+      "displayed_link": "9.9K+ followers",
+      "favicon": "https://serpapi.com/searches/67fa9fc94201a378a16e732d/images/290a0406e7858ec54db27455115a4672caee5be71f6b6ca6d0f567e98b1c8156.png",
+      "snippet": "Dean DeBiase is a serial CEO who has led dozens of public, private, and family-enterprise companies that have reshaped industries.",
+      "source": "LinkedIn · DEAN DeBiase"
+    },
+    {
+      "position": 2,
+      "title": "Six Things You Didn't Know About ChatGPT, Stable ...",
+      "link": "https://www.forbes.com/sites/kenrickcai/2023/02/02/things-you-didnt-know-chatgpt-stable-diffusion-generative-ai/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.forbes.com/sites/kenrickcai/2023/02/02/things-you-didnt-know-chatgpt-stable-diffusion-generative-ai/&ved=2ahUKEwjqwdbG_9KMAxWpQzABHcDoEtUQFnoECBsQAQ",
+      "displayed_link": "https://www.forbes.com › Innovation › Venture Capital",
+      "favicon": "https://serpapi.com/searches/67fa9fcbe7aee8f8b11024da/images/545689050edf9a8bd077244543f87dc1f2d61ff287a3d5b90bdb69b3fd1673d1.png",
+      "date": "Feb 2, 2023",
+      "snippet": "He received a bachelor's degree from Duke University. Follow him on Twitter at @kenrickcai or send a secure tip on Signal to @kenrick.01 ...",
+      "snippet_highlighted_words": [
+        "Duke"
+      ],
+      "source": "Forbes"
+    },
+    {
+      "position": 4,
+      "title": "Curriculum - CBES AIG ProgrAM",
+      "link": "https://sites.google.com/nhcs.net/cbesaig/additional-educator-links/curriculum-compacting",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://sites.google.com/nhcs.net/cbesaig/additional-educator-links/curriculum-compacting&ved=2ahUKEwjqwdbG_9KMAxWpQzABHcDoEtUQFnoECBQQAQ",
+      "displayed_link": "https://sites.google.com › cbesaig › curriculum-compacting",
+      "snippet": "Duke TIP · Johns Hopkins CTY · CBES AIG Newsletter · CBES AIG ProgrAM. Curriculum. Greg Brockman ... FINRA Foundation financial education ... Teaching American ...",
+      "snippet_highlighted_words": [
+        "Duke",
+        "Greg Brockman",
+        "education",
+        "Teaching"
+      ],
+      "source": "Google Sites"
+    },
+    {
+      "position": 5,
+      "title": "List of Openai Executives & Org Chart",
+      "link": "https://www.clay.com/dossier/openai-executives",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.clay.com/dossier/openai-executives&ved=2ahUKEwjqwdbG_9KMAxWpQzABHcDoEtUQFnoECB4QAQ",
+      "displayed_link": "https://www.clay.com › dossier › openai-executives",
+      "favicon": "https://serpapi.com/searches/67fa9fcbe7aee8f8b11024da/images/545689050edf9a8bd077244543f87dc1b30007ade9ae8116240ef61a9eb83773.png",
+      "date": "Nov 23, 2024",
+      "snippet": "With a Bachelor's Degree in Economics & History from Duke University, he combines analytical prowess with a deep understanding of market ...",
+      "snippet_highlighted_words": [
+        "History",
+        "Duke"
+      ],
+      "source": "Clay"
+    },
+    {
+      "position": 3,
+      "title": "Greg Brockman (@gdb) on X | Vinay Kapoor",
+      "link": "https://www.linkedin.com/posts/kapoorvinay_greg-brockman-gdb-on-x-activity-7195840346264600576-V-Ha",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/posts/kapoorvinay_greg-brockman-gdb-on-x-activity-7195840346264600576-V-Ha&ved=2ahUKEwj43svH_9KMAxWzAHkGHVYJBKwQFnoECAwQAQ",
+      "displayed_link": "10+ reactions · 11 months ago",
+      "favicon": "https://serpapi.com/searches/67fa9fcd6f41e8eb6879da62/images/e46baee593b6abc0671eed13c81b3fe3de5d52e858e51f652aafc76f81b079b5.png",
+      "snippet": "The most important and interesting part of that demo from OpenAI and Greg Brockman is towards the end as the two models interact with each ...",
+      "snippet_highlighted_words": [
+        "Greg Brockman"
+      ],
+      "source": "LinkedIn · Vinay Kapoor"
+    },
+    {
+      "position": 4,
+      "title": "Jack Neil MD's Post - Greg Brockman on Twitter",
+      "link": "https://www.linkedin.com/posts/jackneil_greg-brockman-on-twitter-activity-7044744553412583424-Q12J",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/posts/jackneil_greg-brockman-on-twitter-activity-7044744553412583424-Q12J&ved=2ahUKEwj43svH_9KMAxWzAHkGHVYJBKwQFnoECBoQAQ",
+      "displayed_link": "3 reactions · 2 years ago",
+      "favicon": "https://serpapi.com/searches/67fa9fcd6f41e8eb6879da62/images/e46baee593b6abc0671eed13c81b3fe3cbb51f6a144406da093a3826cfa31be8.png",
+      "snippet": "Jack Neil MD's Post. View profile for Jack Neil MD. Jack Neil MD. CEO ... Greg Brockman on Twitter. twitter.com · 3 2 Comments · Like Comment.",
+      "snippet_highlighted_words": [
+        "View profile for Jack Neil MD"
+      ],
+      "source": "LinkedIn · Jack Neil MD"
+    },
+    {
+      "position": 5,
+      "title": "Yanshuai Cao - Greg Brockman on Twitter",
+      "link": "https://www.linkedin.com/posts/yanshuai-cao_greg-brockman-on-twitter-activity-7044883789474398208-fdJA",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/posts/yanshuai-cao_greg-brockman-on-twitter-activity-7044883789474398208-fdJA&ved=2ahUKEwj43svH_9KMAxWzAHkGHVYJBKwQFnoECAsQAQ",
+      "displayed_link": "https://www.linkedin.com › posts › yanshuai-cao_greg-b...",
+      "favicon": "https://serpapi.com/searches/67fa9fcd6f41e8eb6879da62/images/e46baee593b6abc0671eed13c81b3fe3cfb2d315c5e5e081729db7b8b6f8ce92.png",
+      "snippet": "Yanshuai Cao's Post · Greg Brockman on Twitter · Explore topics.",
+      "snippet_highlighted_words": [
+        "Greg Brockman on Twitter"
+      ],
+      "source": "LinkedIn"
+    },
+    {
+      "position": 1,
+      "title": "Greg Brockman - President, Chairman, & Co-Founder ...",
+      "link": "https://www.crunchbase.com/person/greg-brockman/person_overview_investor/timeline",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.crunchbase.com/person/greg-brockman/person_overview_investor/timeline&ved=2ahUKEwihuJfI_9KMAxW3QzABHYQDK1MQFnoECA4QAQ",
+      "displayed_link": "https://www.crunchbase.com › greg-brockman › timeline",
+      "favicon": "https://serpapi.com/searches/67fa9fcf90acd21054e41023/images/4426d364c2633af2d27e5e4ce89adcaed1f09b5b78aeed0f1e2aa28f4f954448.png",
+      "snippet": "Funding Round• Aug 26, 2015. Lugg raised $3,800,000 / Seed from A.Capital Ventures and 10 other investors. Discover more funding rounds. Funding Round• May 13, ...",
+      "snippet_highlighted_words": [
+        "3"
+      ],
+      "source": "Crunchbase"
+    },
+    {
+      "position": 2,
+      "title": "Greg Brockman - portfolio and founded companies",
+      "link": "https://tracxn.com/d/people/greg-brockman/__8t7dxLWN3g80J7DwCD_GkL2hF7c3m09eLHchXZKzusc",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://tracxn.com/d/people/greg-brockman/__8t7dxLWN3g80J7DwCD_GkL2hF7c3m09eLHchXZKzusc&ved=2ahUKEwihuJfI_9KMAxW3QzABHYQDK1MQFnoECBYQAQ",
+      "displayed_link": "https://tracxn.com › Discover › People",
+      "favicon": "https://serpapi.com/searches/67fa9fcf90acd21054e41023/images/4426d364c2633af2d27e5e4ce89adcae9656f20e41e76f83d15ea1e8a102cfef.png",
+      "date": "Jan 31, 2025",
+      "snippet": "Greg Brockman has invested in 21 companies and founded 2 companies.",
+      "snippet_highlighted_words": [
+        "Greg Brockman",
+        "invested"
+      ],
+      "source": "Tracxn"
+    },
+    {
+      "position": 3,
+      "title": "Greg Brockman investment portfolio",
+      "link": "https://pitchbook.com/profiles/investor/124485-76",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://pitchbook.com/profiles/investor/124485-76&ved=2ahUKEwihuJfI_9KMAxW3QzABHYQDK1MQFnoECA8QAQ",
+      "displayed_link": "https://pitchbook.com › profiles › investor",
+      "favicon": "https://serpapi.com/searches/67fa9fcf90acd21054e41023/images/4426d364c2633af2d27e5e4ce89adcaea569455364a6be12e4e272dd6e277d77.png",
+      "snippet": "Greg Brockman has made numerous investments in companies like Instant, Braintrust (Software Development Applications), and Lambda.",
+      "snippet_highlighted_words": [
+        "Greg Brockman"
+      ],
+      "missing": [
+        "raised"
+      ],
+      "must_include": {
+        "word": "raised",
+        "link": "https://www.google.com/search?num=20&sca_esv=3da4db664be6b3a1&gl=us&q=Greg+Brockman+funding+%22raised%22+investors+venture+capital&sa=X&ved=2ahUKEwihuJfI_9KMAxW3QzABHYQDK1MQ5t4CegQIKBAB"
+      },
+      "source": "PitchBook"
+    },
+    {
+      "position": 4,
+      "title": "Braintrust Raises $36M in Series A Funding",
+      "link": "https://www.finsmes.com/2024/10/braintrust-raises-36m-in-series-a-funding.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.finsmes.com/2024/10/braintrust-raises-36m-in-series-a-funding.html&ved=2ahUKEwihuJfI_9KMAxW3QzABHYQDK1MQFnoECAwQAQ",
+      "displayed_link": "https://www.finsmes.com › USA",
+      "favicon": "https://serpapi.com/searches/67fa9fcf90acd21054e41023/images/4426d364c2633af2d27e5e4ce89adcae606df4ebe33e3ff1bdd71a7f77d3d2ca.png",
+      "date": "Oct 10, 2024",
+      "snippet": "The round, which brought total funding raised to date to $45m, was led by Andreessen Horowitz, with participation from Elad Gil, Greylock, and ...",
+      "snippet_highlighted_words": [
+        "funding raised"
+      ],
+      "source": "FinSMEs"
+    },
+    {
+      "position": 5,
+      "title": "Greg Brockman Portfolio Investments ...",
+      "link": "https://www.cbinsights.com/investor/greg-brockman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.cbinsights.com/investor/greg-brockman&ved=2ahUKEwihuJfI_9KMAxW3QzABHYQDK1MQFnoECBEQAQ",
+      "displayed_link": "https://www.cbinsights.com › investor › greg-brockman",
+      "favicon": "https://serpapi.com/searches/67fa9fcf90acd21054e41023/images/4426d364c2633af2d27e5e4ce89adcaeeb5b9fe9967a119d7de3064b2c71825a.png",
+      "snippet": "Greg Brockman has made 23 investments. Their latest investment was in Braintrust as part of their Seed VC on October 31, 2023. CBI Logo. Greg Brockman ...",
+      "snippet_highlighted_words": [
+        "Greg Brockman has made 23 investments"
+      ],
+      "missing": [
+        "raised"
+      ],
+      "must_include": {
+        "word": "raised",
+        "link": "https://www.google.com/search?num=20&sca_esv=3da4db664be6b3a1&gl=us&q=Greg+Brockman+funding+%22raised%22+investors+venture+capital&sa=X&ved=2ahUKEwihuJfI_9KMAxW3QzABHYQDK1MQ5t4CegQIKxAB"
+      },
+      "source": "CB Insights"
+    }
+  ],
+  "query_summary": {
+    "bio_info": [
+      {
+        "query": "Greg Brockman professional background experience",
+        "results_count": 5
+      }
+    ],
+    "company_info": [
+      {
+        "query": "Greg Brockman current role position",
+        "results_count": 5
+      }
+    ],
+    "education": [
+      {
+        "query": "Greg Brockman graduated school college",
+        "results_count": 5
+      }
+    ],
+    "duke affiliation": [
+      {
+        "query": "\"Greg Brockman\" \"Duke University\" alumni degree graduate",
+        "results_count": 5
+      },
+      {
+        "query": "\"Greg Brockman\" \"Duke\" education history",
+        "results_count": 5
+      }
+    ],
+    "social_media": [
+      {
+        "query": "Greg Brockman twitter linkedin profiles",
+        "results_count": 5
+      }
+    ],
+    "funding_history": [
+      {
+        "query": "Greg Brockman funding raised investors venture capital",
+        "results_count": 5
+      }
+    ]
+  },
+  "_file_path": "/Users/owaiskamdar/Desktop/DCP/capstone-dcp/backend/app/data/raw/serp_person_Greg_Brockman.json"
+}

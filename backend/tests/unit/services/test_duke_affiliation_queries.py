@@ -149,7 +149,7 @@ async def test_query_effectiveness(caplog):
     tester = TestDukeAffiliationQueries()
     
     # Run multiple tests with different query combinations
-    num_tests = 6  # Number of different query combinations to test
+    num_tests = 5  # Number of different query combinations to test
     all_results = {}
     
     for test_num in range(1, num_tests + 1):

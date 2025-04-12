@@ -1,0 +1,42 @@
+{
+  "name": "Sam Altman",
+  "title": "CEO & Co-Founder",
+  "current_company": "OpenAI",
+  "education": [
+    {
+      "school": "John Burroughs School",
+      "degree": null,
+      "field": null,
+      "year": null
+    },
+    {
+      "school": "Stanford University",
+      "degree": null,
+      "field": "Computer Science",
+      "year": null
+    },
+    {
+      "school": "Duke University",
+      "degree": "Bachelor's",
+      "field": null,
+      "year": null
+    }
+  ],
+  "previous_companies": [
+    "Y Combinator (President)",
+    "Loopt (CEO)"
+  ],
+  "twitter_handle": "sama",
+  "linkedin_handle": "https://www.linkedin.com/in/samaltman",
+  "duke_affiliation_status": "confirmed",
+  "source_links": [
+    {
+      "url": "https://www.forbes.com/sites/alexkonrad/2023/02/03/exclusive-openai-sam-altman-chatgpt-agi-google-search/",
+      "title": "Exclusive Interview: OpenAI's Sam Altman Talks ChatGPT"
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Sam_Altman",
+      "title": "Sam Altman - Wikipedia"
+    }
+  ]
+}

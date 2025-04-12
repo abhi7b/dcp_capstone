@@ -1,0 +1,552 @@
+{
+  "search_parameters": {
+    "query": "Multi-query search for Sam Altman"
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Sam Altman | Biography, OpenAI, Microsoft, & Facts",
+      "link": "https://www.britannica.com/biography/Sam-Altman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.britannica.com/biography/Sam-Altman&ved=2ahUKEwjM-ai5_9KMAxXLkZUCHTXOGmoQFnoECCAQAQ",
+      "displayed_link": "https://www.britannica.com › Technology › Computers",
+      "thumbnail": "https://serpapi.com/searches/67fa9fafd3a567e4d6f951f1/images/505b76d7f04dac57c302faf60083d65daf960ccb671d84901519ee28a0a4bb62.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fafd3a567e4d6f951f1/images/505b76d7f04dac57c302faf60083d65db87532ef45bbe33fc9d0e67a424abb8f.png",
+      "snippet": "Altman attended Stanford University, where he studied computer science. He dropped out after two years, saying later that he had learned more playing poker with ...",
+      "snippet_highlighted_words": [
+        "Altman attended Stanford University"
+      ],
+      "source": "Britannica"
+    },
+    {
+      "position": 2,
+      "title": "Sam Altman | Biography, OpenAI, Microsoft, & Facts",
+      "link": "https://www.britannica.com/money/Sam-Altman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.britannica.com/money/Sam-Altman&ved=2ahUKEwjM-ai5_9KMAxXLkZUCHTXOGmoQFnoECBwQAQ",
+      "displayed_link": "https://www.britannica.com › ... › Entrepreneurs",
+      "favicon": "https://serpapi.com/searches/67fa9fafd3a567e4d6f951f1/images/505b76d7f04dac57c302faf60083d65da90d64ba6abc591f344de2d298cd048c.png",
+      "snippet": "Loopt and Y Combinator​​ Altman attended Stanford University, where he studied computer science. He dropped out after two years, saying later that he had learned ...",
+      "snippet_highlighted_words": [
+        "attended Stanford University"
+      ],
+      "source": "Britannica"
+    },
+    {
+      "position": 3,
+      "title": "How was Sam Altman able to build openAI with no real ...",
+      "link": "https://www.reddit.com/r/csMajors/comments/1b0oz0v/how_was_sam_altman_able_to_build_openai_with_no/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.reddit.com/r/csMajors/comments/1b0oz0v/how_was_sam_altman_able_to_build_openai_with_no/&ved=2ahUKEwjM-ai5_9KMAxXLkZUCHTXOGmoQFnoECCsQAQ",
+      "displayed_link": "160+ comments · 1 year ago",
+      "favicon": "https://serpapi.com/searches/67fa9fafd3a567e4d6f951f1/images/505b76d7f04dac57c302faf60083d65db76b22403dad52aac45d083625388fcf.png",
+      "snippet": "he was CEO of a small startup for 7 years. he probably made connections with lots of founders, engineers, VCs in that time. he then worked at YC ...",
+      "snippet_highlighted_words": [
+        "he was CEO of a small startup for 7 years"
+      ],
+      "sitelinks": {
+        "list": [
+          {
+            "title": "How did people like Sam Altman, Mira Murati etc ...",
+            "link": "https://www.reddit.com/r/ArtificialInteligence/comments/1fsoakn/how_did_people_like_sam_altman_mira_murati_etc/",
+            "answer_count": 309,
+            "date": "Sep 30, 2024"
+          },
+          {
+            "title": "Sam Altman: Software engineering will be very ...",
+            "link": "https://www.reddit.com/r/singularity/comments/1iinrrq/sam_altman_software_engineering_will_be_very/",
+            "answer_count": 617,
+            "date": "Feb 5, 2025"
+          }
+        ]
+      },
+      "source": "Reddit · r/csMajors"
+    },
+    {
+      "position": 4,
+      "title": "Sam Altman · OpenAI",
+      "link": "https://www.founderoo.co/playbooks/sam-altman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.founderoo.co/playbooks/sam-altman&ved=2ahUKEwjM-ai5_9KMAxXLkZUCHTXOGmoQFnoECEMQAQ",
+      "displayed_link": "https://www.founderoo.co › playbooks › sam-altman",
+      "favicon": "https://serpapi.com/searches/67fa9fafd3a567e4d6f951f1/images/505b76d7f04dac57c302faf60083d65d4529c159cb367669803ce20825a92fbb.png",
+      "snippet": "During his time at Stanford University, where he pursued computer science, Altman was actively involved in the Artificial Intelligence (AI) laboratory. In 2017, ...",
+      "snippet_highlighted_words": [
+        "Altman"
+      ],
+      "missing": [
+        "professional"
+      ],
+      "must_include": {
+        "word": "professional",
+        "link": "https://www.google.com/search?num=20&sca_esv=3da4db664be6b3a1&gl=us&q=Sam+Altman+%22professional%22+background+experience&sa=X&ved=2ahUKEwjM-ai5_9KMAxXLkZUCHTXOGmoQ5t4CegQIVxAB"
+      },
+      "source": "Founderoo"
+    },
+    {
+      "position": 5,
+      "title": "Who is the CEO of OpenAI? Sam Altman's Bio",
+      "link": "https://www.clay.com/dossier/openai-ceo",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.clay.com/dossier/openai-ceo&ved=2ahUKEwjM-ai5_9KMAxXLkZUCHTXOGmoQFnoECGEQAQ",
+      "displayed_link": "https://www.clay.com › dossier › openai-ceo",
+      "favicon": "https://serpapi.com/searches/67fa9fafd3a567e4d6f951f1/images/505b76d7f04dac57c302faf60083d65d25403eadf511cfa5eee207ed46c3b449.png",
+      "date": "Sep 13, 2024",
+      "snippet": "Sam Altman's educational background began at the prestigious John Burroughs School in St. Louis, Missouri, where he received a strong foundation ...",
+      "snippet_highlighted_words": [
+        "Sam Altman's educational background began at the prestigious John Burroughs School"
+      ],
+      "source": "Clay"
+    },
+    {
+      "position": 1,
+      "title": "“[Sam] Altman's entire job is to keep us all fixated on an ...",
+      "link": "https://www.facebook.com/TheAtlantic/posts/sam-altmans-entire-job-is-to-keep-us-all-fixated-on-an-imagined-ai-future-so-we-/1054130279919715/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.facebook.com/TheAtlantic/posts/sam-altmans-entire-job-is-to-keep-us-all-fixated-on-an-imagined-ai-future-so-we-/1054130279919715/&ved=2ahUKEwjxurm6_9KMAxWARTABHU58LbwQFnoECDgQAQ",
+      "displayed_link": "100+ reactions · 9 hours ago",
+      "favicon": "https://serpapi.com/searches/67fa9fb1d5ff51705052bca5/images/895eb079d0658ce1fb79e05a23f8c04e9aef62a3a14e79374a8693c20a203f76.png",
+      "snippet": "... [Sam] Altman's entire job is to keep us all fixated on an ... As a well known entrepreneur and current Senior Advisor to President ...",
+      "snippet_highlighted_words": [
+        "current Senior Advisor to President"
+      ],
+      "missing": [
+        "position"
+      ],
+      "must_include": {
+        "word": "position",
+        "link": "https://www.google.com/search?num=20&sca_esv=3da4db664be6b3a1&gl=us&q=Sam+Altman+current+role+%22position%22&sa=X&ved=2ahUKEwjxurm6_9KMAxWARTABHU58LbwQ5t4CegQIPxAB"
+      },
+      "source": "Facebook · The Atlantic"
+    },
+    {
+      "position": 2,
+      "title": "Sam Altman: The Relentless Visionary Redefining ...",
+      "link": "https://global-citizen.com/business/cover-story/sam-altman-the-relentless-visionary-redefining-humanitys-future/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://global-citizen.com/business/cover-story/sam-altman-the-relentless-visionary-redefining-humanitys-future/&ved=2ahUKEwjxurm6_9KMAxWARTABHU58LbwQFnoECFgQAQ",
+      "displayed_link": "https://global-citizen.com › business › cover-story › sa...",
+      "favicon": "https://serpapi.com/searches/67fa9fb1d5ff51705052bca5/images/895eb079d0658ce1fb79e05a23f8c04e594d6b461293fe8abaea5f13b5092cd5.png",
+      "date": "Mar 13, 2025",
+      "snippet": "From his early years as a young entrepreneur to his current role as CEO of OpenAI, Altman's journey is marked by a commitment to not just ...",
+      "snippet_highlighted_words": [
+        "current role as CEO of OpenAI"
+      ],
+      "source": "Global Citizen Magazine"
+    },
+    {
+      "position": 3,
+      "title": "Meet Sam Altman, OpenAI's Cofounder and CEO",
+      "link": "https://www.businessinsider.com/sam-altman-chatgpt-openai-ceo-career-net-worth-ycombinator-prepper-2023-1",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.businessinsider.com/sam-altman-chatgpt-openai-ceo-career-net-worth-ycombinator-prepper-2023-1&ved=2ahUKEwjxurm6_9KMAxWARTABHU58LbwQFnoECEEQAQ",
+      "displayed_link": "https://www.businessinsider.com › Tech › Startups",
+      "favicon": "https://serpapi.com/searches/67fa9fb1d5ff51705052bca5/images/895eb079d0658ce1fb79e05a23f8c04e590b1e431229406c0994ba26a7d5500c.png",
+      "snippet": "In November, the OpenAI board of directors announced that Altman would be stepping down from his role as CEO and leaving the board, \"effective immediately.\" In ...",
+      "snippet_highlighted_words": [
+        "Altman",
+        "role"
+      ],
+      "source": "Business Insider"
+    },
+    {
+      "position": 4,
+      "title": "Sam Altman returns as CEO, OpenAI has a new initial board",
+      "link": "https://openai.com/index/sam-altman-returns-as-ceo-openai-has-a-new-initial-board/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://openai.com/index/sam-altman-returns-as-ceo-openai-has-a-new-initial-board/&ved=2ahUKEwjxurm6_9KMAxWARTABHU58LbwQFnoECFQQAQ",
+      "displayed_link": "https://openai.com › index › sam-altman-returns-as-ceo...",
+      "favicon": "https://serpapi.com/searches/67fa9fb1d5ff51705052bca5/images/895eb079d0658ce1fb79e05a23f8c04e0277e3ce8cee39348a83c7daaf54f385.png",
+      "date": "Nov 29, 2023",
+      "snippet": "Sam Altman returns as CEO, OpenAI has a new initial board. Mira Murati as CTO, Greg Brockman returns as President. Read messages from CEO Sam ...",
+      "snippet_highlighted_words": [
+        "Sam Altman returns as CEO"
+      ],
+      "source": "OpenAI"
+    },
+    {
+      "position": 5,
+      "title": "Sam Altman - CEO & Co-Founder @ OpenAI",
+      "link": "https://www.crunchbase.com/person/sam-altman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.crunchbase.com/person/sam-altman&ved=2ahUKEwjxurm6_9KMAxWARTABHU58LbwQFnoECFcQAQ",
+      "displayed_link": "https://www.crunchbase.com › person › sam-altman",
+      "favicon": "https://serpapi.com/searches/67fa9fb1d5ff51705052bca5/images/895eb079d0658ce1fb79e05a23f8c04ef8f7097f460dc1d996b84634e8d12912.png",
+      "snippet": "Sam Altman is the CEO and co-founder of OpenAI. He is a Partner of Apollo Projects. Altman was the president of Y Combinator from 2016 through 2019.",
+      "snippet_highlighted_words": [
+        "is the CEO and co-founder of OpenAI"
+      ],
+      "source": "Crunchbase"
+    },
+    {
+      "position": 1,
+      "title": "Sam Altman",
+      "link": "https://en.wikipedia.org/wiki/Sam_Altman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://en.wikipedia.org/wiki/Sam_Altman&ved=2ahUKEwiRqeq7_9KMAxW-D1kFHZWhORoQFnoECBUQAQ",
+      "displayed_link": "https://en.wikipedia.org › wiki › Sam_Altman",
+      "favicon": "https://serpapi.com/searches/67fa9fb53c0b4f8614525b39/images/6b0d6d5d232b687cc14d4d2e6303c6bd78dbd334252907deef883c3a9f81df14.png",
+      "snippet": "Reception. In 2017, Altman received an honorary Doctor of Engineering degree from the University of Waterloo in Canada for supporting companies through its ...",
+      "snippet_highlighted_words": [
+        "Water"
+      ],
+      "sitelinks": {
+        "inline": [
+          {
+            "title": "John Burroughs School",
+            "link": "https://en.wikipedia.org/wiki/John_Burroughs_School"
+          },
+          {
+            "title": "Loopt",
+            "link": "https://en.wikipedia.org/wiki/Loopt"
+          },
+          {
+            "title": "Big Sur",
+            "link": "https://en.wikipedia.org/wiki/Big_Sur"
+          },
+          {
+            "title": "Helion Energy",
+            "link": "https://en.wikipedia.org/wiki/Helion_Energy"
+          }
+        ]
+      },
+      "source": "Wikipedia"
+    },
+    {
+      "position": 3,
+      "title": "Christian Soschner - Sam Altman",
+      "link": "https://www.linkedin.com/posts/christiansoschner_sam-altman-success-story-education-net-activity-7162502140916101121-nSYh",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/posts/christiansoschner_sam-altman-success-story-education-net-activity-7162502140916101121-nSYh&ved=2ahUKEwiRqeq7_9KMAxW-D1kFHZWhORoQFnoECFsQAQ",
+      "displayed_link": "10+ reactions · 1 year ago",
+      "favicon": "https://serpapi.com/searches/67fa9fb53c0b4f8614525b39/images/6b0d6d5d232b687cc14d4d2e6303c6bd4564582f45820565b1af91c2cf1854dc.png",
+      "snippet": "Sam Altman's education started at John Burroughs School, and completed his high school studies there. He was later admitted to Stanford University but had to ...",
+      "snippet_highlighted_words": [
+        "Sam Altman's",
+        "School",
+        "school"
+      ],
+      "source": "LinkedIn · Christian Soschner"
+    },
+    {
+      "position": 5,
+      "title": "Sam Altman don't know school",
+      "link": "https://www.insidehighered.com/opinion/blogs/just-visiting/2024/05/09/sam-altman-dont-know-school",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.insidehighered.com/opinion/blogs/just-visiting/2024/05/09/sam-altman-dont-know-school&ved=2ahUKEwiRqeq7_9KMAxW-D1kFHZWhORoQFnoECGAQAQ",
+      "displayed_link": "https://www.insidehighered.com › blogs › 2024/05/09",
+      "favicon": "https://serpapi.com/searches/67fa9fb53c0b4f8614525b39/images/6b0d6d5d232b687cc14d4d2e6303c6bd46902cd52cf9c9846c77e905ce40de83.png",
+      "date": "May 9, 2024",
+      "snippet": "Altman's résumé shows no experience in education of any kind. Like much of the rest of our billionaire tech titan class, he never graduated college.",
+      "snippet_highlighted_words": [
+        "he never graduated college"
+      ],
+      "source": "Inside Higher Ed"
+    },
+    {
+      "position": 1,
+      "title": "Y Combinator College Tour Recruits, Inspires Duke, UNC ...",
+      "link": "https://wraltechwire.com/2016/02/02/y-combinator-visits-triangle-nc-160202/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://wraltechwire.com/2016/02/02/y-combinator-visits-triangle-nc-160202/&ved=2ahUKEwjd4vm8_9KMAxXQq5UCHf30MkEQFnoECBkQAQ",
+      "displayed_link": "https://wraltechwire.com › 2016",
+      "date": "Feb 2, 2016",
+      "snippet": "... Duke University, in addition to recently attending a Blackstone ... Soon after, I read a blog post by YC CEO Sam Altman that reiterated the point:.",
+      "snippet_highlighted_words": [
+        "Duke University",
+        "Sam Altman"
+      ],
+      "source": "WRAL TechWire"
+    },
+    {
+      "position": 2,
+      "title": "embarrassing~ score. Didn't… | Jaclyn Fu | 80 comments",
+      "link": "https://www.linkedin.com/posts/jaclynfu_many-moons-agoi-took-the-gmat-and-got-an-activity-7263265146125332480-KlQk",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/posts/jaclynfu_many-moons-agoi-took-the-gmat-and-got-an-activity-7263265146125332480-KlQk&ved=2ahUKEwjd4vm8_9KMAxXQq5UCHf30MkEQFnoECB8QAQ",
+      "displayed_link": "1.9K+ reactions · 4 months ago",
+      "favicon": "https://serpapi.com/searches/67fa9fb6c12f1ff5ce6bd2e0/images/651b2d17b9b94ec5005b4cef78dd8f2a2017666ff19413d0bf962126e3fc5f88.png",
+      "snippet": "... alumni like Sam Altman (OpenAI) and Tony Xu (DoorDash). But here's ... Duke University - The Fuqua School of Business, University of ...",
+      "snippet_highlighted_words": [
+        "alumni",
+        "Sam Altman",
+        "Duke University"
+      ],
+      "source": "LinkedIn · Jaclyn Fu"
+    },
+    {
+      "position": 3,
+      "title": "One Third Of the World's Most Powerful Executives Have ...",
+      "link": "https://www.mbanews.com.au/one-third-of-the-worlds-most-powerful-executives-have-an-mba/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.mbanews.com.au/one-third-of-the-worlds-most-powerful-executives-have-an-mba/&ved=2ahUKEwjd4vm8_9KMAxXQq5UCHf30MkEQFnoECBwQAQ",
+      "displayed_link": "https://www.mbanews.com.au › one-third-of-the-worlds...",
+      "favicon": "https://serpapi.com/searches/67fa9fb6c12f1ff5ce6bd2e0/images/651b2d17b9b94ec5005b4cef78dd8f2a0668cf315d0153076a1eb2e81fab5566.jpeg",
+      "date": "Nov 26, 2024",
+      "snippet": "Sam Altman, CEO and Cofounder, OpenAI; Mary Barra, CEO and Chairman ... Duke University's Fuqua School. The 100 Most Powerful People in ...",
+      "snippet_highlighted_words": [
+        "Sam Altman",
+        "Duke University's"
+      ],
+      "source": "MBA News Australia"
+    },
+    {
+      "position": 4,
+      "title": "Most Fortune 500 CEOs didn't attend Ivy League colleges",
+      "link": "https://fortune.com/2023/06/14/fortune-500-ceo-colleges-ivy-league/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://fortune.com/2023/06/14/fortune-500-ceo-colleges-ivy-league/&ved=2ahUKEwjd4vm8_9KMAxXQq5UCHf30MkEQFnoECCAQAQ",
+      "displayed_link": "https://fortune.com › 2023/06/14 › fortune-500-ceo-coll...",
+      "favicon": "https://serpapi.com/searches/67fa9fb6c12f1ff5ce6bd2e0/images/651b2d17b9b94ec5005b4cef78dd8f2ae1b8d1da55b3d08221afb296035f89ba.png",
+      "date": "Jun 14, 2023",
+      "snippet": "12 former OpenAI employees asked to be heard in Elon Musk's lawsuit against the company; one calls Sam Altman a 'person of low integrity'. BY ...",
+      "snippet_highlighted_words": [
+        "Sam Altman"
+      ],
+      "missing": [
+        "alumni"
+      ],
+      "must_include": {
+        "word": "alumni",
+        "link": "https://www.google.com/search?num=20&sca_esv=6f5fcc8f272f4316&gl=us&q=%22Sam+Altman%22+%22Duke+University%22+%22alumni%22+degree+graduate&sa=X&ved=2ahUKEwjd4vm8_9KMAxXQq5UCHf30MkEQ5t4CegQILhAB"
+      },
+      "source": "Fortune"
+    },
+    {
+      "position": 5,
+      "title": "AI is on a Runaway Cybersecurity Train: All Aboard, or Pull ...",
+      "link": "https://pratt.duke.edu/news/ai-is-on-a-runaway-cybersecurity-train-all-aboard-or-pull-the-brakes/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://pratt.duke.edu/news/ai-is-on-a-runaway-cybersecurity-train-all-aboard-or-pull-the-brakes/&ved=2ahUKEwjd4vm8_9KMAxXQq5UCHf30MkEQFnoECB4QAQ",
+      "displayed_link": "https://pratt.duke.edu › News",
+      "favicon": "https://serpapi.com/searches/67fa9fb6c12f1ff5ce6bd2e0/images/651b2d17b9b94ec5005b4cef78dd8f2a552805e6c12170f9a481c128ac580f2f.png",
+      "date": "Oct 15, 2024",
+      "snippet": "... Sam Altman no—twice—when he asked if they could use her voice. “In a ... By continuing to use this website, you consent to Duke University's ...",
+      "snippet_highlighted_words": [
+        "Sam Altman",
+        "Duke University's"
+      ],
+      "source": "Duke Pratt School of Engineering"
+    },
+    {
+      "position": 1,
+      "title": "Summit Speakers | Institute of National Security",
+      "link": "https://www.vanderbilt.edu/national-security/summit-speakers/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.vanderbilt.edu/national-security/summit-speakers/&ved=2ahUKEwiN6Yy-_9KMAxUpmokEHSvGG7MQFnoECBcQAQ",
+      "displayed_link": "https://www.vanderbilt.edu › national-security › summit...",
+      "thumbnail": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb981ed2900017ae940c128ba2cde24b7b5de.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb981cd6d244754893b2b06a00d0b8a440ffb.png",
+      "snippet": "Sam Altman; Marsha Blackburn; Mark Green; Chris Miller; Paul M. Nakasone ... (Economics) from Duke University. Fireside ...",
+      "snippet_highlighted_words": [
+        "Sam Altman",
+        "Duke"
+      ],
+      "source": "Vanderbilt University"
+    },
+    {
+      "position": 2,
+      "title": "Exclusive Interview: OpenAI's Sam Altman Talks ChatGPT ...",
+      "link": "https://www.forbes.com/sites/alexkonrad/2023/02/03/exclusive-openai-sam-altman-chatgpt-agi-google-search/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.forbes.com/sites/alexkonrad/2023/02/03/exclusive-openai-sam-altman-chatgpt-agi-google-search/&ved=2ahUKEwiN6Yy-_9KMAxUpmokEHSvGG7MQFnoECB4QAQ",
+      "displayed_link": "https://www.forbes.com › Innovation › Venture Capital",
+      "thumbnail": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb9815a1f0859473fb70522ea07ef669fd26a.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb98194ad19428d89633048fa8bebff3d878a.png",
+      "date": "Feb 3, 2023",
+      "snippet": "He received a bachelor's degree from Duke University. Follow him on Twitter at @kenrickcai or send a secure tip on Signal to @kenrick.01 ...",
+      "snippet_highlighted_words": [
+        "Duke"
+      ],
+      "source": "Forbes"
+    },
+    {
+      "position": 3,
+      "title": "Sam Altman - Geniuses",
+      "link": "https://geniuses.club/genius/sam-altman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://geniuses.club/genius/sam-altman&ved=2ahUKEwiN6Yy-_9KMAxUpmokEHSvGG7MQFnoECBEQAQ",
+      "displayed_link": "https://geniuses.club › genius › sam-altman",
+      "favicon": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb98104ff1016920949aa19d9ebc282035aab.png",
+      "snippet": "Sam Altman is a prominent entrepreneur, investor, and technology executive ... Duke of Wellington · Aryan Chopra · Athanasius Kircher · August von Kotzebue ...",
+      "snippet_highlighted_words": [
+        "Sam Altman",
+        "Duke"
+      ],
+      "source": "Geniuses.Club"
+    },
+    {
+      "position": 4,
+      "title": "Investors Conference - Robin Hood",
+      "link": "https://robinhood.org/events/investors-conference/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://robinhood.org/events/investors-conference/&ved=2ahUKEwiN6Yy-_9KMAxUpmokEHSvGG7MQFnoECBwQAQ",
+      "displayed_link": "https://robinhood.org › events › investors-conference",
+      "thumbnail": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb981892eb860fc6c3ad562eae31298f3c0f4.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb981d1346da38a1b98b8cd619364cfb1fc69.png",
+      "snippet": "Sam Altman ... Educated at Johns Hopkins University, he earned an M.D. from Duke University and a master's degree in public health from Harvard University.",
+      "snippet_highlighted_words": [
+        "Sam Altman",
+        "Duke"
+      ],
+      "source": "robinhood.org"
+    },
+    {
+      "position": 5,
+      "title": "Meet Sam Altman's family",
+      "link": "https://www.yahoo.com/tech/meet-sam-altmans-family-120601853.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.yahoo.com/tech/meet-sam-altmans-family-120601853.html&ved=2ahUKEwiN6Yy-_9KMAxUpmokEHSvGG7MQFnoECBYQAQ",
+      "displayed_link": "https://www.yahoo.com › tech › meet-sam-altmans-fam...",
+      "thumbnail": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb981de44814b7b4ec12c36a17bc08d26005e.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fb93d25107f7e7b3c4d/images/aabf44f9329e2fd2cb4250ce3e2cb981c16ac53a9eb89d344615de8a967d0e80.png",
+      "date": "Apr 7, 2024",
+      "snippet": "Sam Altman isn't the only member of his family involved in the ... Duke Reacts to Historic Cooper Flagg Announcement. Flagg marked as ...",
+      "snippet_highlighted_words": [
+        "Sam Altman",
+        "Duke"
+      ],
+      "source": "Yahoo"
+    },
+    {
+      "position": 1,
+      "title": "Sam Altman (@sama) / X",
+      "link": "https://x.com/sama",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://x.com/sama&ved=2ahUKEwjY9Jy__9KMAxWErYkEHVUVFQEQFnoECC4QAQ",
+      "displayed_link": "https://x.com › sama",
+      "thumbnail": "https://serpapi.com/searches/67fa9fbc5dbb402dffd56f7e/images/5f5e4b6e611fa148745b75c0808a6faf15511be3f66c22690c0c4cd729b36c85.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fbc5dbb402dffd56f7e/images/5f5e4b6e611fa148745b75c0808a6faf3e6ad3c5f2be4c6e04d8013ee58c4004.png",
+      "snippet": "Log in · Sign up · Opens profile photo. Sam Altman. @sama. AI is cool i guess. SF blog.samaltman.com Joined July 2006.",
+      "snippet_highlighted_words": [
+        "Sam Altman"
+      ],
+      "source": "x.com"
+    },
+    {
+      "position": 2,
+      "title": "Sam Altman - Los Angeles, California, United States",
+      "link": "https://www.linkedin.com/in/samaltman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/in/samaltman&ved=2ahUKEwjY9Jy__9KMAxWErYkEHVUVFQEQFnoECCEQAQ",
+      "displayed_link": "570+ followers",
+      "favicon": "https://serpapi.com/searches/67fa9fbc5dbb402dffd56f7e/images/5f5e4b6e611fa148745b75c0808a6fafe455792e8f01c63896ac538d84b023f2.png",
+      "snippet": "Location: Los Angeles · 478 connections on LinkedIn. View Sam Altman's profile on LinkedIn, a professional community of 1 billion members.",
+      "snippet_highlighted_words": [
+        "View Sam Altman's profile on LinkedIn"
+      ],
+      "source": "LinkedIn · Sam Altman"
+    },
+    {
+      "position": 3,
+      "title": "100+ \"Sam Altman\" profiles",
+      "link": "https://www.linkedin.com/pub/dir/Sam/Altman",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/pub/dir/Sam/Altman&ved=2ahUKEwjY9Jy__9KMAxWErYkEHVUVFQEQFnoECBEQAQ",
+      "displayed_link": "https://www.linkedin.com › pub › dir › Sam › Altman",
+      "favicon": "https://serpapi.com/searches/67fa9fbc5dbb402dffd56f7e/images/5f5e4b6e611fa148745b75c0808a6faff405ca69d6580a3c5a8eb17b84608cbf.png",
+      "snippet": "View the profiles of professionals named \"Sam Altman\" on LinkedIn. There are 100+ professionals named \"Sam Altman\", who use LinkedIn to exchange information ...",
+      "snippet_highlighted_words": [
+        "View the profiles of professionals named \"Sam Altman\" on LinkedIn"
+      ],
+      "source": "LinkedIn"
+    },
+    {
+      "position": 4,
+      "title": "OpenAI CEO Sam Altman",
+      "link": "https://twitter.com/sama?",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://twitter.com/sama%3F&ved=2ahUKEwjY9Jy__9KMAxWErYkEHVUVFQEQFnoECBUQAQ",
+      "displayed_link": "3.6M+ followers",
+      "favicon": "https://serpapi.com/searches/67fa9fbc5dbb402dffd56f7e/images/5f5e4b6e611fa148745b75c0808a6faf1fd7e1bac129bc8e4502319e73f2084b.png",
+      "snippet": "No information is available for this page.",
+      "source": "X · sama"
+    },
+    {
+      "position": 5,
+      "title": "Jason Gorman's Post",
+      "link": "https://www.linkedin.com/posts/jasongorman_sam-altman-just-shared-this-big-news-on-activity-7315485262594117633-OIYZ",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/posts/jasongorman_sam-altman-just-shared-this-big-news-on-activity-7315485262594117633-OIYZ&ved=2ahUKEwjY9Jy__9KMAxWErYkEHVUVFQEQFnoECBgQAQ",
+      "displayed_link": "8 reactions · 3 days ago",
+      "favicon": "https://serpapi.com/searches/67fa9fbc5dbb402dffd56f7e/images/5f5e4b6e611fa148745b75c0808a6faf8716804e8492484e76fa3bb8823da289.png",
+      "snippet": "GPT-5 is coming sooner and it's \"much better\" than anyone expected. Sam Altman just shared this big news on Twitter.",
+      "snippet_highlighted_words": [
+        "Sam Altman just shared this big news on Twitter"
+      ],
+      "source": "LinkedIn · Jason Gorman"
+    },
+    {
+      "position": 1,
+      "title": "Sam Altman's Investment Web: Where the OpenAI CEO is ...",
+      "link": "https://www.navigatevc.com/insight/sam-altmans-investment-web-where-the-openai-ceo-is-investing-in-ai-biotech-energy-and-more/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.navigatevc.com/insight/sam-altmans-investment-web-where-the-openai-ceo-is-investing-in-ai-biotech-energy-and-more/&ved=2ahUKEwjQ0oLA_9KMAxVDm4kEHebHOSsQFnoECCEQAQ",
+      "displayed_link": "https://www.navigatevc.com › insight › sam-altmans-in...",
+      "thumbnail": "https://serpapi.com/searches/67fa9fbd467eefec30f532e1/images/0dbb8c237f6cd97e79d5123aa265c383edd3f130418cbdb7233b8152f56af468.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fbd467eefec30f532e1/images/0dbb8c237f6cd97e79d5123aa265c3830aba6385b246091d62e921c0bc19bc06.jpeg",
+      "snippet": "In November 2021, Sam Altman contributed $375M to nuclear fusion startup Helion's $500M Series E raise — his largest personal investment to date. Altman wrote ...",
+      "snippet_highlighted_words": [
+        "Sam Altman contributed $375M to nuclear fusion startup Helion's $500M Series E raise"
+      ],
+      "source": "Navigate Ventures"
+    },
+    {
+      "position": 3,
+      "title": "OpenAI closes $40 billion funding round, record for private ...",
+      "link": "https://www.cnbc.com/2025/03/31/openai-closes-40-billion-in-funding-the-largest-private-fundraise-in-history-softbank-chatgpt.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.cnbc.com/2025/03/31/openai-closes-40-billion-in-funding-the-largest-private-fundraise-in-history-softbank-chatgpt.html&ved=2ahUKEwjQ0oLA_9KMAxVDm4kEHebHOSsQFnoECBgQAQ",
+      "displayed_link": "https://www.cnbc.com › 2025/03/31 › openai-closes-40...",
+      "favicon": "https://serpapi.com/searches/67fa9fbd467eefec30f532e1/images/0dbb8c237f6cd97e79d5123aa265c383fe522f5872599ca1ba0ec4ea2d744fd0.png",
+      "date": "Mar 31, 2025",
+      "snippet": "OpenAI on Monday announced the close of its $40 billion financing, the most money raised in a single round by a private tech company.",
+      "snippet_highlighted_words": [
+        "raised"
+      ],
+      "source": "CNBC"
+    },
+    {
+      "position": 4,
+      "title": "Sam Altman is investing in a for-profit community college",
+      "link": "https://qz.com/sam-altman-general-catalyst-invest-campus-group-college-1851771219",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://qz.com/sam-altman-general-catalyst-invest-campus-group-college-1851771219&ved=2ahUKEwjQ0oLA_9KMAxVDm4kEHebHOSsQFnoECBoQAQ",
+      "displayed_link": "https://qz.com › sam-altman-general-catalyst-invest-cam...",
+      "thumbnail": "https://serpapi.com/searches/67fa9fbd467eefec30f532e1/images/0dbb8c237f6cd97e79d5123aa265c3833ac7a948b1d473349e05c849968f9597.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fbd467eefec30f532e1/images/0dbb8c237f6cd97e79d5123aa265c383e47772e5f4077b49c74e993b1f399cde.png",
+      "date": "Mar 20, 2025",
+      "snippet": "Campus raised $46 million in a deal led by venture capital firm General Catalyst that included investors such as Altman and Founders Fund, ...",
+      "snippet_highlighted_words": [
+        "Campus raised $46 million"
+      ],
+      "source": "Quartz"
+    },
+    {
+      "position": 5,
+      "title": "OpenAI, led by CEO Sam Altman, has raised $40 billion in ...",
+      "link": "https://www.instagram.com/tradedvc/p/DH59rcvxVQg/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.instagram.com/tradedvc/p/DH59rcvxVQg/&ved=2ahUKEwjQ0oLA_9KMAxVDm4kEHebHOSsQFnoECCAQAQ",
+      "displayed_link": "2.1K+ likes · 1 week ago",
+      "thumbnail": "https://serpapi.com/searches/67fa9fbd467eefec30f532e1/images/0dbb8c237f6cd97e79d5123aa265c3834da15bf387c80b84597c4fe7a539ce04.jpeg",
+      "favicon": "https://serpapi.com/searches/67fa9fbd467eefec30f532e1/images/0dbb8c237f6cd97e79d5123aa265c3831bceac37c355fd4a44140d010540b68e.png",
+      "snippet": "OpenAI, led by CEO Sam Altman, has raised $40 billion in a funding round valuing the company at $300 billion post-money.",
+      "snippet_highlighted_words": [
+        "has raised $40 billion in a funding round"
+      ],
+      "source": "Instagram · tradedvc"
+    }
+  ],
+  "query_summary": {
+    "bio_info": [
+      {
+        "query": "Sam Altman professional background experience",
+        "results_count": 5
+      }
+    ],
+    "company_info": [
+      {
+        "query": "Sam Altman current role position",
+        "results_count": 5
+      }
+    ],
+    "education": [
+      {
+        "query": "Sam Altman graduated school college",
+        "results_count": 5
+      }
+    ],
+    "duke affiliation": [
+      {
+        "query": "\"Sam Altman\" \"Duke University\" alumni degree graduate",
+        "results_count": 5
+      },
+      {
+        "query": "\"Sam Altman\" \"Duke\" education history",
+        "results_count": 5
+      }
+    ],
+    "social_media": [
+      {
+        "query": "Sam Altman twitter linkedin profiles",
+        "results_count": 5
+      }
+    ],
+    "funding_history": [
+      {
+        "query": "Sam Altman funding raised investors venture capital",
+        "results_count": 5
+      }
+    ]
+  },
+  "_file_path": "/Users/owaiskamdar/Desktop/DCP/capstone-dcp/backend/app/data/raw/serp_person_Sam_Altman.json"
+}

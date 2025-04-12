@@ -24,8 +24,8 @@ from .db.models import Base
 from .utils.logger import app_logger as logger
 from .services.redis import redis_service
 
-# Development API key for local testing
-DEV_API_KEY = "7d0e4d15-898c-4138-ab42-154ef90f6e18"
+# Development API key for local testing - REMOVED
+# DEV_API_KEY = "7d0e4d15-898c-4138-ab42-154ef90f6e18"
 
 # Request logging middleware
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
@@ -88,13 +88,23 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         logger.info(f"Checking API key for request to {request.url.path}")
         logger.info(f"Environment: {os.getenv('ENVIRONMENT')}")
         logger.info(f"API Key provided: {api_key}")
-        logger.info(f"Dev API Key: {DEV_API_KEY}")
+        # logger.info(f"Dev API Key: {DEV_API_KEY}") # REMOVED direct use
         
         # Allow development API key in development environment
         if os.getenv("ENVIRONMENT") == "development":
-            if api_key == DEV_API_KEY:
+            # Use DEV_API_KEY from settings
+            if settings.DEV_API_KEY and api_key == settings.DEV_API_KEY:
                 logger.info("Development API key accepted")
                 return await call_next(request)
+            elif not settings.DEV_API_KEY:
+                logger.warning("DEV_API_KEY environment variable not set for development environment!")
+                # Allow requests without API key in dev if not set (optional, adjust if needed)
+                # return await call_next(request)
+                # Or deny access if key is required even in dev:
+                return JSONResponse(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    content={"error": "Development API Key not configured"}
+                )
             else:
                 logger.warning(f"Invalid API key in development environment: {api_key}")
                 return JSONResponse(
@@ -130,27 +140,14 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     description="""
     Duke VC Insight Engine API
-    
-    This API provides access to Duke-affiliated startups and founders using a three-layered search approach:
-    1. Database Layer: Quick retrieval of existing records
-    2. Processing Layer: Real-time data collection and analysis
-    3. Storage Layer: Persistent storage with automatic updates
-    
+  
     Key Features:
     - Comprehensive company and founder search
     - Duke affiliation verification
-    - Investment relevance scoring
-    - Real-time data enrichment
-    - Automatic 3-day refresh cycle
-    
-    Authentication:
-    - API Key required for all endpoints (X-API-Key header)
-    - Rate limiting enforced per API key
-    - Development API key available for local testing
+  
     """,
     version=settings.VERSION,
     docs_url=None,  # Disable default docs
-    redoc_url=None,  # Disable default redoc
 )
 
 # Add middleware
@@ -213,38 +210,6 @@ async def generic_exception_handler(request: Request, exc: Exception) -> JSONRes
         content=error_response
     )
 
-# Custom OpenAPI schema with authentication
-def custom_openapi() -> Dict[str, Any]:
-    if app.openapi_schema:
-        return app.openapi_schema
-    
-    openapi_schema = get_openapi(
-        title=app.title,
-        version=app.version,
-        description=app.description,
-        routes=app.routes,
-    )
-    
-    # Add security schemes
-    openapi_schema["components"] = {
-        "securitySchemes": {
-            "APIKeyHeader": {
-                "type": "apiKey",
-                "in": "header",
-                "name": "X-API-Key",
-                "description": "API key for authentication and rate limiting",
-            }
-        }
-    }
-    
-    # Set global security requirement
-    openapi_schema["security"] = [{"APIKeyHeader": []}]
-    
-    app.openapi_schema = openapi_schema
-    return app.openapi_schema
-
-app.openapi = custom_openapi
-
 # Documentation endpoints
 @app.get("/docs", include_in_schema=False)
 async def get_documentation():
@@ -257,20 +222,6 @@ async def get_documentation():
         swagger_css_url="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css",
     )
 
-@app.get("/redoc", include_in_schema=False)
-async def get_redoc_documentation():
-    """Serve ReDoc documentation."""
-    return get_redoc_html(
-        openapi_url="/openapi.json",
-        title=f"{settings.PROJECT_NAME} - API Reference",
-        redoc_js_url="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js",
-    )
-
-@app.get("/openapi.json", include_in_schema=False)
-async def get_openapi_schema():
-    """Serve OpenAPI schema"""
-    return app.openapi()
-
 @app.get("/", include_in_schema=False)
 async def root():
     """Root endpoint with API information."""
@@ -278,7 +229,6 @@ async def root():
         "name": settings.PROJECT_NAME,
         "version": settings.VERSION,
         "documentation": "/docs",
-        "reference": "/redoc",
         "health": "/health"
     }
 

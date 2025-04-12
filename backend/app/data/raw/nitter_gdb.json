@@ -1,0 +1,82 @@
+{
+  "handle": "gdb",
+  "raw_tweets": [
+    {
+      "content": "chatgpt now has long-term memory of your past conversations.\n\na step towards a true personal agent.",
+      "date": "Apr 10"
+    },
+    {
+      "content": "o3-mini-high helped a Brookhaven National Laboratory researcher find novel exact solutions to a physical model: arxiv.org/pdf/2503.23758",
+      "date": "Apr 4"
+    },
+    {
+      "content": "chatgpt is incredible for education; this is one way we're making it more broadly available:",
+      "date": "Apr 3"
+    },
+    {
+      "content": "700M images across 130M users in a week:",
+      "date": "Apr 3"
+    },
+    {
+      "content": "Today is World Autism Awareness Day.\n\nMy wife and I want to raise awareness of and help decrease any stigma around autism by sharing that my wife learned she has autism later in life—in her late 30s. It’s common for girls and women to have autism overlooked due to their often subtler signs. Reflecting on her childhood, she realized many signs were there but were framed as something else; one example would be her teachers' complaints that she was constantly “daydreaming” in class (to this day, her ability to “check-out” is phenomenal). Autism usually presents differently in girls and women, and society is particularly demanding of them socially, so my wife tried to fit in by unknowingly masking her autistic traits and devising hidden techniques to manage the influx of information (stimming).\n\nThat said, autism has given her some true superpowers, such as how she perceives the world, processes information, and quickly notices patterns. She’ll also tell you how it is—unvarnished and direct. However, her autism can come at a cost, one of which is requiring a lot of alone time (the fur kids and myself excluded) and downtime to rest and recover. There is an incredible, invisible effort required to navigate the world.\n\nA beautiful trait of her autism is her deep connection to animals and attention to understanding their needs. If there’s a social event with an animal present, poof! she’s gone and you'll find her with the animal.\n\nHer health journey has been intricate, as she has Hypermobile Ehlers-Danlos Syndrome (hEDS), Postural Orthostatic Tachycardia Syndrome (POTS), and Mast Cell Activation Syndrome (MCAS). Learning about her autism was a gift to understand a large missing piece of herself, giving her greater self-empowerment to advocate for her needs, especially medically.\n\nIf given the chance, she (and I) wouldn’t change her autism even a little (though we can’t say the same for her hEDS, POTS, and MCAS!). My wife likes to say we all have universes within ourselves, and her autism is a wonderful universe.",
+      "date": "Apr 2"
+    },
+    {
+      "content": "Introducing OpenAI Academy:",
+      "date": "Apr 2"
+    },
+    {
+      "content": "🚀",
+      "date": "Mar 31"
+    },
+    {
+      "content": "looking for feedback on an upcoming open-weight language model (our first since GPT-2!): openai.com/open-model-feedba…",
+      "date": "Mar 31"
+    },
+    {
+      "content": "ChatGPT image generation enables so much creativity!",
+      "date": "Mar 26"
+    },
+    {
+      "content": "Also supports image edits:",
+      "date": "Mar 25"
+    },
+    {
+      "content": "Native GPT 4o image generation: openai.com/index/introducing…",
+      "date": "Mar 25"
+    },
+    {
+      "content": "Good results from a school designed around personalized AI tutors: foxnews.com/media/texas-priv…",
+      "date": "Mar 23"
+    },
+    {
+      "content": "ChatGPT for Pennsylvania.\n\nSaves government employees 8 hours a week each:",
+      "date": "Mar 22"
+    },
+    {
+      "content": "The Responses API makes it easy for developers to build very useful agentic experiences. It comes with built-in tools, starting with web search, file search, and computer use. Super excited to see what applications it will unlock!",
+      "date": "Mar 16"
+    },
+    {
+      "content": "Visited Oak Ridge today with @SecretaryWright @SenatorHagerty @RepChuck, as part of an event where 1,000 scientists are applying OpenAI models to their work.\n\nInspiring to see the ways that people are using OpenAI tools to advance science for America and humanity.",
+      "date": "Feb 28"
+    },
+    {
+      "content": "GPT-4.5 — a model trained at the next level of scale:",
+      "date": "Feb 27"
+    },
+    {
+      "content": "400 million weekly active users on ChatGPT: cnbc.com/2025/02/20/openai-t…",
+      "date": "Feb 21"
+    },
+    {
+      "content": "Evo 2, a DNA foundation model trained on 9T DNA base pairs, with state-of-the-art performance across a wide variety of biologically relevant tasks:",
+      "date": "Feb 20"
+    },
+    {
+      "content": "a taste of what AI agent interaction will be like",
+      "date": "Feb 16"
+    }
+  ],
+  "twitter_unavailable": false
+}

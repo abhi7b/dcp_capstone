@@ -38,6 +38,9 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Duke VC Insight Engine"
     VERSION: str = "1.0.0"
     
+    # Development specific settings
+    DEV_API_KEY: Optional[str] = None
+    
     # API Settings
     API_SECRET_KEY: str = os.getenv("API_SECRET_KEY", "supersecretkey")
     API_ALGORITHM: str = os.getenv("API_ALGORITHM", "HS256")
@@ -98,7 +101,8 @@ class Settings(BaseSettings):
     
     class Config:
         """Pydantic settings configuration"""
-        env_file = ".env"
+        # Explicitly point to the .env file in the project root (parent of backend)
+        env_file = os.path.join(os.path.dirname(__file__), "../../.env")
         env_file_encoding = "utf-8"
         case_sensitive = True
         extra = "ignore"  # Allow extra fields from .env file

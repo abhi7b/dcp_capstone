@@ -81,11 +81,20 @@ class FounderScorer:
             if not education:
                 return 0
             
-            # Convert string to list if needed
+            # Standardize education data to a list of strings
+            education_list = []
             if isinstance(education, str):
                 education_list = [edu.strip() for edu in education.split(",")]
+            elif isinstance(education, list):
+                for edu in education:
+                    if isinstance(edu, dict):
+                        education_list.append(edu.get("school", ""))
+                    else:
+                        education_list.append(str(edu))
+            elif isinstance(education, dict):
+                education_list.append(education.get("school", ""))
             else:
-                education_list = education
+                education_list.append(str(education))
             
             # Check for Duke mentions
             duke_score = 0

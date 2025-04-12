@@ -1,0 +1,39 @@
+{
+  "name": "Greg Brockman",
+  "title": "President & Co-Founder",
+  "current_company": "OpenAI",
+  "education": [
+    {
+      "school": "Massachusetts Institute of Technology",
+      "degree": null,
+      "field": null,
+      "year": null
+    },
+    {
+      "school": "Duke University",
+      "degree": "Bachelor's Degree",
+      "field": "Economics & History",
+      "year": null
+    }
+  ],
+  "previous_companies": [
+    "Stripe (CTO)"
+  ],
+  "twitter_handle": "gdb",
+  "linkedin_handle": "thegdb",
+  "duke_affiliation_status": "confirmed",
+  "source_links": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Greg_Brockman",
+      "title": "Wikipedia"
+    },
+    {
+      "url": "https://www.linkedin.com/in/thegdb",
+      "title": "LinkedIn"
+    },
+    {
+      "url": "https://www.crunchbase.com/person/greg-brockman",
+      "title": "Crunchbase"
+    }
+  ]
+}

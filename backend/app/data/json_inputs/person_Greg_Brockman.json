@@ -1,0 +1,41 @@
+{
+  "name": "Greg Brockman",
+  "title": "President & Co-Founder",
+  "current_company": "OpenAI",
+  "education": [
+    {
+      "school": "Massachusetts Institute of Technology",
+      "degree": null,
+      "field": null,
+      "year": null
+    },
+    {
+      "school": "Duke University",
+      "degree": "Bachelor's Degree",
+      "field": "Economics & History",
+      "year": null
+    }
+  ],
+  "previous_companies": [
+    "Stripe (CTO)"
+  ],
+  "twitter_handle": "gdb",
+  "linkedin_handle": "thegdb",
+  "duke_affiliation_status": "confirmed",
+  "source_links": [
+    {
+      "url": "https://en.wikipedia.org/wiki/Greg_Brockman",
+      "title": "Wikipedia"
+    },
+    {
+      "url": "https://www.linkedin.com/in/thegdb",
+      "title": "LinkedIn"
+    },
+    {
+      "url": "https://www.crunchbase.com/person/greg-brockman",
+      "title": "Crunchbase"
+    }
+  ],
+  "twitter_summary": "OpenAI has made significant advancements, including the introduction of long-term memory for ChatGPT, enhancing its capabilities as a personal agent. The launch of the OpenAI Academy and the upcoming open-weight language model signal a focus on education and developer engagement. ChatGPT's image generation features have been highlighted, showcasing creative potential. The platform has seen substantial user growth, with 400 million weekly active users and 700 million images generated in a week. Additionally, OpenAI's tools are being applied in scientific research, demonstrating their impact on various fields.",
+  "relevance_score": 89
+}

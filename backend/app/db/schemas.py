@@ -48,18 +48,11 @@ class TwitterSummaryBase(BaseModel):
 
 # Define a minimal schema for people associated with companies
 class CompanyPersonAssociation(BaseModel):
-    """Schema representing a person associated with a company."""
+    """Schema representing a person associated with a company.
+    Matches the structure used in the source JSON files.
+    """
     name: str
     title: Optional[str] = None
-    duke_affiliation_status: str
-
-    @validator('duke_affiliation_status')
-    def validate_affiliation_status(cls, v):
-        """Validate that affiliation status is one of the allowed values."""
-        valid_statuses = ["confirmed", "please review", "no"]
-        if v not in valid_statuses:
-            raise ValueError(f"duke_affiliation_status must be one of {valid_statuses}")
-        return v
 
 # Company schemas
 class CompanyBase(BaseModel):
@@ -140,7 +133,7 @@ class PersonBase(BaseModel):
         return v
 
     class Config:
-        orm_mode = True
+        from_attributes = True
         # use_enum_values = True # If using Enums for status
 
 class PersonCreate(PersonBase):
@@ -192,7 +185,7 @@ class PersonBasicInfo(BaseModel):
     duke_affiliation_status: str  # Using a field that exists in the Person model
 
     class Config:
-        from_attributes = True # Allow creating from ORM objects
+        from_attributes = True
 
 class CompanyCreate(CompanyBase):
     """Schema for creating a new company record."""

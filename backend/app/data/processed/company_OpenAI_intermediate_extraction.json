@@ -1,0 +1,40 @@
+{
+  "name": "OpenAI",
+  "summary": "OpenAI is an AI research and deployment company dedicated to ensuring that general-purpose artificial intelligence benefits all of humanity.",
+  "investors": [
+    "SoftBank",
+    "Goldman Sachs",
+    "Morgan Stanley"
+  ],
+  "funding_stage": "Series A",
+  "industry": "Artificial Intelligence",
+  "founded": "2015",
+  "location": "San Francisco, California",
+  "twitter_handle": "openai",
+  "linkedin_handle": "openai",
+  "source_links": [
+    "https://openai.com/about/",
+    "https://en.wikipedia.org/wiki/OpenAI",
+    "https://www.linkedin.com/company/openai",
+    "https://www.clay.com/dossier/openai-executives",
+    "https://digitaldefynd.com/IQ/meet-the-c-suite-executive-team-of-openai/"
+  ],
+  "people": [
+    {
+      "name": "Sam Altman",
+      "title": "CEO"
+    },
+    {
+      "name": "Greg Brockman",
+      "title": "President & Co-Founder"
+    },
+    {
+      "name": "Ilya Sutskever",
+      "title": "Co-Founder & Chief Scientist"
+    },
+    {
+      "name": "Julia Villagra",
+      "title": "Chief People Officer"
+    }
+  ]
+}

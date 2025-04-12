@@ -2,84 +2,84 @@
   "handle": "sama",
   "raw_tweets": [
     {
-      "content": "prompt: sam altman as a cricket player in anime style",
+      "content": "we have trained more models and they are good in some things",
       "date": "1h"
     },
     {
-      "content": "what's happening with ai adoption in india right now is amazing to watch.\n\nwe love to see the explosion of creativity--india is outpacing the world.",
-      "date": "6h"
-    },
-    {
-      "content": "",
+      "content": "here is the full video:\n\npiped.video/watch?v=6nJZopAC…",
       "date": "21h"
     },
     {
-      "content": "lol i feel like a YC founder in \"build in public\" mode again",
-      "date": "22h"
+      "content": "We’re releasing BrowseComp, which stands for Browsing Competition. 🏎️\n\nThink of it like coding or math competitions — while these contests may not perfectly reflect real-world SWE or mathematical research, they do capture a spark of intelligence.\n\nThis is THE benchmark we should care about when evaluating the intelligence of deep research-like browsing agents.",
+      "date": "Apr 10"
     },
     {
-      "content": "y'all are not ready for images v2...",
-      "date": "22h"
+      "content": "thank you all for the patience, and service speed and rate limits should continue to improve",
+      "date": "Apr 10"
     },
     {
-      "content": "whatever.",
-      "date": "Apr 1"
+      "content": "openai usage has gone nuts over the past month.\n\nbut a surprisingly cool thing is you can ask the internet \"hey can we please get hundreds of thousands of more GPUs quickly\" and...the internet will deliver.\n\n🩵",
+      "date": "Apr 10"
     },
     {
-      "content": "ok that one didn't work but\n\n-restart-0331-final-final2-restart-forreal-omfg3-YOLO\n\nis gonna hit, i know it",
-      "date": "Apr 1"
+      "content": "you can of course opt out of this, or memory all together. and you can use temporary chat if you want to have a conversation that won't use or affect memory.",
+      "date": "Apr 10"
     },
     {
-      "content": "when the run name ends like this you know it's surely going to work this time\n\n-restart-0331-final-final2-restart-forreal-omfg3",
-      "date": "Apr 1"
+      "content": "rolls out today for pro users and soon for plus users.\n\n(except users in the EEA, UK, switzerland, norway, iceland, and liechtenstein. call me, liechtenstein, let's work this out!)",
+      "date": "Apr 10"
     },
     {
-      "content": "working as fast we can to really get stuff humming; if anyone has GPU capacity in 100k chunks we can get asap please call!",
-      "date": "Apr 1"
+      "content": "we have greatly improved memory in chatgpt--it can now reference all your past conversations!\n\nthis is a surprisingly great feature imo, and it points at something we are excited about: ai systems that get to know you over your life, and become extremely useful and personalized.",
+      "date": "Apr 10"
     },
     {
-      "content": "we are getting things under control, but you should expect new releases from openai to be delayed, stuff to break, and for service to sometimes be slow as we deal with capacity challenges.",
-      "date": "Apr 1"
+      "content": "",
+      "date": "Apr 10"
     },
     {
-      "content": "chatgpt image gen now rolled out to all free users!",
-      "date": "Apr 1"
+      "content": "",
+      "date": "Apr 10"
     },
     {
-      "content": "we will not do anything silly like saying that you cant use our open model if your service has more than 700 million monthly active users.\n\nwe want everyone to use it!",
-      "date": "Mar 31"
+      "content": "",
+      "date": "Apr 10"
     },
     {
-      "content": "ChatGPT delivered the best🫶\n\n#Ghibli #IndiaPost",
-      "date": "Mar 27"
+      "content": "",
+      "date": "Apr 10"
     },
     {
-      "content": "🇮🇳",
-      "date": "Mar 31"
+      "content": "",
+      "date": "Apr 10"
     },
     {
-      "content": "Safety is a core focus of our open-weight model’s development, from pre-training to release. While open models bring unique challenges, we’re guided by our Preparedness Framework and will not release models we believe pose catastrophic risks.",
-      "date": "Mar 31"
+      "content": "",
+      "date": "Apr 10"
     },
     {
-      "content": "TL;DR: we are excited to release a powerful new open-weight language model with reasoning in the coming months, and we want to talk to devs about how to make it maximally useful: openai.com/open-model-feedba…\n\nwe are excited to make this a very, very good model!\n\n__\n\nwe are planning to release our first open-weigh language model since GPT-2.\n\nwe’ve been thinking about this for a long time but other priorities took precedence. now it feels important to do.\n\nbefore release, we will evaluate this model according out our preparedness framework, like we would for any other model. and we will do extra work given that we know this model will be modified post-release.\n\nwe still have some decisions to make, so we are hosting developer events to gather feedback and later play with early prototypes. we’ll start in SF in a couple of weeks followed by sessions in europe and APAC. if you are interested in joining, please sign up at the link above.\n\nwe’re excited to see what developers build and how large companies and governments use it where they prefer to run a model themselves.",
-      "date": "Mar 31"
+      "content": "a lot of people were interested in how we made GPT-4.5 and what comes next.\n\nwe did a podcast with alex paino, dan selsam, and @atootoon who helped drive the project.\n\nfull episode coming soon, but here are some interesting clips:",
+      "date": "Apr 10"
     },
     {
-      "content": "the chatgpt launch 26 months ago was one of the craziest viral moments i'd ever seen, and we added one million users in five days.\n\nwe added one million users in the last hour.",
-      "date": "Mar 31"
+      "content": "a few times a year i wake up early and can't fall back asleep because we are launching a new feature ive been so excited about for so long.\n\ntoday is one of those days!",
+      "date": "Apr 10"
     },
     {
-      "content": "can yall please chill on generating images this is insane our team needs sleep",
-      "date": "Mar 30"
+      "content": "we're launching the openai pioneers program – a partnership between openai and companies building advanced ai products to (a) intensively fine-tune models that outperform at high value domain-specific tasks, and (b) build better real world evals that enable industries to better benchmark model performance at domain-relevant tasks",
+      "date": "Apr 9"
     },
     {
-      "content": "The 4o image gen demand has been absolutely incredible. Been super fun to watch the Sora feed fill up with great content .\n\nOur GPUs are also melting in Sora land unfortunately so you may see longer wait times / capacity issues over coming days. We’ll be working hard to get back into a healthy state.",
-      "date": "Mar 28"
+      "content": "If AGI is about AI transforming our economy—how close are we, really? What's still missing, and how do we get there?\n\nOpenAI's new Strategic Deployment team tackles exactly these questions. \n\nWe push frontier models to be more capable, reliable, and aligned—then deploy them to transform real-world, high-impact domains.\n\nExcited? Meet us at ICLR or apply directly!👇",
+      "date": "Apr 8"
     },
     {
-      "content": "if chatgpt were an n64 mario app",
-      "date": "Mar 28"
+      "content": "we have shipped a lot of stuff recently, but people really love this in particular:",
+      "date": "Apr 7"
+    },
+    {
+      "content": "i am really loving spending more with research and product\n\nthis is the most fun i've had since the early days when openai was just a quiet little research lab",
+      "date": "Apr 5"
     }
   ],
   "twitter_unavailable": false

@@ -23,6 +23,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 from ..utils.config import settings
 from ..utils.logger import scraper_logger as logger
 from .query_utils import QueryBuilder
+from ..utils.storage import StorageService
 
 class SERPScraper:
     """
@@ -31,31 +32,11 @@ class SERPScraper:
     """
     
     def __init__(self):
-        """Initialize scraper with API key."""
+        """Initialize scraper with API key and StorageService."""
         self.api_key = settings.SERPAPI_KEY
-        self.raw_data_dir = settings.RAW_DATA_DIR
         self.query_builder = QueryBuilder()
+        self.storage = StorageService()
         logger.info("SERPScraper initialized")
-    
-    def _save_raw_data(self, data: Dict[str, Any], entity_name: str, query_type: str = "combined") -> str:
-        """Save raw JSON data to file and return the file path"""
-        # Create timestamp and sanitize entity name for filename
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        sanitized_name = entity_name.replace('"', '').replace(' ', '_')[:50]  # Limit length
-        
-        # Create filename and path
-        filename = f"serp_{query_type}_{sanitized_name}.json"
-        file_path = os.path.join(self.raw_data_dir, filename)
-        
-        # Ensure directory exists
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        
-        # Write data to file
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        
-        logger.info(f"Raw SERP data saved to {file_path}")
-        return file_path
     
     @retry(
         stop=stop_after_attempt(3),
@@ -109,227 +90,153 @@ class SERPScraper:
             logger.error(f"SERP search failed: {str(e)}")
             raise
     
-    async def search_company(self, company_name: str, max_results_per_query: int = 10) -> Dict[str, Any]:
+    async def search_company(self, company_name: str, max_results_per_query: int = 5) -> Dict[str, Any]:
         """
         Search for comprehensive company information by running multiple optimized queries.
-        Runs all query categories from query_utils to gather raw data.
+        Runs ALL queries defined for each category in query_utils to gather raw data.
         
         Args:
             company_name: Name of the company to search for
-            max_results_per_query: Maximum number of results to keep from each query
+            max_results_per_query: Maximum number of results to keep from each individual query (default: 5)
             
         Returns:
-            Dictionary containing combined search results from multiple queries
+            Dictionary containing combined, deduplicated search results from all executed queries.
         """
-        # Get all optimized queries for this company (always include all categories)
-        company_queries = self.query_builder.get_company_queries(company_name, include_duke=True)
+        logger.info(f"Starting multi-query search for company: {company_name}")
+        company_queries = self.query_builder.get_company_queries(company_name)
         
-        # Start with company info query as primary search
-        primary_query = company_queries["company_info"][0]
-        logger.info(f"Executing primary company query: {primary_query}")
-        primary_results = await self.search(primary_query, max_results=max_results_per_query)
-        
-        # Create a composite results dictionary that will contain all organic results
-        combined_results = primary_results.copy()
-        combined_results["organic_results"] = primary_results.get("organic_results", []) or []
-        
-        # Keep track of query categories and results for unified file
-        query_results = {
-            "company_info": {
-                "query": primary_query,
-                "results_count": len(combined_results["organic_results"])
-            }
-        }
-        
-        # Get all query categories (excluding the primary one we already ran)
-        additional_categories = [
-            "funding_info", 
-            "leadership", 
-            "market_info", 
-            "social_media", 
-            "founding_date",
-            "duke_connection"  # Always include Duke queries, LLM will determine relevance
+        all_categories = [
+            "company_info", "funding_info", "leadership", 
+            "market_info", "social_media", "founding_date"
         ]
         
-        # Run one query from each category
-        for category in additional_categories:
+        combined_results = {
+            "search_parameters": {"query": f"Multi-query search for {company_name}"},
+            "organic_results": [],
+            "query_summary": {}
+        }
+        existing_urls = set()
+        total_queries_run = 0
+
+        # Run ALL queries from each category
+        for category in all_categories:
+            combined_results["query_summary"][category] = [] # Store list of query results for category
             if category in company_queries and company_queries[category]:
-                query = company_queries[category][0]
-                logger.info(f"Running {category} query: {query}")
-                category_results = await self.search(query, max_results=max_results_per_query)
-                
-                # Record query and results count
-                query_results[category] = {
-                    "query": query,
-                    "results_count": len(category_results.get("organic_results", []))
-                }
-                
-                # Add unique results to our combined set
-                if "organic_results" in category_results and category_results["organic_results"]:
-                    new_results = category_results["organic_results"]
-                    logger.info(f"Found {len(new_results)} results for {category}")
+                for query in company_queries[category]: # Iterate through all queries in the list
+                    logger.info(f"Running {category} query: {query}")
+                    total_queries_run += 1
+                    try:
+                        category_results = await self.search(query, max_results=max_results_per_query)
+                    except Exception as e:
+                         logger.error(f"SERP search failed for query '{query}': {e}. Skipping query.")
+                         combined_results["query_summary"][category].append({
+                             "query": query,
+                             "results_count": 0,
+                             "error": str(e)
+                         })
+                         continue # Skip to next query if one fails
+
+                    results_count = len(category_results.get("organic_results", []))
+                    combined_results["query_summary"][category].append({
+                        "query": query,
+                        "results_count": results_count
+                    })
                     
-                    # Add to our combined results, avoiding duplicates by URL
-                    existing_urls = [r.get("link") for r in combined_results["organic_results"]]
-                    for result in new_results:
-                        if result.get("link") not in existing_urls:
-                            combined_results["organic_results"].append(result)
-                            existing_urls.append(result.get("link"))
+                    if results_count > 0:
+                        new_results = category_results["organic_results"]
+                        logger.info(f"Found {results_count} results for query: {query}")
+                        
+                        for result in new_results:
+                            url = result.get("link")
+                            if url and url not in existing_urls:
+                                combined_results["organic_results"].append(result)
+                                existing_urls.add(url)
+            else:
+                 logger.warning(f"No queries defined for category '{category}' for {company_name}")
+
+        total_results = len(combined_results["organic_results"])
+        logger.info(f"Ran {total_queries_run} total queries across {len(all_categories)} categories. Found {total_results} unique results.")
         
-        # Add query information to combined results
-        combined_results["query_summary"] = query_results
-        
-        total_results = len(combined_results.get("organic_results", []))
-        logger.info(f"Combined results from multiple queries: {total_results} total results")
-        
-        if total_results > 0:
-            logger.info(f"Found {total_results} total results for company: {company_name}")
-        else:
-            logger.warning(f"No results found for company: {company_name}")
+        if total_results == 0:
+            logger.warning(f"Multi-query search found no results for company: {company_name}")
             
-        # Save all results to a single file
-        file_path = self._save_raw_data(combined_results, company_name, "company")
+        file_path = self.storage.save_raw_data(combined_results, "serp_company", company_name)
         combined_results["_file_path"] = file_path
             
         return combined_results
     
-    async def search_founder(self, founder_name: str, max_results_per_query: int = 10) -> Dict[str, Any]:
+    async def search_founder(self, founder_name: str, max_results_per_query: int = 5) -> Dict[str, Any]:
         """
         Search for comprehensive founder information by running multiple optimized queries.
-        Runs all query categories from query_utils to gather raw data.
+        Runs ALL queries defined for each category in query_utils (including Duke affiliation) to gather raw data.
         
         Args:
             founder_name: Name of the founder to search for
-            max_results_per_query: Maximum number of results to keep from each query
+            max_results_per_query: Maximum number of results to keep from each individual query (default: 5)
             
         Returns:
-            Dictionary containing combined search results from multiple queries
+            Dictionary containing combined, deduplicated search results from all executed queries.
         """
-        # Get all optimized queries for this founder (always include all categories)
-        founder_queries = self.query_builder.get_founder_queries(founder_name, include_duke=True)
+        logger.info(f"Starting multi-query search for founder: {founder_name}")
+        founder_queries = self.query_builder.get_founder_queries(founder_name)
         
-        # Start with bio info query as primary search
-        primary_query = founder_queries["bio_info"][0]
-        logger.info(f"Executing primary founder query: {primary_query}")
-        primary_results = await self.search(primary_query, max_results=max_results_per_query)
-        
-        # Create a composite results dictionary that will contain all organic results
-        combined_results = primary_results.copy()
-        combined_results["organic_results"] = primary_results.get("organic_results", []) or []
-        
-        # Keep track of query categories and results for unified file
-        query_results = {
-            "bio_info": {
-                "query": primary_query,
-                "results_count": len(combined_results["organic_results"])
-            }
-        }
-        
-        # Get all query categories (excluding the primary one we already ran)
-        additional_categories = [
-            "company_info", 
-            "education", 
-            "social_media", 
-            "funding_history",
-            "duke_connection"  # Always include Duke queries, LLM will determine relevance
+        all_categories = [
+            "bio_info", "company_info", "education", 
+            "duke affiliation", "social_media", "funding_history"
         ]
         
-        # Run one query from each category
-        for category in additional_categories:
-            if category in founder_queries and founder_queries[category]:
-                query = founder_queries[category][0]
-                logger.info(f"Running {category} query: {query}")
-                category_results = await self.search(query, max_results=max_results_per_query)
-                
-                # Record query and results count
-                query_results[category] = {
-                    "query": query,
-                    "results_count": len(category_results.get("organic_results", []))
-                }
-                
-                # Add unique results to our combined set
-                if "organic_results" in category_results and category_results["organic_results"]:
-                    new_results = category_results["organic_results"]
-                    logger.info(f"Found {len(new_results)} results for {category}")
-                    
-                    # Add to our combined results, avoiding duplicates by URL
-                    existing_urls = [r.get("link") for r in combined_results["organic_results"]]
-                    for result in new_results:
-                        if result.get("link") not in existing_urls:
-                            combined_results["organic_results"].append(result)
-                            existing_urls.append(result.get("link"))
-        
-        # Add query information to combined results
-        combined_results["query_summary"] = query_results
-        
-        total_results = len(combined_results.get("organic_results", []))
-        logger.info(f"Combined results from multiple queries: {total_results} total results")
-        
-        if total_results > 0:
-            logger.info(f"Found {total_results} total results for founder: {founder_name}")
-        else:
-            logger.warning(f"No results found for founder: {founder_name}")
-        
-        # Save all results to a single file
-        file_path = self._save_raw_data(combined_results, founder_name, "founder")
-        combined_results["_file_path"] = file_path
-            
-        return combined_results
-        
-    async def search_person_duke_affiliation(self, person_name: str, max_results_per_query: int = 5) -> Dict[str, Any]:
-        """
-        Search specifically for evidence of a person's Duke affiliation using focused queries.
-        
-        Args:
-            person_name: Name of the person to check for Duke affiliation
-            max_results_per_query: Maximum number of results to keep from each query
-            
-        Returns:
-            Dictionary containing results from Duke-specific searches
-        """
-        logger.info(f"Searching for Duke affiliation evidence for: {person_name}")
-        
-        # Get Duke-specific queries
-        duke_queries = self.query_builder.get_person_duke_affiliation_queries(person_name)
-        
         combined_results = {
-            "person_name": person_name,
+            "search_parameters": {"query": f"Multi-query search for {founder_name}"},
             "organic_results": [],
             "query_summary": {}
         }
+        existing_urls = set()
+        total_queries_run = 0
         
-        # Run each Duke-specific query (these are more focused, so we run all of them)
-        for i, query in enumerate(duke_queries):
-            query_key = f"duke_query_{i+1}"
-            logger.info(f"Running Duke affiliation query {i+1}: {query}")
-            
-            # Run the search
-            query_results = await self.search(query, max_results=max_results_per_query)
-            
-            # Record query and results count
-            result_count = len(query_results.get("organic_results", []))
-            combined_results["query_summary"][query_key] = {
-                "query": query,
-                "results_count": result_count
-            }
-            
-            # Add results to combined set, avoiding duplicates
-            if "organic_results" in query_results and query_results["organic_results"]:
-                new_results = query_results["organic_results"]
-                
-                # Add to our combined results, avoiding duplicates by URL
-                existing_urls = [r.get("link") for r in combined_results["organic_results"]]
-                for result in new_results:
-                    if result.get("link") not in existing_urls:
-                        combined_results["organic_results"].append(result)
-                        existing_urls.append(result.get("link"))
+        # Run ALL queries from each category
+        for category in all_categories:
+            combined_results["query_summary"][category] = [] # Store list of query results
+            if category in founder_queries and founder_queries[category]:
+                for query in founder_queries[category]: # Iterate through all queries
+                    logger.info(f"Running {category} query: {query}")
+                    total_queries_run += 1
+                    try:
+                        category_results = await self.search(query, max_results=max_results_per_query)
+                    except Exception as e:
+                         logger.error(f"SERP search failed for query '{query}': {e}. Skipping query.")
+                         combined_results["query_summary"][category].append({
+                             "query": query,
+                             "results_count": 0,
+                             "error": str(e)
+                         })
+                         continue # Skip to next query
+                         
+                    results_count = len(category_results.get("organic_results", []))
+                    combined_results["query_summary"][category].append({
+                        "query": query,
+                        "results_count": results_count
+                    })
+                    
+                    if results_count > 0:
+                        new_results = category_results["organic_results"]
+                        logger.info(f"Found {results_count} results for query: {query}")
+                        
+                        for result in new_results:
+                            url = result.get("link")
+                            if url and url not in existing_urls:
+                                combined_results["organic_results"].append(result)
+                                existing_urls.add(url)
+            else:
+                 logger.warning(f"No queries defined for category '{category}' for {founder_name}")
+
+        total_results = len(combined_results["organic_results"])
+        logger.info(f"Ran {total_queries_run} total queries across {len(all_categories)} categories. Found {total_results} unique results.")
         
-        total_results = len(combined_results.get("organic_results", []))
-        logger.info(f"Found {total_results} Duke-related results for {person_name}")
+        if total_results == 0:
+            logger.warning(f"Multi-query search found no results for founder: {founder_name}")
         
-        # Save all results to a single file
-        file_path = self._save_raw_data(combined_results, person_name, "duke_affiliation")
+        file_path = self.storage.save_raw_data(combined_results, "serp_person", founder_name)
         combined_results["_file_path"] = file_path
             
         return combined_results
-
+       

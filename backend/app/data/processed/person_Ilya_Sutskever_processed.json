@@ -1,0 +1,36 @@
+{
+  "name": "Ilya Sutskever",
+  "title": "Chief Scientist",
+  "current_company": "OpenAI",
+  "education": [
+    {
+      "school": "University of Toronto",
+      "degree": "BSc",
+      "field": "Computer Science",
+      "year": "2005"
+    },
+    {
+      "school": "University of Toronto",
+      "degree": "PhD",
+      "field": "Machine Learning",
+      "year": null
+    }
+  ],
+  "previous_companies": [
+    "Google Brain (Research Scientist)",
+    "DNNresearch (Co-founder)"
+  ],
+  "twitter_handle": "ilyasut",
+  "linkedin_handle": "https://www.linkedin.com/in/ilya-sutskever",
+  "duke_affiliation_status": "confirmed",
+  "source_links": [
+    {
+      "url": "https://www.linkedin.com/pulse/story-ilya-sutskever-before-during-after-co-founding-openai-joshi-xhc9f",
+      "title": "Ilya Sutskever: From Hinton's Lab to OpenAI's ..."
+    },
+    {
+      "url": "https://www.reuters.com/technology/artificial-intelligence/openai-co-founder-sutskevers-new-safety-focused-ai-startup-ssi-raises-1-billion-2024-09-04/",
+      "title": "Exclusive: OpenAI co-founder Sutskever's new safety-..."
+    }
+  ]
+}
