@@ -112,7 +112,6 @@ capstone-dcp/
 ## API Documentation
 
 - **Swagger UI**: `http://localhost:8000/api/docs`
-- **ReDoc**: `http://localhost:8000/api/redoc`
 
 ### Key Endpoints
 
@@ -136,4 +135,3 @@ capstone-dcp/
    - PostgreSQL for structured data
    - Redis for caching and rate limiting
    - File system for raw data storage
-
