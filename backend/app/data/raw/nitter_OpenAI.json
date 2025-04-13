@@ -1,21 +1,65 @@
 {
-  "handle": "OpenAI",
+  "handle": "openai",
   "raw_tweets": [
     {
-      "content": "4o image generation has arrived.\n\nIt's beginning to roll out today in ChatGPT and Sora to all Plus, Pro, Team, and Free users.",
-      "date": "Mar 25"
+      "content": "Starting today, memory in ChatGPT can now reference all of your past chats to provide more personalized responses, drawing on your preferences and interests to make it even more helpful for writing, getting advice, learning, and beyond.",
+      "date": "Apr 10"
+    },
+    {
+      "content": "a lot of people were interested in how we made GPT-4.5 and what comes next.\n\nwe did a podcast with alex paino, dan selsam, and @atootoon who helped drive the project.\n\nfull episode coming soon, but here are some interesting clips:",
+      "date": "Apr 10"
+    },
+    {
+      "content": "We’re open-sourcing BrowseComp (“Browsing Competition”), a new, challenging benchmark designed to test how well AI agents can browse the internet to find hard-to-locate information.\n\nIt’s like an online scavenger hunt…but for browsing agents. openai.com/index/browsecomp/",
+      "date": "Apr 10"
+    },
+    {
+      "content": "The memory improvements in ChatGPT are rolling out starting today to all Plus and Pro users except in the EEA, UK, Switzerland, Norway, Iceland, and Liechtenstein.\n\nTeam, Enterprise, and Edu users will get access in a few weeks.\n\nYou’ll know you have access to improved memory once you see this message in ChatGPT:",
+      "date": "Apr 10"
+    },
+    {
+      "content": "As always, you’re in control of ChatGPT’s memory. You can opt out of referencing past chats, or memory altogether, at any time in settings.\n\nIf you’re already opted out of memory, you’ll be opted out of referencing past chats by default.\n\nIf you want to change what ChatGPT knows about you, simply ask in chat.\n\nIf you’d like to have a conversation without using or affecting memory, use temporary chat.",
+      "date": "Apr 10"
+    },
+    {
+      "content": "In addition to the saved memories that were there before, it can now reference your past chats to deliver responses that feel noticeably more relevant and useful.\n\nNew conversations naturally build upon what it already knows about you, making interactions feel smoother and uniquely tailored to you.",
+      "date": "Apr 10"
+    },
+    {
+      "content": "chatgpt plus is free for college students in the US and canada through may!",
+      "date": "Apr 3"
+    },
+    {
+      "content": "very crazy first week for images in chatgpt - over 130M users have generated 700M+ (!) images since last tuesday\n\nIndia is now our fastest growing chatgpt market 💪🇮🇳\n\nthe range of visual creativity has been extremely inspiring\n\nwe appreciate your patience as we try to serve everyone, team continues to work around the clock",
+      "date": "Apr 3"
+    },
+    {
+      "content": "We’re open-sourcing PaperBench:  \ngithub.com/openai/preparedne…\n\nRead the full paper:  \nopenai.com/index/paperbench/",
+      "date": "Apr 2"
+    },
+    {
+      "content": "We evaluate several frontier models on PaperBench, finding that the best-performing tested agent, Claude 3.5 Sonnet (New) with open-source scaffolding, achieves an average replication score of 21.0%. Finally, we recruit top ML PhDs to attempt a subset of PaperBench, finding that models do not yet outperform the human baseline.",
+      "date": "Apr 2"
+    },
+    {
+      "content": "We evaluate replication attempts using detailed rubrics co-developed with the original authors of each paper. \n\nThese rubrics systematically break down the 20 papers into 8,316 precisely defined requirements that are evaluated by an LLM judge.",
+      "date": "Apr 2"
+    },
+    {
+      "content": "We’re releasing PaperBench, a benchmark evaluating the ability of AI agents to replicate state-of-the-art AI research, as part of our Preparedness Framework.\n\nAgents must replicate top ICML 2024 papers, including understanding the paper, writing code, and executing experiments.",
+      "date": "Apr 2"
     },
     {
       "content": "You can also chat with Monday ⚫\n\n-Make sure you have the latest version of the ChatGPT app\n-Paid users can find Monday in the sidebar\n-Free users can find Monday in the 'By ChatGPT' section inside 'Explore GPTs'",
-      "date": "16h"
+      "date": "Apr 2"
     },
     {
       "content": "The new Monday voice is now available to everyone.\n\nTo access the new voice, open voice mode and tap the voice picker in the top right corner.",
-      "date": "23h"
+      "date": "Apr 1"
     },
     {
       "content": "No joke, there's a new voice in ChatGPT.",
-      "date": "23h"
+      "date": "Apr 1"
     },
     {
       "content": "chatgpt image gen now rolled out to all free users!",
@@ -36,50 +80,6 @@
     {
       "content": "it's super fun seeing people love images in chatgpt.\n\nbut our GPUs are melting.\n\nwe are going to temporarily introduce some rate limits while we work on making it more efficient. hopefully won't be long!\n\nchatgpt free tier will get 3 generations per day soon.",
       "date": "Mar 27"
-    },
-    {
-      "content": "Now rolled out to all Plus, Pro, and Team users globally.",
-      "date": "Mar 26"
-    },
-    {
-      "content": "Create or transform images into a variety of styles with 4o image generation.",
-      "date": "Mar 25"
-    },
-    {
-      "content": "Creating and customizing images is as simple as chatting using GPT‑4o—just describe what you need, including any specifics like aspect ratio, exact colors using hex codes, or a transparent background.",
-      "date": "Mar 25"
-    },
-    {
-      "content": "4o’s ability to precisely blend text with imagery turns image generation into a tool for visual communication.",
-      "date": "Mar 25"
-    },
-    {
-      "content": "GPT‑4o’s image generation follows complex prompts with attention to detail.",
-      "date": "Mar 25"
-    },
-    {
-      "content": "GPT-4o can build upon images and text in chat context, ensuring consistency throughout.",
-      "date": "Mar 25"
-    },
-    {
-      "content": "GPT-4o image generation excels at accurately rendering text, precisely following prompts, and leveraging 4o’s inherent knowledge base and chat context. openai.com/index/introducing…",
-      "date": "Mar 25"
-    },
-    {
-      "content": "Available soon for Enterprise and Edu, as well as for developers using the API.",
-      "date": "Mar 25"
-    },
-    {
-      "content": "4o image generation in ChatGPT and Sora\n\nopenai.com/live/",
-      "date": "Mar 25"
-    },
-    {
-      "content": "",
-      "date": "Mar 25"
-    },
-    {
-      "content": "🗣️\n00:00 Intro\n01:32 Audio agents\n03:27 Speech-to-text\n06:18 Text-to-speech\n08:48 Agents SDK\n\nRead more in our blog post: openai.com/index/introducing…",
-      "date": "Mar 20"
     }
   ],
   "twitter_unavailable": false

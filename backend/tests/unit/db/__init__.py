@@ -1,1 +1,3 @@
-# Database tests 
+"""
+Database test package initialization.
+""" 

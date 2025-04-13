@@ -1,3 +1,11 @@
+"""
+Configuration Module
+
+This module provides configuration settings for the application.
+It loads environment variables from a .env file and provides default values.
+
+"""
+
 import os
 import json
 from pydantic_settings import BaseSettings
@@ -30,16 +38,23 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Duke VC Insight Engine"
     VERSION: str = "1.0.0"
     
+    # Development specific settings
+    DEV_API_KEY: Optional[str] = None
+    
     # API Settings
     API_SECRET_KEY: str = os.getenv("API_SECRET_KEY", "supersecretkey")
     API_ALGORITHM: str = os.getenv("API_ALGORITHM", "HS256")
     API_ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("API_ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+    
+    # CORS Settings
+    CORS_ORIGINS: List[str] = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8000").split(",")
     
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     DATABASE_USER: str = os.getenv("DATABASE_USER", "postgres")
     DATABASE_PASSWORD: str = os.getenv("DATABASE_PASSWORD", "")
     DATABASE_NAME: str = os.getenv("DATABASE_NAME", "postgres")
+    SQL_ECHO: bool = os.getenv("SQL_ECHO", "False").lower() == "true"
     
     # OpenAI
     OPENAI_API_KEY: str
@@ -60,10 +75,6 @@ class Settings(BaseSettings):
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
     CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL", REDIS_URL)
     CELERY_RESULT_BACKEND: str = os.getenv("CELERY_RESULT_BACKEND", REDIS_URL)
-    
-    # Scoring thresholds 
-    MINIMUM_DUKE_AFFILIATION_SCORE: float = float(os.getenv("MINIMUM_DUKE_AFFILIATION_SCORE", "0.7"))
-    MINIMUM_RELEVANCE_SCORE: float = float(os.getenv("MINIMUM_RELEVANCE_SCORE", "0.6"))
     
     # Logging
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
@@ -90,7 +101,8 @@ class Settings(BaseSettings):
     
     class Config:
         """Pydantic settings configuration"""
-        env_file = ".env"
+        # Explicitly point to the .env file in the project root (parent of backend)
+        env_file = os.path.join(os.path.dirname(__file__), "../../.env")
         env_file_encoding = "utf-8"
         case_sensitive = True
         extra = "ignore"  # Allow extra fields from .env file

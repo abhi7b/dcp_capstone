@@ -1,1 +1,3 @@
-# Test package for Duke Capital Partners Insight Engine 
+"""
+Test package initialization.
+""" 

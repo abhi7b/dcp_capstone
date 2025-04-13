@@ -1,0 +1,86 @@
+{
+  "handle": "ilyasut",
+  "raw_tweets": [
+    {
+      "content": "And congratulations to @demishassabis and John Jumper for winning the Nobel Prize in Chemistry!!",
+      "date": "10 Oct 2024"
+    },
+    {
+      "content": "Congratulations to @geoffreyhinton for winning the Nobel Prize in physics!!",
+      "date": "8 Oct 2024"
+    },
+    {
+      "content": "Mountain: identified.  Time to climb",
+      "date": "4 Sep 2024"
+    },
+    {
+      "content": "We will pursue safe superintelligence in a straight shot, with one focus, one goal, and one product. We will do it through revolutionary breakthroughs produced by a small cracked team. Join us: ssi.inc",
+      "date": "19 Jun 2024"
+    },
+    {
+      "content": "I am starting a new company:",
+      "date": "19 Jun 2024"
+    },
+    {
+      "content": "",
+      "date": "14 May 2024"
+    },
+    {
+      "content": "After almost a decade, I have made the decision to leave OpenAI.  The company’s trajectory has been nothing short of miraculous, and I’m confident that OpenAI will build AGI that is both safe and beneficial under the leadership of @sama, @gdb, @miramurati and now, under the excellent research leadership of @merettm.  It was an honor and a privilege to have worked together, and I will miss everyone dearly.   So long, and thanks for everything.  I am excited for what comes next — a project that is very personally meaningful to me about which I will share details in due time.",
+      "date": "14 May 2024"
+    },
+    {
+      "content": "We're announcing, together with @ericschmidt: Superalignment Fast Grants.\n\n$10M in grants for technical research on aligning superhuman AI systems, including weak-to-strong generalization, interpretability, scalable oversight, and more.\n\nApply by Feb 18! openai.com/blog/superalignme…",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "RLHF works great for today's models. But aligning future superhuman models will present fundamentally new challenges.\n\nWe need new approaches + scientific understanding.\n\nNew researchers can make enormous contributions—and we want to fund you!\n\nApply by Feb 18!",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "My view is that what makes super-alignment \"super\" is ensuring we can safely scale the capabilities of AIs even though we can't scale their human supervisors. For this, it is imperative to study the \"weak teacher strong student\" setting. Paper shows great promise in this area!",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "i'd particularly like to recognize @CollinBurns4 for today's generalization result, who came to openai excited to pursue this vision and helped get the rest of the team excited about it!",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "Large pretrained models have excellent raw capabilities—but can we elicit these fully with only weak supervision?\n\nGPT-4 supervised by ~GPT-2 recovers performance close to GPT-3.5 supervised by humans—generalizing to solve even hard problems where the weak supervisor failed!",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "new paper! one reason aligning superintelligence is hard is because it will be different from current models, so doing useful empirical research today is hard. we fix one major disanalogy of previous empirical setups. I'm excited for future work making it even more analogous.",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "New direction for AI alignment — weak-to-strong generalization.\n\nPromising initial results: we used outputs from a weak model (fine-tuned GPT-2) to communicate a task to a stronger model (GPT-4), resulting in intermediate (GPT-3-level) performance.",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "Extremely excited to have this work out, the first paper from the Superalignment team! We study how large models can generalize from supervision of much weaker models.",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "Kudos especially to @CollinBurns4 for being the visionary behind this work, @Pavel_Izmailov for all the great scientific inquisition, @ilyasut for stoking the fires, @janhkirchner and @leopoldasch for moving things forward every day. Amazing ✨",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "I’m extremely excited to finally share the first paper from the OpenAI Superalignment team :) \n\nIn it, we introduce a new research direction for aligning superhuman AI systems. 🧵",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "Super excited about our new research direction for aligning smarter-than-human AI:\n\nWe finetune large models to generalize from weak supervision—using small models instead of humans as weak supervisors.\n\nCheck out our new paper:\nopenai.com/research/weak-to-…",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "In the future, humans will need to supervise AI systems much smarter than them.\n\nWe study an analogy: small models supervising large models.\n\nRead the Superalignment team's first paper showing progress on a new approach, weak-to-strong generalization: openai.com/research/weak-to-…",
+      "date": "14 Dec 2023"
+    },
+    {
+      "content": "❤️",
+      "date": "1 Dec 2023"
+    }
+  ],
+  "twitter_unavailable": false
+}

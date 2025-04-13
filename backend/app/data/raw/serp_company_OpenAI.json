@@ -1,34 +1,443 @@
 {
-  "error": "Your account has run out of searches.",
-  "organic_results": [],
-  "query_summary": {
-    "company_info": {
-      "query": "OpenAI company overview",
-      "results_count": 0
+  "search_parameters": {
+    "query": "Multi-query search for OpenAI"
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "About",
+      "link": "https://openai.com/about/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://openai.com/about/&ved=2ahUKEwjOkfmk-tCMAxXNr1YBHYmLC68QFnoECCEQAQ",
+      "displayed_link": "https://openai.com › about",
+      "favicon": "https://serpapi.com/searches/67f98dd7b76dc78956296feb/images/fccf6d55ddf7ac8b5dac7dc26a5c78fb1ad02b141ddfef3a94435ad1e296fd73.png",
+      "snippet": "OpenAI is an AI research and deployment company. Our mission is to ensure that artificial general intelligence benefits all of humanity.",
+      "snippet_highlighted_words": [
+        "an AI research and deployment company"
+      ],
+      "sitelinks": {
+        "inline": [
+          {
+            "title": "Our structure",
+            "link": "https://openai.com/our-structure/"
+          },
+          {
+            "title": "OpenAI LP",
+            "link": "https://openai.com/index/openai-lp/"
+          },
+          {
+            "title": "Planning for AGI and beyond",
+            "link": "https://openai.com/index/planning-for-agi-and-beyond/"
+          },
+          {
+            "title": "Sora is here",
+            "link": "https://openai.com/index/sora-is-here/"
+          }
+        ]
+      },
+      "source": "OpenAI"
     },
-    "funding_info": {
-      "query": "OpenAI funding rounds series seed investment site:crunchbase.com OR site:pitchbook.com",
-      "results_count": 0
+    {
+      "position": 2,
+      "title": "OpenAI",
+      "link": "https://en.wikipedia.org/wiki/OpenAI",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://en.wikipedia.org/wiki/OpenAI&ved=2ahUKEwjOkfmk-tCMAxXNr1YBHYmLC68QFnoECBYQAQ",
+      "displayed_link": "https://en.wikipedia.org › wiki › OpenAI",
+      "favicon": "https://serpapi.com/searches/67f98dd7b76dc78956296feb/images/fccf6d55ddf7ac8b5dac7dc26a5c78fb1c5c3928448a0e9a7d7f584823f56f68.png",
+      "snippet": "OpenAI, Inc. is an American artificial intelligence (AI) research organization founded in December 2015 and headquartered in San Francisco, California.",
+      "snippet_highlighted_words": [
+        "an American artificial intelligence (AI) research organization"
+      ],
+      "source": "Wikipedia"
     },
-    "leadership": {
-      "query": "OpenAI co-founders leadership management team",
-      "results_count": 0
+    {
+      "position": 3,
+      "title": "Our structure",
+      "link": "https://openai.com/our-structure/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://openai.com/our-structure/&ved=2ahUKEwjOkfmk-tCMAxXNr1YBHYmLC68QFnoECBgQAQ",
+      "displayed_link": "https://openai.com › our-structure",
+      "favicon": "https://serpapi.com/searches/67f98dd7b76dc78956296feb/images/fccf6d55ddf7ac8b5dac7dc26a5c78fb3a4c82e7141d047cfd04964383e1ded8.png",
+      "snippet": "While our partnership with Microsoft includes a multibillion dollar investment, OpenAI remains an entirely independent company governed by the OpenAI Nonprofit.",
+      "snippet_highlighted_words": [
+        "an entirely independent company"
+      ],
+      "source": "OpenAI"
     },
-    "market_info": {
-      "query": "OpenAI market size competitors industry",
-      "results_count": 0
+    {
+      "position": 4,
+      "title": "OpenAI",
+      "link": "https://www.linkedin.com/company/openai",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/company/openai&ved=2ahUKEwjOkfmk-tCMAxXNr1YBHYmLC68QFnoECB4QAQ",
+      "displayed_link": "6.8M+ followers",
+      "favicon": "https://serpapi.com/searches/67f98dd7b76dc78956296feb/images/fccf6d55ddf7ac8b5dac7dc26a5c78fb09b3d9d213ab11e41e912d07357d0612.png",
+      "snippet": "OpenAI is an AI research and deployment company dedicated to ensuring that general-purpose artificial intelligence benefits all of humanity.",
+      "snippet_highlighted_words": [
+        "an AI research and deployment company"
+      ],
+      "source": "LinkedIn · OpenAI"
     },
-    "social_media": {
-      "query": "OpenAI twitterOpenAI linkedin",
-      "results_count": 0
+    {
+      "position": 5,
+      "title": "Artificial Intelligence AI: OpenAI Company - Research Guides",
+      "link": "https://libguides.esf.edu/c.php?g=1309319&p=9625954",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://libguides.esf.edu/c.php%3Fg%3D1309319%26p%3D9625954&ved=2ahUKEwjOkfmk-tCMAxXNr1YBHYmLC68QFnoECCAQAQ",
+      "displayed_link": "https://libguides.esf.edu › ... › Artificial Intelligence AI",
+      "date": "Mar 25, 2024",
+      "snippet": "The AI research and deployment company's primary mission is to develop and promote AI technology that benefits humanity. Founded in 2015, the ...",
+      "snippet_highlighted_words": [
+        "to develop and promote AI technology that benefits humanity"
+      ],
+      "source": "SUNY ESF"
     },
-    "founding_date": {
-      "query": "OpenAI company history founded year",
-      "results_count": 0
+    {
+      "position": 1,
+      "title": "New funding to build towards AGI",
+      "link": "https://openai.com/index/march-funding-updates/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://openai.com/index/march-funding-updates/&ved=2ahUKEwjkrr6o-tCMAxXSJNAFHTflGZwQFnoECEUQAQ",
+      "displayed_link": "https://openai.com › index › march-funding-updates",
+      "favicon": "https://serpapi.com/searches/67f98dde35d3b42089526762/images/0ebc7960fd4e9120477e03ca1868c5573c0664e78bc2a072b5fc4117a9e036e2.png",
+      "date": "Mar 31, 2025",
+      "snippet": "Today we're announcing new funding—$40 billion at a $300 billion post-money valuation, which enables us to push the frontiers of AI research ...",
+      "snippet_highlighted_words": [
+        "funding",
+        "valuation"
+      ],
+      "source": "OpenAI"
     },
-    "duke_connection": {
-      "query": "OpenAI Duke University alumni founder executive",
-      "results_count": 0
+    {
+      "position": 2,
+      "title": "OpenAI raising $40 billion at a $300 billion valuation in ...",
+      "link": "https://www.calcalistech.com/ctechnews/article/bjfztiftjl",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.calcalistech.com/ctechnews/article/bjfztiftjl&ved=2ahUKEwjkrr6o-tCMAxXSJNAFHTflGZwQFnoECGgQAQ",
+      "displayed_link": "https://www.calcalistech.com › CTech › Startups",
+      "favicon": "https://serpapi.com/searches/67f98dde35d3b42089526762/images/0ebc7960fd4e9120477e03ca1868c55799891bc631e2c02bd016bcdfee1b43df.jpeg",
+      "date": "Mar 27, 2025",
+      "snippet": "According to Bloomberg, in the first phase of funding, SoftBank will invest $7.5 billion in the AI giant, while an additional $2.5 billion will ...",
+      "snippet_highlighted_words": [
+        "SoftBank will invest $7.5 billion in"
+      ],
+      "source": "CTech"
+    },
+    {
+      "position": 3,
+      "title": "OpenAI Closes Deal That Values Company at $300 Billion",
+      "link": "https://www.nytimes.com/2025/03/31/technology/openai-valuation-300-billion.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.nytimes.com/2025/03/31/technology/openai-valuation-300-billion.html&ved=2ahUKEwjkrr6o-tCMAxXSJNAFHTflGZwQFnoECEMQAQ",
+      "displayed_link": "https://www.nytimes.com › openai-valuation-300-billion",
+      "favicon": "https://serpapi.com/searches/67f98dde35d3b42089526762/images/0ebc7960fd4e9120477e03ca1868c55713ec6a55884ee1c1f73c1861c044c0c4.png",
+      "date": "Mar 31, 2025",
+      "snippet": "The new fund-raising round, led by the Japanese conglomerate SoftBank, values OpenAI at $300 billion, making it one of the most valuable private ...",
+      "snippet_highlighted_words": [
+        "fund",
+        "OpenAI"
+      ],
+      "source": "The New York Times"
+    },
+    {
+      "position": 4,
+      "title": "OpenAI to raise $40 billion in SoftBank-led round to boost ...",
+      "link": "https://www.reuters.com/technology/artificial-intelligence/openai-raise-40-billion-softbank-led-new-funding-2025-03-31/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.reuters.com/technology/artificial-intelligence/openai-raise-40-billion-softbank-led-new-funding-2025-03-31/&ved=2ahUKEwjkrr6o-tCMAxXSJNAFHTflGZwQFnoECEQQAQ",
+      "displayed_link": "https://www.reuters.com › artificial-intelligence › opena...",
+      "favicon": "https://serpapi.com/searches/67f98dde35d3b42089526762/images/0ebc7960fd4e9120477e03ca1868c5572a1f96bbb9ca39b62e95ed63a2dc172a.png",
+      "date": "Apr 1, 2025",
+      "snippet": "OpenAI said on Monday it would raise up to $40 billion in a new funding round led by SoftBank Group at a $300 billion valuation to advance ...",
+      "snippet_highlighted_words": [
+        "OpenAI",
+        "funding",
+        "valuation"
+      ],
+      "source": "Reuters"
+    },
+    {
+      "position": 5,
+      "title": "OpenAI - 2025 Funding Rounds & List of Investors",
+      "link": "https://tracxn.com/d/companies/openai/__kElhSG7uVGeFk1i71Co9-nwFtmtyMVT7f-YHMn4TFBg/funding-and-investors",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://tracxn.com/d/companies/openai/__kElhSG7uVGeFk1i71Co9-nwFtmtyMVT7f-YHMn4TFBg/funding-and-investors&ved=2ahUKEwjkrr6o-tCMAxXSJNAFHTflGZwQFnoECGAQAQ",
+      "displayed_link": "https://tracxn.com › Discover › Companies › OpenAI",
+      "favicon": "https://serpapi.com/searches/67f98dde35d3b42089526762/images/0ebc7960fd4e9120477e03ca1868c557e5c0e515a7972f4d726bd137f203ad53.png",
+      "snippet": "OpenAI has raised a total funding of $57.9B over 11 rounds from 52 investors. Investors include Goldman Sachs, Morgan Stanley and 50 others.",
+      "snippet_highlighted_words": [
+        "total funding of $57.9B"
+      ],
+      "source": "Tracxn"
+    },
+    {
+      "position": 1,
+      "title": "List of Openai Executives & Org Chart",
+      "link": "https://www.clay.com/dossier/openai-executives",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.clay.com/dossier/openai-executives&ved=2ahUKEwiiy4up-tCMAxXMJjQIHWCHDkAQFnoECBQQAQ",
+      "displayed_link": "https://www.clay.com › dossier › openai-executives",
+      "favicon": "https://serpapi.com/searches/67f98de0afbe9b89feeb87d3/images/e29713a275483ee586cc2626c80cc750e7bb81f2049023c3bf833f8e9891bd37.png",
+      "date": "Nov 23, 2024",
+      "snippet": "At the top of OpenAI's organizational chart is Greg Brockman, the President, Chairman, and Co-Founder, who oversees the strategic vision.",
+      "snippet_highlighted_words": [
+        "Greg Brockman, the President, Chairman, and Co-Founder"
+      ],
+      "source": "Clay"
+    },
+    {
+      "position": 2,
+      "title": "Leadership updates",
+      "link": "https://openai.com/index/leadership-updates-march-2025/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://openai.com/index/leadership-updates-march-2025/&ved=2ahUKEwiiy4up-tCMAxXMJjQIHWCHDkAQFnoECB0QAQ",
+      "displayed_link": "https://openai.com › index › leadership-updates-march-...",
+      "favicon": "https://serpapi.com/searches/67f98de0afbe9b89feeb87d3/images/e29713a275483ee586cc2626c80cc75043b19434ebeb634bb04da15c1b33d747.png",
+      "date": "Mar 24, 2025",
+      "snippet": "Julia Villagra has assumed the role of Chief People Officer. She will enable the company to continue scaling globally, and will ensure that ...",
+      "snippet_highlighted_words": [
+        "company"
+      ],
+      "missing": [
+        "founders"
+      ],
+      "must_include": {
+        "word": "founders",
+        "link": "https://www.google.com/search?num=20&sca_esv=4edcfc4bd6863fc2&gl=us&q=OpenAI+co-+%22founders%22+leadership+management+team&sa=X&ved=2ahUKEwiiy4up-tCMAxXMJjQIHWCHDkAQ5t4CegQIMhAB"
+      },
+      "source": "OpenAI"
+    },
+    {
+      "position": 3,
+      "title": "Meet the C-Suite Executive Team of OpenAI [2025]",
+      "link": "https://digitaldefynd.com/IQ/meet-the-c-suite-executive-team-of-openai/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://digitaldefynd.com/IQ/meet-the-c-suite-executive-team-of-openai/&ved=2ahUKEwiiy4up-tCMAxXMJjQIHWCHDkAQFnoECBMQAQ",
+      "displayed_link": "https://digitaldefynd.com › meet-the-c-suite-executive-t...",
+      "favicon": "https://serpapi.com/searches/67f98de0afbe9b89feeb87d3/images/e29713a275483ee586cc2626c80cc75009f8c6047d15db7c16a913aab333eb4e.jpeg",
+      "snippet": "1. Sam Altman – CEO · 2. Greg Brockman – President & Co-Founder · 3. Ilya Sutskever – Co-Founder & Chief Scientist · 4. Srinivas Narayanan – VP of Applied · 5. Brad ...",
+      "snippet_highlighted_words": [
+        "1. Sam Altman – CEO"
+      ],
+      "source": "DigitalDefynd"
+    },
+    {
+      "position": 1,
+      "title": "The leading generative AI companies",
+      "link": "https://iot-analytics.com/leading-generative-ai-companies/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://iot-analytics.com/leading-generative-ai-companies/&ved=2ahUKEwjCkfCp-tCMAxVs5TQHHbEfHscQFnoECB4QAQ",
+      "displayed_link": "https://iot-analytics.com › leading-generative-ai-compa...",
+      "favicon": "https://serpapi.com/searches/67f98de1faedb30b1f369152/images/d3e5f5f9b03c87a0fe060340569a1136380423ebffedb9e39ddee66391aa3433.png",
+      "date": "Mar 4, 2025",
+      "snippet": "Generative AI market: NVIDIA leads data center GPU segment with a 92% market share. Microsoft and AWS lead the foundation models and[...]",
+      "snippet_highlighted_words": [
+        "NVIDIA leads data center GPU segment with a 92% market share"
+      ],
+      "source": "IoT Analytics"
+    },
+    {
+      "position": 2,
+      "title": "$862.14 Bn Artificial Intelligence (AI) Software Market",
+      "link": "https://www.globenewswire.com/news-release/2025/02/21/3030549/28124/en/862-14-Bn-Artificial-Intelligence-AI-Software-Market-Opportunities-and-Strategies-to-2033-Top-10-Players-Account-for-19-Market-Share-NVIDIA-Leads-Followed-by-Google-OpenAI-and-Micr.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.globenewswire.com/news-release/2025/02/21/3030549/28124/en/862-14-Bn-Artificial-Intelligence-AI-Software-Market-Opportunities-and-Strategies-to-2033-Top-10-Players-Account-for-19-Market-Share-NVIDIA-Leads-Followed-by-Google-OpenAI-and-Micr.html&ved=2ahUKEwjCkfCp-tCMAxVs5TQHHbEfHscQFnoECBYQAQ",
+      "displayed_link": "https://www.globenewswire.com › 2025/02/21 › 862-14-...",
+      "favicon": "https://serpapi.com/searches/67f98de1faedb30b1f369152/images/d3e5f5f9b03c87a0fe060340569a1136ccd4770ed60872914e1432769fe45efd.png",
+      "date": "Feb 21, 2025",
+      "snippet": "NVDIA Corporation. was the largest competitor with a 5.9% share of the market, followed by Google LLC (Alphabet Inc.). with 2.8%, Open AI with ...",
+      "snippet_highlighted_words": [
+        "NVDIA Corporation"
+      ],
+      "source": "GlobeNewswire"
+    },
+    {
+      "position": 3,
+      "title": "OpenAI expects to 3X revenue in 2025 but Chinese AI firms ...",
+      "link": "https://cointelegraph.com/news/openai-expects-revenue-triple-competitors-catching-up",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://cointelegraph.com/news/openai-expects-revenue-triple-competitors-catching-up&ved=2ahUKEwjCkfCp-tCMAxVs5TQHHbEfHscQFnoECBcQAQ",
+      "displayed_link": "https://cointelegraph.com › news › openai-expects-reve...",
+      "favicon": "https://serpapi.com/searches/67f98de1faedb30b1f369152/images/d3e5f5f9b03c87a0fe060340569a11363e2e752e35a88ccf999ffc21ad102f0f.png",
+      "date": "Mar 27, 2025",
+      "snippet": "OpenAI expects to more than triple its revenue this year to $12.7 billion, despite fast-growing competition from the likes of China's DeepSeek ...",
+      "snippet_highlighted_words": [
+        "OpenAI",
+        "competition"
+      ],
+      "source": "Cointelegraph"
+    },
+    {
+      "position": 4,
+      "title": "Top 10 OpenAI Competitors and Alternatives (2025)",
+      "link": "https://businessmodelanalyst.com/openai-competitors/?srsltid=AfmBOoqy3lMBGol1RLLL8jAAIKSxzLDwOe-y_lSl9extFF6qzPqKzeJE",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://businessmodelanalyst.com/openai-competitors/%3Fsrsltid%3DAfmBOoqy3lMBGol1RLLL8jAAIKSxzLDwOe-y_lSl9extFF6qzPqKzeJE&ved=2ahUKEwjCkfCp-tCMAxVs5TQHHbEfHscQFnoECEoQAQ",
+      "displayed_link": "https://businessmodelanalyst.com › Competitors",
+      "favicon": "https://serpapi.com/searches/67f98de1faedb30b1f369152/images/d3e5f5f9b03c87a0fe060340569a1136f075ce496244e46cefe0db630fd7aef3.png",
+      "date": "Sep 9, 2024",
+      "snippet": "Some of the top OpenAI competitors and alternatives include Watsonx AI, Google DeepMind, Mistral AI, xAI, Anthropic, Contextual AI, Cohere, Hugging Face, Baidu ...",
+      "snippet_highlighted_words": [
+        "Watsonx AI"
+      ],
+      "source": "Business Model Analyst"
+    },
+    {
+      "position": 5,
+      "title": "Market Share of OpenAI GPT4 - Artificial Intelligence",
+      "link": "https://6sense.com/tech/artificial-intelligence/openai-gpt4-market-share",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://6sense.com/tech/artificial-intelligence/openai-gpt4-market-share&ved=2ahUKEwjCkfCp-tCMAxVs5TQHHbEfHscQFnoECEkQAQ",
+      "displayed_link": "https://6sense.com › ... › Artificial Intelligence",
+      "favicon": "https://serpapi.com/searches/67f98de1faedb30b1f369152/images/d3e5f5f9b03c87a0fe060340569a11364c1388b198a655825cbe02f0945970ef.png",
+      "snippet": "The top three of OpenAI GPT4's competitors in the Artificial Intelligence category are Grok with 52.13%, Optimole with 11.07%, Drift with 9.14% market share.",
+      "snippet_highlighted_words": [
+        "Grok with 52.13"
+      ],
+      "source": "6Sense"
+    },
+    {
+      "position": 2,
+      "title": "OpenAI sues Elon Musk",
+      "link": "https://www.linkedin.com/news/story/openai-sues-elon-musk-6373428/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/news/story/openai-sues-elon-musk-6373428/&ved=2ahUKEwjv99v_gNGMAxU_I0QIHQePHFgQFnoECBkQAQ",
+      "displayed_link": "https://www.linkedin.com › news › story › openai-sues-e...",
+      "favicon": "https://serpapi.com/searches/67f994e0feec6c13e7feb6b2/images/a32efa5162c25fc12d9c9fdc38f96a48f0e1dbfe59efa1b06d83a200cbf4bd51.png",
+      "date": "1 day ago",
+      "snippet": "OpenAI has filed a countersuit against Elon Musk, accusing the billionaire of using \"every tool available to harm OpenAI\" and asking a ...",
+      "snippet_highlighted_words": [
+        "OpenAI has filed a countersuit against Elon Musk"
+      ],
+      "source": "LinkedIn"
+    },
+    {
+      "position": 3,
+      "title": "OpenAI Twitter",
+      "link": "https://twitter.com/openai?",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://twitter.com/openai%3F&ved=2ahUKEwjv99v_gNGMAxU_I0QIHQePHFgQFnoECBsQAQ",
+      "displayed_link": "4.1M+ followers",
+      "favicon": "https://serpapi.com/searches/67f994e0feec6c13e7feb6b2/images/a32efa5162c25fc12d9c9fdc38f96a48cde6859bf0cfe13c6619a6cf666bcbce.png",
+      "snippet": "No information is available for this page.",
+      "source": "X · OpenAI"
+    },
+    {
+      "position": 4,
+      "title": "Lien M - OpenAI",
+      "link": "https://www.linkedin.com/in/lientran15",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/in/lientran15&ved=2ahUKEwjv99v_gNGMAxU_I0QIHQePHFgQFnoECBUQAQ",
+      "displayed_link": "2.6K+ followers",
+      "favicon": "https://serpapi.com/searches/67f994e0feec6c13e7feb6b2/images/a32efa5162c25fc12d9c9fdc38f96a485bb7d1ae22751e31bc18d37e2277c7e2.png",
+      "snippet": "Experience: OpenAI · Education: Santa Clara University · Location: San Francisco Bay Area · 500+ connections on LinkedIn. View Lien M's profile on LinkedIn, ...",
+      "snippet_highlighted_words": [
+        "Experience: OpenAI"
+      ],
+      "rich_snippet": {
+        "top": {
+          "extensions": [
+            "San Francisco Bay Area",
+            "OpenAI"
+          ]
+        }
+      },
+      "source": "LinkedIn · Lien M"
+    },
+    {
+      "position": 5,
+      "title": "Yilei Qian - OpenAI",
+      "link": "https://www.linkedin.com/in/yileiqian",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.linkedin.com/in/yileiqian&ved=2ahUKEwjv99v_gNGMAxU_I0QIHQePHFgQFnoECB8QAQ",
+      "displayed_link": "2.8K+ followers",
+      "favicon": "https://serpapi.com/searches/67f994e0feec6c13e7feb6b2/images/a32efa5162c25fc12d9c9fdc38f96a481559ae90ec6048b055c210d0b9d8715f.png",
+      "snippet": "Experience: OpenAI · Education: University of Southern California · Location: San Francisco Bay Area · 500+ connections on LinkedIn.",
+      "snippet_highlighted_words": [
+        "Experience: OpenAI"
+      ],
+      "sitelinks": {
+        "inline": [
+          {
+            "title": "Openai University Of...",
+            "link": "https://www.linkedin.com/in/yileiqian#:~:text=OpenAI%20University%20of%20Southern%20California"
+          },
+          {
+            "title": "Licenses & Certifications",
+            "link": "https://www.linkedin.com/in/yileiqian#:~:text=Licenses%20%26%20Certifications"
+          },
+          {
+            "title": "Patents",
+            "link": "https://www.linkedin.com/in/yileiqian#:~:text=Patents"
+          }
+        ]
+      },
+      "rich_snippet": {
+        "top": {
+          "extensions": [
+            "San Francisco Bay Area",
+            "OpenAI"
+          ]
+        }
+      },
+      "source": "LinkedIn · Yilei Qian"
+    },
+    {
+      "position": 2,
+      "title": "Quick Essay: A Short History of OpenAI",
+      "link": "https://chamath.substack.com/p/a-short-history-of-openai",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://chamath.substack.com/p/a-short-history-of-openai&ved=2ahUKEwjry9yw-tCMAxWi4DQHHaCiPOgQFnoECBgQAQ",
+      "displayed_link": "300+ likes · 1 year ago",
+      "favicon": "https://serpapi.com/searches/67f98dec339288c9da6a20da/images/87f2d7b572ce7bc76b435f68fd754b2868b43cca35a1bf10f92f8cdaebf6917f.jpeg",
+      "snippet": "OpenAI was initially founded in 2015 by Sam Altman, Elon Musk, Ilya Sutskever and Greg Brockman as a non-profit organization.",
+      "snippet_highlighted_words": [
+        "was initially founded in 2015"
+      ],
+      "source": "Substack · Chamath Palihapitiya"
+    },
+    {
+      "position": 3,
+      "title": "OpenAI | ChatGPT, Sam Altman, Microsoft, & History",
+      "link": "https://www.britannica.com/money/OpenAI",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.britannica.com/money/OpenAI&ved=2ahUKEwjry9yw-tCMAxWi4DQHHaCiPOgQFnoECBwQAQ",
+      "displayed_link": "https://www.britannica.com › money › OpenAI",
+      "favicon": "https://serpapi.com/searches/67f98dec339288c9da6a20da/images/87f2d7b572ce7bc76b435f68fd754b28555bf67466459d6b9b9e12ec268df340.png",
+      "snippet": "2015: Founding and nonprofit years. OpenAI was founded in December 2015 as a nonprofit organization dedicated to researching and advancing artificial ...",
+      "snippet_highlighted_words": [
+        "December"
+      ],
+      "source": "Britannica"
+    },
+    {
+      "position": 4,
+      "title": "The History of OpenAI",
+      "link": "https://www.lxahub.com/stories/the-history-of-openai",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=https://www.lxahub.com/stories/the-history-of-openai&ved=2ahUKEwjry9yw-tCMAxWi4DQHHaCiPOgQFnoECFgQAQ",
+      "displayed_link": "https://www.lxahub.com › stories › the-history-of-openai",
+      "favicon": "https://serpapi.com/searches/67f98dec339288c9da6a20da/images/87f2d7b572ce7bc76b435f68fd754b28864c3ea73d97a7a9500d8f1f8a4974f9.png",
+      "date": "May 2, 2023",
+      "snippet": "Founded in 2015 by a group of tech luminaries, including Elon Musk and Sam Altman, the company started with the goal of advancing AI in a way that benefits ...",
+      "snippet_highlighted_words": [
+        "Founded in 2015"
+      ],
+      "source": "MarTech Alliance"
     }
+  ],
+  "query_summary": {
+    "company_info": [
+      {
+        "query": "OpenAI company overview",
+        "results_count": 5
+      }
+    ],
+    "funding_info": [
+      {
+        "query": "OpenAI valuation funding amount investors",
+        "results_count": 5
+      }
+    ],
+    "leadership": [
+      {
+        "query": "OpenAI co-founders leadership management team",
+        "results_count": 5
+      }
+    ],
+    "market_info": [
+      {
+        "query": "OpenAI market size competitors industry",
+        "results_count": 5
+      }
+    ],
+    "social_media": [
+      {
+        "query": "OpenAI twitter linkedin",
+        "results_count": 5
+      }
+    ],
+    "founding_date": [
+      {
+        "query": "OpenAI company history founded year",
+        "results_count": 5
+      }
+    ]
   }
 }

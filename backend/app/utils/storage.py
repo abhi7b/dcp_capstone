@@ -1,3 +1,11 @@
+"""
+Storage Service Module
+
+Provides centralized service for handling all file operations.
+Handles raw data, processed data, and JSON input files.
+
+"""
+
 import os
 import json
 from typing import Dict, Any, Optional
@@ -53,13 +61,13 @@ class StorageService:
             logger.error(f"Error loading file {filepath}: {str(e)}")
             return None
     
-    def get_file_path(self, prefix: str, identifier: str, directory: str) -> Optional[str]:
+    def get_file_path(self, prefix: str, identifier: str, directory: str) -> str:
         """Get the path of the data file for a given prefix and identifier"""
         clean_id = self._clean_filename(identifier)
         filename = f"{prefix}_{clean_id}.json"
         filepath = os.path.join(directory, filename)
         
-        return filepath if os.path.exists(filepath) else None
+        return filepath
     
     def _clean_filename(self, name: str) -> str:
         """Clean a string to be used in a filename"""

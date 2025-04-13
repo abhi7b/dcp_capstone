@@ -1,9 +1,20 @@
+"""
+Company Scorer Module
+
+Service for calculating relevance scores for companies based on
+various metrics including Duke affiliation, growth stage, and activity.
+
+Key Features:
+- Multi-factor scoring
+- Growth stage analysis
+- Team evaluation
+- Market potential assessment
+"""
+
 import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime
-from ..utils.logger import scorer_logger
-
-logger = logging.getLogger("scorer")
+from ..utils.logger import scorer_logger as logger
 
 class CompanyScorer:
     """
@@ -57,7 +68,15 @@ class CompanyScorer:
         return final_score
     
     def _calculate_duke_score(self, people: List[Dict[str, Any]]) -> int:
-        """Calculate score based on Duke affiliations"""
+        """
+        Calculate Duke affiliation component.
+        
+        Args:
+            people: List of people associated with the company
+            
+        Returns:
+            Duke affiliation score (0-100)
+        """
         if not people:
             return 0
             
@@ -101,7 +120,15 @@ class CompanyScorer:
         return max_score
     
     def _calculate_stage_score(self, company_data: Dict[str, Any]) -> int:
-        """Calculate score based on company stage"""
+        """
+        Calculate growth stage component.
+        
+        Args:
+            company_data: Company information
+            
+        Returns:
+            Growth stage score (0-100)
+        """
         stage = (company_data.get("funding_stage") or "").lower()
         
         if "pre-seed" in stage:
@@ -122,7 +149,15 @@ class CompanyScorer:
             return 50  # Default if unknown
             
     def _calculate_industry_score(self, company_data: Dict[str, Any]) -> int:
-        """Calculate score based on industry"""
+        """
+        Calculate market potential component.
+        
+        Args:
+            company_data: Company information
+            
+        Returns:
+            Market potential score (0-100)
+        """
         industry = (company_data.get("industry") or "").lower()
         
         # High-priority industries
@@ -138,10 +173,15 @@ class CompanyScorer:
             return 50  # Default for other industries
             
     def _calculate_twitter_score(self, company_data: Dict[str, Any]) -> int:
-        """Calculate score based on Twitter urgency"""
+        """
+        Calculate Twitter urgency component.
+        
+        Args:
+            company_data: Company information
+            
+        Returns:
+            Twitter urgency score (0-100)
+        """
         # The urgency score is already normalized to 0-100 by the NitterNLP service
-        # and is passed directly to calculate_relevance_score via twitter_urgency_score
-        # This method is just a fallback in case twitter_urgency_score is not provided
-        return 50  # Default to middle score if no urgency score provided
 
-# Test case removed as requested 
+        return 50  # Default to middle score if no urgency score provided

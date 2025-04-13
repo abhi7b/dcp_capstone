@@ -1,16 +1,15 @@
 """
-SQLAlchemy ORM models for the Duke VC Insight Engine database.
+Database Models Module
 
-This module defines the database schema using SQLAlchemy ORM.
-It includes models for companies, founders, executives, and API keys.
+This module defines SQLAlchemy ORM models for the application's database schema.
+Models include Person and Company entities with their relationships and fields.
 """
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table, DateTime, Text, JSON, Float, ARRAY
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
 from datetime import datetime
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -19,23 +18,18 @@ company_person_association = Table(
     'company_person_association',
     Base.metadata,
     Column('company_id', Integer, ForeignKey('companies.id'), primary_key=True),
-    Column('name', String, primary_key=True),  # Person's name
-    Column('title', String, nullable=False),  # Role within the company
-    Column('duke_affiliation_status', String, nullable=False)  # Duke affiliation status for scoring
+    Column('person_id', Integer, ForeignKey('persons.id'), primary_key=True)
 )
 
 class Company(Base):
     """
-    Company model representing startup/company entities.
-    
-    This model stores information about companies including their
-    Duke affiliation status and other relevant details.
-    Associated people are stored directly in the company_person_association table.
+    Company model representing organizations in the database.
+    Stores company information, metrics, and relationships.
     """
     __tablename__ = "companies"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True, nullable=False)
+    name = Column(String, index=True, nullable=False, unique=True)
     duke_affiliation_status = Column(String, nullable=False)
     relevance_score = Column(Integer, nullable=True)
     summary = Column(String, nullable=True)
@@ -51,18 +45,22 @@ class Company(Base):
     created_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Remove the relationship with Person model since we're storing people directly in the association table
-    # people = relationship("Person", secondary=company_person_association, back_populates="companies")
+    # Define relationship with Person model
+    people = relationship(
+        "Person",
+        secondary=company_person_association,
+        back_populates="companies"
+    )
 
 class Person(Base):
     """
-    Person model representing individuals searched through the person route.
-    This model is independent of company associations.
+    Person model representing individuals in the database.
+    Stores personal information, affiliations, and scores.
     """
     __tablename__ = "persons"
     
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     title = Column(String, nullable=True)
     duke_affiliation_status = Column(String, nullable=False)
     relevance_score = Column(Integer, nullable=False)
@@ -76,8 +74,12 @@ class Person(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, onupdate=datetime.utcnow)
     
-    # Remove the relationship with Company model since it's no longer needed
-    # companies = relationship("Company", secondary=company_person_association, back_populates="people")
+    # Define relationship with Company model
+    companies = relationship(
+        "Company",
+        secondary=company_person_association,
+        back_populates="people"
+    )
 
 class APIKey(Base):
     """

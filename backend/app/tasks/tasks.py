@@ -17,8 +17,7 @@ from ..services.nitter import NitterScraper
 from ..services.nlp_processor import NLPProcessor
 from ..services.scorer import Scorer
 from ..utils.query_utils import QueryBuilder
-
-logger = get_logger("celery")
+from ..utils.logger import app_logger as logger
 
 # --- Helper Function for Person Processing ---
 
