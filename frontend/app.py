@@ -2,19 +2,19 @@ import streamlit as st
 import requests
 from typing import Optional
 
-# --- CONFIG ---
-API_URL = "https://your-api-url.com/companies"  # Replace with deployed FastAPI endpoint
-API_KEY = st.secrets["api_key"] if "api_key" in st.secrets else "YOUR_API_KEY_HERE"
 
-# --- APP LAYOUT ---
+API_URL = "http://localhost:8000/companies"  
+API_KEY = "test-key"  
+
+
 st.set_page_config(page_title="VC Insight Explorer", layout="wide")
 st.title("🚀 Duke VC Insight Explorer")
 st.markdown("Search for Duke-affiliated startups and founders to assess VC potential.")
 
-# --- SEARCH INPUT ---
+
 search_query = st.text_input("🔍 Enter Company or Person Name")
 
-# --- FUNCTION TO QUERY API ---
+
 def query_api(name: str) -> Optional[dict]:
     try:
         headers = {"X-API-Key": API_KEY}
@@ -29,7 +29,7 @@ def query_api(name: str) -> Optional[dict]:
         st.error(f"Request failed: {e}")
     return None
 
-# --- DISPLAY RESULTS ---
+
 if search_query:
     with st.spinner("Querying VC Insight Engine..."):
         result = query_api(search_query)
@@ -44,12 +44,12 @@ if search_query:
                 st.write(f"**Sector:** {result.get('sector', 'N/A')}")
                 st.write(f"**Growth Score:** {result.get('vc_rank', 'N/A')} / 100")
                 if result.get("currently_raising"):
-                    st.success("Currently raising capital! Top priority.")
+                    st.success("💰 Currently raising capital! Top priority.")
                 else:
                     st.info("Not currently raising capital.")
 
             with col2:
-                if st.button("Mark for Follow-Up"):
+                if st.button("🔔 Mark for Follow-Up"):
                     st.success("Saved for periodic review.")
 
         st.divider()
