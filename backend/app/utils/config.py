@@ -34,14 +34,20 @@ class Settings(BaseSettings):
     Application settings loaded from environment variables with defaults.
     Settings are validated using Pydantic's BaseSettings.
     """
+
     # Core settings
     PROJECT_NAME: str = "Duke VC Insight Engine"
     VERSION: str = "1.0.0"
     
-    # Development specific settings
-    DEV_API_KEY: Optional[str] = None
+    # Environment
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     
-    # API Settings
+    # Database configuration
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
+    DATABASE_NAME: str = os.getenv("DATABASE_NAME", "postgres")
+    SQL_ECHO: bool = os.getenv("SQL_ECHO", "False").lower() == "true"
+    
+    # API configuration
     API_SECRET_KEY: str = os.getenv("API_SECRET_KEY", "supersecretkey")
     API_ALGORITHM: str = os.getenv("API_ALGORITHM", "HS256")
     API_ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("API_ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
@@ -49,21 +55,14 @@ class Settings(BaseSettings):
     # CORS Settings
     CORS_ORIGINS: List[str] = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:8000").split(",")
     
-    # Database
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
-    DATABASE_USER: str = os.getenv("DATABASE_USER", "postgres")
-    DATABASE_PASSWORD: str = os.getenv("DATABASE_PASSWORD", "")
-    DATABASE_NAME: str = os.getenv("DATABASE_NAME", "postgres")
-    SQL_ECHO: bool = os.getenv("SQL_ECHO", "False").lower() == "true"
-    
-    # OpenAI
+    # OpenAI configuration
     OPENAI_API_KEY: str
     OPENAI_MODEL: str = "gpt-4o-mini"
     
-    # SERP API
+    # SERP API configuration
     SERPAPI_KEY: str
     
-    # Twitter/Nitter
+    # Twitter/Nitter configuration
     TWITTER_NITTER_BASE_URL: str = os.getenv("TWITTER_NITTER_BASE_URL", "https://nitter.net")
     NITTER_INSTANCES: List[str] = parse_nitter_instances(os.getenv("NITTER_INSTANCES", ""))
     TWITTER_API_KEY: str = os.getenv("TWITTER_API_KEY", "")
@@ -73,11 +72,16 @@ class Settings(BaseSettings):
     
     # Redis and Celery
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL", REDIS_URL)
-    CELERY_RESULT_BACKEND: str = os.getenv("CELERY_RESULT_BACKEND", REDIS_URL)
     
-    # Logging
+    # Celery configuration
+    CELERY_BROKER_URL: str = os.getenv("CELERY_BROKER_URL", "redis://redis:6379/0")
+    CELERY_RESULT_BACKEND: str = os.getenv("CELERY_RESULT_BACKEND", "redis://redis:6379/0")
+    
+    # Logging configuration
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
+    
+    # Development specific
+    DEV_API_KEY: Optional[str] = None
     
     # Get project root directory
     PROJECT_ROOT: str = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
