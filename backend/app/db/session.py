@@ -86,15 +86,6 @@ def get_sync_db():
         logger.debug("Closing sync database session")
         db.close()
 
-# Initialize database (for use in scripts)
-def init_db():
-    """Initialize database tables"""
-    from .models import Base
-    
-    logger.info("Creating database tables")
-    Base.metadata.create_all(bind=sync_engine)
-    logger.info("Database tables created")
-
 # Simple database health check function
 async def check_db_connection():
     """Check if database connection is healthy"""
