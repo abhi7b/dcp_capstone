@@ -381,10 +381,9 @@ class NLPProcessor:
         if isinstance(db_ready_data.get("source_links"), list):
             db_ready_data["source_links"] = ", ".join(filter(None, db_ready_data["source_links"]))
             
-        # **Important:** The Company *model* doesn't have a 'people' column.
-        # The relationship is likely handled via association table or Person linking to Company.
-        # Therefore, we REMOVE the 'people' list when formatting for DB operations on the Company table.
-        db_ready_data.pop("people", None)
+        # Keep the people list for later processing
+        people_data = db_ready_data.get("people", [])
+        db_ready_data["people"] = people_data
 
         # Remove other potential non-model fields or error flags
         db_ready_data.pop("error", None)
@@ -392,8 +391,8 @@ class NLPProcessor:
         db_ready_data.pop("db_error", None) # Remove DB error flags if present
         
         # Ensure all fields match Company model columns - remove any extras
-        # This is a safeguard; ideally extraction and processing only yield relevant fields.
         allowed_keys = {col.name for col in Company.__table__.columns}
+        allowed_keys.add("people")  # Add people to allowed keys
         keys_to_remove = {key for key in db_ready_data if key not in allowed_keys}
         for key in keys_to_remove:
             db_ready_data.pop(key)

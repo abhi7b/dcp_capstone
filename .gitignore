@@ -1,5 +1,7 @@
 # Environment variables
 .env
+data/
+.streamlit/
 
 # Python
 __pycache__/

@@ -51,7 +51,7 @@ Return a JSON object with these fields (use null for missing fields):
         "Company Name (Role)"
     ],
     "twitter_handle": "handle_without_at",
-    "linkedin_handle": "URL or handle",
+    "linkedin_handle": "URL",
     "duke_affiliation_status": "confirmed", "please review", or "no",
     "source_links": [
         {
@@ -67,20 +67,31 @@ IMPORTANT GUIDELINES:
 - Extract previous companies with roles, if available.
 - Extract Twitter and LinkedIn handles.
 - Determine duke_affiliation_status based *only* on the provided text:
-  - "confirmed": Requires clear, unambiguous evidence of Duke affiliation (student, alumni, faculty, staff, attending program, etc.) from a credible source (university site, reputable news, LinkedIn profile confirming Duke). Must be about the specific person (beware common names).
-  - "please review": Use if there's some indication but it's not definitive (ambiguous mentions, potential name confusion, unclear source credibility, mentions like "attended Duke program" without confirmation of completion/degree). Also use if the name itself contains "Duke" (e.g., David Duke) unless affiliation is clearly confirmed.
-  - "no": Use if there is no evidence of Duke connection, only mentions of other universities, or clear evidence points away from Duke.
-- Include relevant source links.
+  - "confirmed": Requires clear, unambiguous evidence of Duke affiliation from a credible source. Must meet ALL of these criteria:
+    * Direct mention of Duke University affiliation (student, alumni, faculty, staff, etc.)
+    * From a credible source (university site, reputable news, LinkedIn profile, official Duke publications)
+    * Includes specific details (degree, program, year, etc.)
+  - "please review": Use if ANY of these conditions apply:
+    * Ambiguous mentions (e.g., "attended Duke program" without confirmation of completion/degree)
+    * Potential name confusion with other individuals
+    * Unclear source credibility
+    * Name contains "Duke" (e.g., David Duke) unless affiliation is clearly confirmed
+  - "no": Use if ANY of these conditions apply:
+    * No evidence of Duke connection found
+    * Only mentions of other universities
+    * Clear evidence points away from Duke
+
+- Include relevant source links with clear titles.
 - Use null for missing fields. Return all arrays as JSON arrays.
 - Base your extraction *only* on the provided search results text. Do not infer information not present.
 - Be careful with common names and verify identity matches the search.
-- Consider source credibility.
+- Consider source credibility and cross-reference information when available.
+- Pay special attention to:
+  * Official Duke University sources (duke.edu, alumni directories)
+  * LinkedIn profiles with verified Duke education
+  * Reputable news articles about Duke alumni
 """
-# --- (End of Combined Prompt) ---
 
-
-# (Keep DUKE_AFFILIATION_PROMPT commented out or remove if no longer needed elsewhere)
-# DUKE_AFFILIATION_PROMPT = """..."""
 
 class PersonProcessor:
     """

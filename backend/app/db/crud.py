@@ -27,60 +27,94 @@ from . import person_crud  # Import person CRUD operations
 
 
 # Company CRUD operations
-async def create_company(db: AsyncSession, company: schemas.CompanyCreate) -> models.Company:
+async def create_company(db: AsyncSession, company: Union[dict, schemas.CompanyCreate]) -> models.Company:
     """
-    Create a new company. Associated people are only used for scoring and association,
-    not added as Person entries.
+    Create a new company in the database.
     
     Args:
-        db: The database session
-        company: Company data for creation, including optional people
+        db: Database session
+        company: Company data (dict or CompanyCreate schema)
         
     Returns:
-        The created Company model
-    """
-    # Create company object with fields that exist in the model
-    db_company = models.Company(
-        name=company.name,
-        duke_affiliation_status=company.duke_affiliation_status,
-        relevance_score=company.relevance_score,
-        summary=company.summary,
-        investors=company.investors,
-        funding_stage=company.funding_stage,
-        industry=company.industry,
-        founded=company.founded,
-        location=company.location,
-        twitter_handle=company.twitter_handle,
-        linkedin_handle=company.linkedin_handle,
-        twitter_summary=company.twitter_summary,
-        source_links=company.source_links,
-    )
-    
-    db.add(db_company)
-    await db.commit()
-    await db.refresh(db_company)
-    
-    # Process people only if provided and not empty
-    if company.people and len(company.people) > 0:
-        # Store the association data for each person
-        for person_data in company.people:
-            # Get title for association - default to person's title if available
-            title_for_association = getattr(person_data, 'title', None) or "unknown"
-            
-            # Add the association with just the name and title
-            await db.execute(
-                models.company_person_association.insert().values(
-                    company_id=db_company.id,
-                    name=person_data.name,  # Store name directly in association
-                    title=title_for_association,
-                    duke_affiliation_status=person_data.duke_affiliation_status  # Store affiliation status for scoring
-                )
-            )
+        Created Company object
         
-        await db.commit()
-        await db.refresh(db_company)
-    
-    return db_company
+    Raises:
+        Exception: If creation fails
+    """
+    try:
+        # Convert to dict if schema
+        if isinstance(company, schemas.CompanyCreate):
+            company_data = company.dict()
+        else:
+            company_data = company.copy()
+            
+        # Extract people data before creating company
+        people_data = company_data.pop("people", [])
+        
+        # Create company
+        db_company = models.Company(**company_data)
+        db.add(db_company)
+        await db.flush()  # Get the ID
+        
+        # Process people only if provided and not empty
+        if people_data and len(people_data) > 0:
+            # Store the association data for each person
+            for person_data in people_data:
+                # Get person name from either dict or schema object
+                person_name = person_data.name if hasattr(person_data, 'name') else person_data['name']
+                person_title = person_data.title if hasattr(person_data, 'title') else person_data['title']
+                
+                # First, create or get the person
+                person = await person_crud.get_person_by_name(db, person_name)
+                if not person:
+                    # Create new person with all available data
+                    person = await person_crud.create_person(db, {
+                        "name": person_name,
+                        "title": person_title,
+                        "duke_affiliation_status": getattr(person_data, 'duke_affiliation_status', 'no') if hasattr(person_data, 'duke_affiliation_status') else person_data.get('duke_affiliation_status', 'no'),
+                        "relevance_score": getattr(person_data, 'relevance_score', 0) if hasattr(person_data, 'relevance_score') else person_data.get('relevance_score', 0),
+                        "current_company": company_data['name'],
+                        "education": getattr(person_data, 'education', None) if hasattr(person_data, 'education') else person_data.get('education'),
+                        "previous_companies": getattr(person_data, 'previous_companies', None) if hasattr(person_data, 'previous_companies') else person_data.get('previous_companies'),
+                        "twitter_handle": getattr(person_data, 'twitter_handle', None) if hasattr(person_data, 'twitter_handle') else person_data.get('twitter_handle'),
+                        "linkedin_handle": getattr(person_data, 'linkedin_handle', None) if hasattr(person_data, 'linkedin_handle') else person_data.get('linkedin_handle'),
+                        "twitter_summary": getattr(person_data, 'twitter_summary', None) if hasattr(person_data, 'twitter_summary') else person_data.get('twitter_summary'),
+                        "source_links": getattr(person_data, 'source_links', None) if hasattr(person_data, 'source_links') else person_data.get('source_links')
+                    })
+                else:
+                    # Update existing person with new data
+                    person_update = {
+                        "name": person_name,
+                        "title": person_title,
+                        "duke_affiliation_status": getattr(person_data, 'duke_affiliation_status', 'no') if hasattr(person_data, 'duke_affiliation_status') else person_data.get('duke_affiliation_status', 'no'),
+                        "relevance_score": getattr(person_data, 'relevance_score', 0) if hasattr(person_data, 'relevance_score') else person_data.get('relevance_score', 0),
+                        "current_company": company_data['name'],
+                        "education": getattr(person_data, 'education', None) if hasattr(person_data, 'education') else person_data.get('education'),
+                        "previous_companies": getattr(person_data, 'previous_companies', None) if hasattr(person_data, 'previous_companies') else person_data.get('previous_companies'),
+                        "twitter_handle": getattr(person_data, 'twitter_handle', None) if hasattr(person_data, 'twitter_handle') else person_data.get('twitter_handle'),
+                        "linkedin_handle": getattr(person_data, 'linkedin_handle', None) if hasattr(person_data, 'linkedin_handle') else person_data.get('linkedin_handle'),
+                        "twitter_summary": getattr(person_data, 'twitter_summary', None) if hasattr(person_data, 'twitter_summary') else person_data.get('twitter_summary'),
+                        "source_links": getattr(person_data, 'source_links', None) if hasattr(person_data, 'source_links') else person_data.get('source_links')
+                    }
+                    person = await person_crud.update_person(db, person.id, person_update)
+                
+                # Add the association
+                await db.execute(
+                    models.company_person_association.insert().values(
+                        company_id=db_company.id,
+                        person_id=person.id
+                    )
+                )
+            
+            await db.commit()
+            await db.refresh(db_company)
+        
+        return db_company
+        
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"Error creating company: {str(e)}")
+        raise
 
 async def get_company(db: AsyncSession, company_id: int) -> Optional[models.Company]:
     """
@@ -143,37 +177,29 @@ async def update_company(
     company_data: schemas.CompanyUpdate
 ) -> Optional[models.Company]:
     """
-    Update a company. Associated people are only used for scoring and association,
-    not added as Person entries.
+    Update an existing company in the database.
     
     Args:
-        db: The database session
-        company_id: The ID of the company to update
+        db: Database session
+        company_id: ID of company to update
         company_data: Updated company data
         
     Returns:
-        The updated Company model if found, None otherwise
-        
-    Raises:
-        HTTPException: If there's an error during the update process
+        Updated Company object or None if update fails
     """
-    db_company = await get_company(db, company_id)
-    if not db_company:
-        return None
-
-    # Create a dict of updated fields, excluding 'people'
-    update_data = {}
-    for key, value in company_data.dict(exclude_unset=True).items():
-        if key != 'people':
-            update_data[key] = value
-
-    # Handle specific field conversions if needed
-    if "twitter_summary" in update_data and update_data["twitter_summary"]:
-        if hasattr(update_data["twitter_summary"], "dict"):
-            update_data["twitter_summary"] = update_data["twitter_summary"].dict()
-
     try:
-        # --- Update scalar fields --- 
+        # Convert to dict and remove None values
+        update_data = {k: v for k, v in company_data.dict().items() if v is not None}
+        
+        # Extract people data before updating company
+        people_data = update_data.pop("people", None)
+
+        # Handle JSON fields
+        for field in ["investors", "source_links"]:
+            if field in update_data and isinstance(update_data[field], (list, dict)):
+                update_data[field] = json.dumps(update_data[field])
+
+        # Update company fields
         if update_data:
             await db.execute(
                 update(models.Company)
@@ -182,29 +208,78 @@ async def update_company(
             )
             await db.flush()
 
-        # --- Handle people updates --- 
-        people_data = getattr(company_data, 'people', None)
-        if people_data is not None:  # Only process if explicitly included in the update
-            # 1. Clear existing associations
+        # Handle people updates if provided
+        if people_data is not None:
+            # Clear existing associations
             await db.execute(
                 delete(models.company_person_association)
                 .where(models.company_person_association.c.company_id == company_id)
             )
             await db.flush()
 
-            # 2. Add new associations
-            if people_data:  # Only process if there are people to add
+            # Add new associations
+            if people_data:
                 for person_data in people_data:
-                    # Get title for association - default to person's title if available
-                    title_for_association = getattr(person_data, 'title', None) or "unknown"
+                    # Helper function to get value from either dict or schema object
+                    def get_value(field):
+                        if hasattr(person_data, field):
+                            return getattr(person_data, field)
+                        elif isinstance(person_data, dict):
+                            return person_data.get(field)
+                        return None
+
+                    # Get person name and title
+                    person_name = get_value('name')
+                    person_title = get_value('title')
                     
-                    # Add the association with just the name and title
+                    # Get or create person
+                    person = await person_crud.get_person_by_name(db, person_name)
+                    if person:
+                        # Create PersonUpdate schema with all fields, ensuring we pass all data
+                        person_update = schemas.PersonUpdate(
+                            name=person_name,
+                            title=person_title,
+                            duke_affiliation_status=get_value('duke_affiliation_status') or 'no',
+                            relevance_score=get_value('relevance_score') or 0,
+                            current_company=update_data.get('name'),
+                            education=get_value('education'),
+                            previous_companies=get_value('previous_companies'),
+                            twitter_handle=get_value('twitter_handle'),
+                            linkedin_handle=get_value('linkedin_handle'),
+                            twitter_summary=get_value('twitter_summary'),
+                            source_links=get_value('source_links')
+                        )
+                        # Update person with all fields
+                        person = await person_crud.update_person(db, person.id, person_update)
+                        if not person:
+                            logger.error(f"Failed to update person: {person_name}")
+                            continue
+                    else:
+                        # Create PersonCreate schema with all fields
+                        person_create = schemas.PersonCreate(
+                            name=person_name,
+                            title=person_title,
+                            duke_affiliation_status=get_value('duke_affiliation_status') or 'no',
+                            relevance_score=get_value('relevance_score') or 0,
+                            current_company=update_data.get('name'),
+                            education=get_value('education'),
+                            previous_companies=get_value('previous_companies'),
+                            twitter_handle=get_value('twitter_handle'),
+                            linkedin_handle=get_value('linkedin_handle'),
+                            twitter_summary=get_value('twitter_summary'),
+                            source_links=get_value('source_links')
+                        )
+                        # Create person with all fields
+                        person = await person_crud.create_person(db, person_create)
+                        if not person:
+                            logger.error(f"Failed to create person: {person_name}")
+                            continue
+                    
+                    # Add association
                     await db.execute(
                         models.company_person_association.insert().values(
                             company_id=company_id,
-                            name=person_data.name,  # Store name directly in association
-                            title=title_for_association,
-                            duke_affiliation_status=person_data.duke_affiliation_status  # Store affiliation status for scoring
+                            person_id=person.id
                         )
                     )
                 await db.flush()
@@ -221,8 +296,8 @@ async def update_company(
         
     except Exception as e:
         await db.rollback()
-        logger.error(f"Error updating company ID {company_id}: {e}")
-        raise HTTPException(status_code=500, detail=f"Error updating company: {e}") from e
+        logger.error(f"Error updating company: {str(e)}")
+        raise
 
 async def delete_company(db: AsyncSession, company_id: int) -> bool:
     """
