@@ -16,7 +16,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, join
 from typing import Optional, List
 import logging
-import json
 
 from ..db.session import get_db
 from ..db.models import Company, Person, company_person_association
@@ -27,8 +26,11 @@ from ..services.nlp_processor import NLPProcessor
 from ..services.redis import redis_service
 from ..utils.storage import StorageService
 from ..utils.logger import api_logger as logger
-from ..utils.config import settings
 from .auth import verify_api_key
+from ..db.migrate_json_to_db import process_company_people
+import json
+import os
+from datetime import datetime
 
 router = APIRouter(
     tags=["Companies"],
@@ -46,14 +48,14 @@ async def search_company(
     
     Args:
         name: Company name to search for
-        force_refresh: If True, bypass cache and fetch fresh data
+        force_refresh: If True, bypass cache and fetch fresh data for existing companies
         db: Database session
         
     Returns:
         CompanyResponse containing company information
         
     Raises:
-        HTTPException(404): If company not found
+        HTTPException(404): If company not found in search results
         HTTPException(500): For processing errors
     """
     cache_key = f"company:{name.lower()}"
@@ -77,23 +79,41 @@ async def search_company(
                 )
                 people = result.scalars().all()
                 
-                company_dict = {c.name: getattr(db_company, c.name) for c in db_company.__table__.columns}
-                # Reverted: Only include name and title
-                company_dict['people'] = [
-                    {
-                        "name": p.name,
-                        "title": p.title
-                        # Removed: "duke_affiliation_status": p.duke_affiliation_status
-                    }
-                    for p in people
-                ]
+                # Create a dictionary that matches the CompanyResponse schema
+                company_dict = {
+                    "id": db_company.id,
+                    "name": db_company.name,
+                    "duke_affiliation_status": db_company.duke_affiliation_status,
+                    "relevance_score": db_company.relevance_score,
+                    "summary": db_company.summary,
+                    "investors": db_company.investors,
+                    "funding_stage": db_company.funding_stage,
+                    "industry": db_company.industry,
+                    "founded": db_company.founded,
+                    "location": db_company.location,
+                    "twitter_handle": db_company.twitter_handle,
+                    "linkedin_handle": db_company.linkedin_handle,
+                    "twitter_summary": db_company.twitter_summary,
+                    "source_links": db_company.source_links,
+                    "people": [
+                        {
+                            "name": p.name,
+                            "title": p.title
+                        }
+                        for p in people
+                    ]
+                }
                 
                 # Cache the database result
-                await redis_service.set(cache_key, company_dict, expire=3600) # 1 hour cache
+                await redis_service.set(cache_key, company_dict, expire=3600)
                 return CompanyResponse(**company_dict)
         
         # Layer 3: Scrape and process new data
-        logger.info(f"Performing full scrape and process for company: {name}")
+        logger.info(f"Cache/DB miss or force_refresh=True for {name}. Performing full scrape and process.")
+        
+        # Keep track if the company existed before scraping
+        company_existed_before_scrape = await get_company_by_name(db, name) is not None
+        
         scraper = SERPScraper()
         nlp = NLPProcessor()
         storage = StorageService()
@@ -102,62 +122,73 @@ async def search_company(
         raw_serp_data = await scraper.search_company(name)
         if not raw_serp_data or "organic_results" not in raw_serp_data:
             logger.warning(f"SERP search yielded no results for company: {name}")
-            raise HTTPException(status_code=404, detail="Company not found in search results")
+            if company_existed_before_scrape:
+                 logger.error(f"SERP search failed for existing company {name}. Returning 500.")
+                 raise HTTPException(status_code=500, detail="Failed to refresh data for existing company.")
+            else:
+                 raise HTTPException(status_code=404, detail="Company not found in search results")
         
         # Save raw SERP data
         storage.save_raw_data(raw_serp_data, "serp_company", name)
         
-        # Process with integrated NLP pipeline (handles company + person processing)
+        # Process with integrated NLP pipeline
         processed_data = await nlp.process_company(raw_serp_data)
         
         if "error" in processed_data:
              logger.error(f"NLP processing failed for {name}: {processed_data['error']}")
              raise HTTPException(status_code=500, detail=f"Processing error: {processed_data['error']}")
              
-        # Create or update company in database
-        db_company = await get_company_by_name(db, name)
-        if db_company:
-            logger.info(f"Updating existing company in DB: {name}")
-            company = await update_company_in_db(db, db_company.id, processed_data)
+        # --- Determine if we need to Create or Update --- 
+        company_to_save = None
+        if company_existed_before_scrape:
+            logger.info(f"Updating existing company after refresh: {name}")
+            existing_company = await get_company_by_name(db, name)
+            if not existing_company:
+                 logger.error(f"Consistency error: Company {name} existed before scrape but not found now.")
+                 raise HTTPException(status_code=500, detail="Database consistency error during update.")
+                 
+            company_update = CompanyUpdate(**processed_data)
+            company_to_save = await update_company_in_db(db, existing_company.id, company_update)
         else:
-            logger.info(f"Creating new company in DB: {name}")
-            company = await create_company_in_db(db, processed_data)
+            logger.info(f"Creating new company after scrape: {name}")
+            company_create = CompanyCreate(**processed_data)
+            company_to_save = await create_company_in_db(db, company_create)
             
-        if not company:
-            logger.error(f"Failed to create or update company in DB: {name}")
+        if not company_to_save:
+            logger.error(f"Failed to create or update company in DB after processing: {name}")
             raise HTTPException(status_code=500, detail="Failed to save company data to database")
 
-        # Get associated people
+        # Process people data from JSON files using the migration function
+        if processed_data.get("people"):
+            await process_company_people(company_to_save, processed_data["people"], db)
+
+        # Get associated people for the final saved company
         result = await db.execute(
             select(Person)
             .join(company_person_association)
-            .where(company_person_association.c.company_id == company.id)
+            .where(company_person_association.c.company_id == company_to_save.id)
         )
         people = result.scalars().all()
         
         # Prepare data for caching and response
-        company_dict_for_cache = {c.name: getattr(company, c.name) for c in company.__table__.columns}
-        # Reverted: Only include name and title here as well
-        company_dict_for_cache['people'] = [
+        company_dict = {c.name: getattr(company_to_save, c.name) for c in company_to_save.__table__.columns}
+        company_dict['people'] = [
             {
                 "name": p.name,
                 "title": p.title
-                # Removed: "duke_affiliation_status": p.duke_affiliation_status
             }
             for p in people
         ]
         
-        # Cache the final processed result
-        await redis_service.set(cache_key, company_dict_for_cache, expire=3600) # 1 hour cache
-        
+        # Cache the final result
+        await redis_service.set(cache_key, company_dict, expire=3600)
         logger.info(f"Successfully processed and cached company: {name}")
-        return CompanyResponse(**company_dict_for_cache)
+        return CompanyResponse(**company_dict)
         
     except HTTPException as http_exc:
-        # Re-raise HTTPExceptions to maintain status codes
         raise http_exc
     except Exception as e:
-        logger.error(f"Error getting company {name}: {str(e)}", exc_info=True)
+        logger.error(f"Error searching company {name}: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 @router.delete("/{name}", status_code=200)

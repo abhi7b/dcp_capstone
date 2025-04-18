@@ -12,10 +12,12 @@ import pytest
 import os
 import random
 from datetime import datetime
+from pathlib import Path
 
 from app.utils.logger import test_logger as logger
 from app.services.scraper import SERPScraper
 from app.services.nlp_processor import NLPProcessor
+from app.utils.config import settings
 
 # Basic list of queries to test
 QUERIES = [
@@ -43,7 +45,6 @@ TEST_PEOPLE = [
     {"name": "Shyamal Hitesh Anadkat", "is_duke": True},
     {"name": "Diarra Bell", "is_duke": True},
  
- 
     # Non-Duke affiliates
     {"name": "Elon Musk", "is_duke": False},
     {"name": "Mark Zuckerberg", "is_duke": False},
@@ -68,6 +69,9 @@ class TestDukeAffiliationQueries:
     def __init__(self):
         self.scraper = SERPScraper()
         self.nlp_processor = NLPProcessor()
+        # Use the data directory for test output
+        self.test_output_dir = Path(settings.DATA_DIR) / "duke_affiliation_tests"
+        self.test_output_dir.mkdir(parents=True, exist_ok=True)
         
     async def test_person(self, person: Dict[str, Any], query_template: str) -> Dict[str, Any]:
         """
@@ -160,8 +164,8 @@ async def test_query_effectiveness(caplog):
         logger.info(f"\nRunning Test {test_num} with queries: {selected_queries}")
         results = await tester.run_test(selected_queries)
         
-        # Save results for this test
-        filename = f"duke_affiliation_test{test_num}.json"
+        # Save results to data directory
+        filename = tester.test_output_dir / f"duke_affiliation_test{test_num}.json"
         with open(filename, "w") as f:
             json.dump(results, f, indent=2)
         

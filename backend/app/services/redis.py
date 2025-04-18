@@ -12,9 +12,9 @@ Key Features:
 """
 
 from redis import asyncio as aioredis
-from typing import Optional, Any
+from typing import Optional, Any, Dict
 import json
-from datetime import timedelta
+from datetime import timedelta, datetime
 from ..utils.config import settings
 from ..utils.logger import redis_service_logger as logger
 
@@ -32,7 +32,7 @@ class RedisService:
             decode_responses=True
         )
     
-    async def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Optional[Dict]:
         """
         Get value from Redis cache.
         
@@ -43,9 +43,9 @@ class RedisService:
             Deserialized value or None if not found
         """
         try:
-            value = await self.redis.get(key)
-            if value:
-                return json.loads(value)
+            data = await self.redis.get(key)
+            if data:
+                return json.loads(data)
             return None
         except Exception as e:
             logger.error(f"Redis get error: {str(e)}")
@@ -54,7 +54,7 @@ class RedisService:
     async def set(
         self,
         key: str,
-        value: Any,
+        value: Dict,
         expire: int = 3600
     ) -> bool:
         """
@@ -69,15 +69,27 @@ class RedisService:
             True if successful, False otherwise
         """
         try:
+            # Convert datetime objects to ISO format strings
+            serialized_value = self._serialize_for_redis(value)
             await self.redis.setex(
                 key,
                 timedelta(seconds=expire),
-                json.dumps(value)
+                json.dumps(serialized_value)
             )
             return True
         except Exception as e:
             logger.error(f"Redis set error: {str(e)}")
             return False
+    
+    def _serialize_for_redis(self, value: Any) -> Any:
+        """Helper function to serialize data for Redis storage."""
+        if isinstance(value, datetime):
+            return value.isoformat()
+        elif isinstance(value, dict):
+            return {k: self._serialize_for_redis(v) for k, v in value.items()}
+        elif isinstance(value, list):
+            return [self._serialize_for_redis(item) for item in value]
+        return value
     
     async def delete(self, key: str) -> bool:
         """

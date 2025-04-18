@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field, validator, root_validator
 from typing import List, Optional, Dict, Any, Union
 from datetime import datetime
 import re
+import json
 
 # Base schemas
 class EducationBase(BaseModel):
@@ -168,15 +169,22 @@ class PersonUpdate(BaseModel):
     title: Optional[str] = None
     duke_affiliation_status: Optional[str] = None
     relevance_score: Optional[int] = None
-    education: Optional[str] = None
+    education: Optional[Union[str, List[Dict[str, str]]]] = None
     current_company: Optional[str] = None
-    previous_companies: Optional[str] = None
+    previous_companies: Optional[Union[str, List[str]]] = None
     twitter_handle: Optional[str] = None
     linkedin_handle: Optional[str] = None
-    source_links: Optional[str] = None
-    last_updated: Optional[datetime] = datetime.utcnow()
+    twitter_summary: Optional[str] = None
+    source_links: Optional[Union[str, List[str]]] = None
 
-    # Add validators if needed for update context
+    @validator('education', 'previous_companies', 'source_links', pre=True)
+    def convert_to_json_string(cls, v):
+        """Convert list/dict fields to JSON strings if needed."""
+        if v is None:
+            return None
+        if isinstance(v, (list, dict)):
+            return json.dumps(v)
+        return v
 
 # Define a minimal schema for people within company responses
 class PersonBasicInfo(BaseModel):
@@ -190,7 +198,6 @@ class PersonBasicInfo(BaseModel):
 class CompanyCreate(CompanyBase):
     """Schema for creating a new company record."""
     people: Optional[List[CompanyPersonAssociation]] = None
-    raw_data_path: Optional[str] = None
 
 class CompanyUpdate(CompanyBase):
     """Schema for updating an existing company record."""

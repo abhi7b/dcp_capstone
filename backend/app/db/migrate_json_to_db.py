@@ -5,7 +5,7 @@ This script handles both company and person data, maintaining relationships.
 import os
 import json
 import asyncio
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,6 +15,9 @@ from .session import async_session
 from .models import Company, Person
 from ..utils.logger import db_logger as logger
 from ..utils.config import settings
+from . import person_crud # Import person_crud for lookup
+# Import the formatters
+from .formatting_utils import format_education, format_previous_companies, format_source_links
 
 def preprocess_json_field(value: Any) -> Any:
     """Preprocess JSON fields to ensure proper format."""
@@ -143,140 +146,162 @@ async def process_company_data(company_data: dict, db: AsyncSession) -> Company:
         await db.rollback()
         raise
 
-async def process_person_data(db: AsyncSession, person_data: dict) -> Person:
+async def process_person_data(db: AsyncSession, person_data: dict, current_company_name: Optional[str] = None) -> Optional[Person]:
     """
-    Process person data and insert/update into the database.
+    Process person data from JSON and insert or update into database.
+    Formats complex fields into simplified strings using utility functions.
+    Ensures that existing data is not overwritten with None when updating via company processing.
     
     Args:
         db: Database session
-        person_data: Dictionary containing person information
+        person_data: Dictionary containing person data
+        current_company_name: Optional name of the current company (used when called from company processing)
         
     Returns:
-        Person object
+        Created or updated Person model if successful, None otherwise
     """
     try:
-        # Preprocess education data
-        education = None
-        if "education" in person_data and isinstance(person_data["education"], list):
-            education_entries = []
-            for entry in person_data["education"]:
-                if isinstance(entry, dict):
-                    parts = []
-                    if entry.get("school"):
-                        parts.append(f"School: {entry['school']}")
-                    if entry.get("degree"):
-                        parts.append(f"Degree: {entry['degree']}")
-                    if entry.get("field"):
-                        parts.append(f"Field: {entry['field']}")
-                    if entry.get("year"):
-                        parts.append(f"Year: {entry['year']}")
-                    if parts:
-                        education_entries.append("; ".join(parts))
-            if education_entries:
-                education = " | ".join(education_entries)
+        person_name = person_data["name"]
+        
+        # Check if person already exists
+        result = await db.execute(select(Person).where(Person.name == person_name))
+        existing_person = result.scalars().first()
 
-        # Preprocess previous companies
-        previous_companies = None
-        if "previous_companies" in person_data and isinstance(person_data["previous_companies"], list):
-            previous_companies = ", ".join(person_data["previous_companies"])
-
-        # Preprocess source links
-        source_links = None
-        if "source_links" in person_data and isinstance(person_data["source_links"], list):
-            links = []
-            for link in person_data["source_links"]:
-                if isinstance(link, dict) and "url" in link:
-                    links.append(link["url"])
-                elif isinstance(link, str):
-                    links.append(link)
-            if links:
-                source_links = ", ".join(links)
-
-        # Prepare data for insertion
+        # Prepare base values from incoming data
         person_values = {
-            "name": person_data["name"],
+            "name": person_name,
             "title": person_data.get("title"),
-            "duke_affiliation_status": person_data.get("duke_affiliation_status", "unknown"),
+            "duke_affiliation_status": person_data.get("duke_affiliation_status", "no"),
             "relevance_score": person_data.get("relevance_score", 0),
-            "education": education,
-            "current_company": person_data.get("current_company"),
-            "previous_companies": previous_companies,
+            "current_company": current_company_name if current_company_name else person_data.get("current_company"),
             "twitter_handle": person_data.get("twitter_handle"),
             "linkedin_handle": person_data.get("linkedin_handle"),
             "twitter_summary": person_data.get("twitter_summary"),
-            "source_links": source_links,
-            "created_at": datetime.utcnow(),
             "updated_at": datetime.utcnow()
         }
+
+        # Format complex fields using imported functions
+        # Handle education as a list of dictionaries
+        if "education" in person_data and isinstance(person_data["education"], list):
+            person_values["education"] = format_education(person_data["education"])
         
-        # Insert or update person
-        result = await db.execute(
-            text("""
-                INSERT INTO persons (
-                    name, title, duke_affiliation_status, relevance_score,
-                    education, current_company, previous_companies,
-                    twitter_handle, linkedin_handle, twitter_summary,
-                    source_links, created_at, updated_at
-                ) VALUES (
-                    :name, :title, :duke_affiliation_status, :relevance_score,
-                    :education, :current_company, :previous_companies,
-                    :twitter_handle, :linkedin_handle, :twitter_summary,
-                    :source_links, :created_at, :updated_at
-                ) ON CONFLICT (name) DO UPDATE SET
-                    title = EXCLUDED.title,
-                    duke_affiliation_status = EXCLUDED.duke_affiliation_status,
-                    relevance_score = EXCLUDED.relevance_score,
-                    education = EXCLUDED.education,
-                    current_company = EXCLUDED.current_company,
-                    previous_companies = EXCLUDED.previous_companies,
-                    twitter_handle = EXCLUDED.twitter_handle,
-                    linkedin_handle = EXCLUDED.linkedin_handle,
-                    twitter_summary = EXCLUDED.twitter_summary,
-                    source_links = EXCLUDED.source_links,
-                    updated_at = EXCLUDED.updated_at
+        # Handle previous_companies as a list
+        if "previous_companies" in person_data and isinstance(person_data["previous_companies"], list):
+            person_values["previous_companies"] = format_previous_companies(person_data["previous_companies"])
+        
+        # Handle source_links as a list of dictionaries
+        if "source_links" in person_data and isinstance(person_data["source_links"], list):
+            person_values["source_links"] = format_source_links(person_data["source_links"])
+        
+        if existing_person:
+            # Update: Merge incoming data with existing, prioritizing incoming non-None values
+            logger.info(f"Person {person_name} exists. Merging data.")
+            update_data = {}
+            allowed_fields = get_model_fields(Person) 
+            
+            for key in allowed_fields:
+                if key == 'created_at': # Don't overwrite created_at
+                    update_data[key] = existing_person.created_at
+                    continue
+                if key == 'id': # Don't try to update id
+                    continue 
+                    
+                incoming_value = person_values.get(key)
+                if incoming_value is not None:
+                    update_data[key] = incoming_value
+                else:
+                    update_data[key] = getattr(existing_person, key, None)
+            
+            # Execute update
+            set_clauses = ", ".join([f"{key} = :{key}" for key in update_data if key not in ['name', 'id']])
+            update_query = text(f"""
+                    UPDATE persons SET {set_clauses}
+                    WHERE name = :name
+                """)
+            await db.execute(update_query, {**update_data, "name": person_name})
+            person_id = existing_person.id
+            logger.info(f"Successfully updated person: {person_name} with ID: {person_id}")
+
+        else:
+            # Insert: Use prepared values, set created_at
+            logger.info(f"Person {person_name} does not exist. Inserting new record.")
+            person_values["created_at"] = datetime.utcnow()
+            
+            insert_data = {k: v for k, v in person_values.items() if v is not None}
+            columns = ", ".join(insert_data.keys())
+            placeholders = ", ".join([f":{key}" for key in insert_data.keys()])
+            
+            insert_query = text(f"""
+                INSERT INTO persons ({columns})
+                VALUES ({placeholders})
                 RETURNING id
-            """),
-            person_values
-        )
-        
-        person_id = result.scalar_one()
-        logger.info(f"Successfully inserted/updated person: {person_data['name']} with ID: {person_id}")
-        
-        # Commit the changes
+            """)
+            result = await db.execute(insert_query, insert_data)
+            person_id = result.scalar_one()
+            logger.info(f"Successfully inserted person: {person_name} with ID: {person_id}")
+
         await db.commit()
         
-        # Fetch and return the person object with a fresh query
         person = await db.get(Person, person_id)
-        await db.refresh(person)  # Ensure we have the latest data
         return person
         
     except Exception as e:
-        logger.error(f"Error processing person data: {str(e)}")
+        logger.error(f"Error processing person data for {person_data.get('name', '?')}: {str(e)}")
         await db.rollback()
         raise
 
 async def process_company_people(company: Company, people_data: list, db: AsyncSession) -> None:
     """
-    Process and insert company-people relationships.
+    Process company-people relationships using names from company data.
+    Loads complete person data from JSON files when creating/updating person records.
     
     Args:
         company: Company object
-        people_data: List of person data dictionaries
+        people_data: List of person data dictionaries (containing at least 'name')
         db: Database session
     """
     try:
-        logger.info(f"Processing {len(people_data)} people for company: {company.name} (ID: {company.id})")
+        logger.info(f"Processing associations for {len(people_data)} people listed under company: {company.name} (ID: {company.id})")
         
-        for person_data in people_data:
-            logger.info(f"Processing person: {person_data.get('name')}")
+        # First, clear any existing associations for this company to ensure clean state
+        await db.execute(
+            text("""
+                DELETE FROM company_person_association 
+                WHERE company_id = :company_id
+            """),
+            {"company_id": company.id}
+        )
+        await db.commit()
+        logger.info(f"Cleared existing associations for company {company.name}")
+        
+        associations_created = 0
+        for person_info in people_data:
+            person_name = person_info.get('name')
+            if not person_name:
+                logger.warning(f"Skipping person entry with no name in company {company.name}")
+                continue
+
+            logger.info(f"Processing person: {person_name} for company {company.name}")
             
-            # First process the person to ensure they exist in the database
-            person = await process_person_data(db, person_data)
+            # Construct the person JSON file path
+            person_filename = f"person_{person_name.replace(' ', '_')}.json"
+            person_file_path = os.path.join(settings.JSON_INPUTS_DIR, person_filename)
+            
+            # Load the complete person data from their JSON file
+            person_data = await load_json_file(person_file_path)
+            if not person_data:
+                logger.warning(f"Could not load person data from {person_filename}. Skipping.")
+                continue
+                
+            logger.info(f"Loaded complete person data for {person_name}")
+            
+            # Process the person with their complete data
+            person = await process_person_data(db, person_data, current_company_name=company.name)
             
             if person:
-                logger.info(f"Found person in database: {person.name} (ID: {person.id})")
+                logger.info(f"Successfully processed person: {person.name} (ID: {person.id})")
                 
-                # Create the association
+                # Create association
                 result = await db.execute(
                     text("""
                         INSERT INTO company_person_association 
@@ -289,24 +314,27 @@ async def process_company_people(company: Company, people_data: list, db: AsyncS
                     {"company_id": company.id, "person_id": person.id}
                 )
                 
-                # Verify the association was created
+                # Verify the association was created or already existed
                 association = result.first()
                 if association:
                     logger.info(f"Created association between {company.name} (ID: {company.id}) and {person.name} (ID: {person.id})")
+                    associations_created += 1
                 else:
                     logger.info(f"Association already exists between {company.name} (ID: {company.id}) and {person.name} (ID: {person.id})")
+                    associations_created += 1
                 
-                # Commit after each association to ensure data is persisted
+                # Commit after each successful association attempt
                 await db.commit()
-                logger.info(f"Committed association for {person.name}")
+                logger.info(f"Committed association attempt for {person.name}")
+                
             else:
-                logger.warning(f"Person {person_data.get('name')} not found in database")
+                logger.warning(f"Failed to process person data for {person_name}. Skipping association.")
         
-        # Final commit to ensure all changes are persisted
+        # Final commit (optional, as commits happen per person, but good for safety)
         await db.commit()
-        logger.info(f"Successfully committed all company-people associations for {company.name}")
+        logger.info(f"Finished processing associations for {company.name}")
         
-        # Verify the associations were created
+        # Verify the final count of associations
         result = await db.execute(
             text("""
                 SELECT COUNT(*) 
@@ -316,15 +344,17 @@ async def process_company_people(company: Company, people_data: list, db: AsyncS
             {"company_id": company.id}
         )
         count = result.scalar_one()
-        logger.info(f"Verified {count} associations exist for {company.name}")
+        logger.info(f"Verified {count} associations exist for {company.name}. Process created/found {associations_created} associations.")
+        if count != associations_created:
+             logger.warning(f"Mismatch in expected ({associations_created}) and actual ({count}) association count for company {company.name}.")
         
     except Exception as e:
-        logger.error(f"Error processing company people: {str(e)}")
+        logger.error(f"Error processing company people associations for {company.name}: {str(e)}")
         await db.rollback()
         raise
 
 async def migrate_json_to_db():
-    """Main migration function to process all JSON files."""
+    """Main migration function to process specific JSON files."""
     # Process company data from json_inputs
     json_dir = settings.JSON_INPUTS_DIR
     
@@ -334,13 +364,19 @@ async def migrate_json_to_db():
         logger.error(f"JSON inputs directory not found: {json_dir}")
         return
     
+    # List of specific files to process
+    files_to_process = [
+        "person_Derek_Carlson.json",
+        "person_Devon_Spinnler.json",
+        "person_Steven_Galanis.json",
+        "person_Dario_Amodei.json",
+        "company_Cameo.json"
+    ]
+    
     async with async_session() as db:
         try:
-            # Process all JSON files
-            for filename in os.listdir(json_dir):
-                if not filename.endswith('.json'):
-                    continue
-                    
+            # Process only the specified JSON files
+            for filename in files_to_process:
                 file_path = os.path.join(json_dir, filename)
                 logger.info(f"Processing file: {file_path}")
                 
@@ -362,23 +398,14 @@ async def migrate_json_to_db():
                         if "people" in data:
                             logger.info(f"Found {len(data['people'])} people in company data")
                             await process_company_people(company, data["people"], db)
-                            logger.info(f"Processed {len(data['people'])} people for {company.name}")
-                        else:
-                            logger.warning(f"No people data found in {filename}")
-                    else:
-                        logger.warning(f"Failed to process company from {filename}")
-                elif filename.startswith('person_'):
-                    # Process standalone person data
-                    logger.info(f"Processing standalone person data from {filename}")
+                else:
+                    # Process person data
+                    logger.info(f"Processing person data from {filename}")
                     person = await process_person_data(db, data)
                     if person:
                         logger.info(f"Successfully processed person: {person.name} (ID: {person.id})")
-                    else:
-                        logger.warning(f"Failed to process person from {filename}")
             
-            # Final commit to ensure all changes are persisted
-            await db.commit()
-            logger.info("Successfully completed migration")
+            logger.info("Migration completed successfully")
             
         except Exception as e:
             logger.error(f"Error during migration: {str(e)}")

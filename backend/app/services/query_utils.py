@@ -85,21 +85,18 @@ class QueryBuilder:
             ],
             "education": [
                 # f"{founder_name} education university degree alumni",
-                f"{founder_name} graduated school college",
+                # f"{founder_name} graduated school college",
 
             ],
             # Duke affiliation queries
             "duke affiliation": [
                 f'"{founder_name}" "Duke University" alumni degree graduate',
-                f'"{founder_name}" "Duke" education history'
+                # f'"{founder_name}" "Duke" education history'
 
             ],
             "social_media": [
                 f"{founder_name} twitter linkedin profiles",
                 # f"{founder_name} social media accounts"
-            ],
-            "funding_history": [
-                f"{founder_name} funding raised investors venture capital"
             ]
         }
         

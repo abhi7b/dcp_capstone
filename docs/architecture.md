@@ -4,7 +4,7 @@
 The system consists of three main components:
 1. Data Collection Service
 2. Data Processing Pipeline
-3. REST API Service
+3. REST API Service with Streamlit Frontend
 
 ## Component Details
 
@@ -14,12 +14,15 @@ The system consists of three main components:
   - Time filters (past 6-12 months)
   - Google Dorking for specific sources
 - **Nitter Integration**
-  - Twitter data scraping
+  - Twitter data scraping via multiple Nitter instances
+  - Fallback mechanism for instance availability
+  - Rate limiting and error handling
 
 ### 2. Data Processing Pipeline
 - **OpenAI Integration**
   - Entity extraction from raw data
   - Structured JSON output
+  - GPT-4 powered analysis
 - **Affiliation Resolution**
   - Duke affiliation classification
   - Scoring based on role and evidence
@@ -35,25 +38,29 @@ The system consists of three main components:
   - Rate limiting per API key
   - Request logging middleware
   - Custom error handling
+  - Redis caching for performance
 - **Database Layer**
   - PostgreSQL with Supabase
-  - Automatic 3-day refresh cycle
+  - Automatic refresh cycle
   - Health monitoring
+- **Streamlit Frontend**
+  - Interactive search interface
+  - Real-time API integration
+  - Data visualization
+  - Configurable settings
 
 ## Data Flow
-1. Daily scheduled tasks trigger data collection
-2. Raw data stored in `/data/raw/`
-3. Processing pipeline converts to structured data to store in `/data/json_inputs/`
-4. Processed data stored in PostgreSQL
-5. API serves processed data with caching
+1. API endpoints trigger data collection on demand
+2. Raw data processed through OpenAI pipeline
+3. Processed data stored in PostgreSQL
+4. API serves processed data with Redis caching
+5. Streamlit frontend provides user interface
 
 ## API Structure
-- `/api/companies` - Company search and details
-- `/api/person` - Person search and profiles
-- `/api/auth` - Authentication endpoints
+- `/api/company/search/{name}` - Company search
+- `/api/founder/search/{name}` - Founder search
 - `/api/health` - System health check
-- `/api/docs` - API documentation
-- `/api/redoc` - API reference
+- `/api/docs` - API documentation (Swagger UI)
 
 ## Scoring Algorithm
 ```python
@@ -62,7 +69,16 @@ Score = (0.4 * Duke Affiliation) + (0.4 * Startup Potential) + (0.2 * Content Re
 
 ### Scoring Factors
 1. **Duke Affiliation (40%)**
+   - Alumni status verification
+   - Leadership position
+   - Company connection strength
 
 2. **Startup Potential (40%)**
+   - Funding stage
+   - Growth metrics
+   - Market opportunity
 
 3. **Content Relevance (20%)**
+   - Recent activity
+   - Industry alignment
+   - News coverage

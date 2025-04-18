@@ -4,7 +4,7 @@ An AI-powered service to identify and filter investment opportunities by focusin
 
 ## Overview
 
-This system collects data from search engines and Twitter (via Nitter), processes it using NLP and LLM techniques, and serves actionable insights through REST APIs and a user-friendly frontend.
+This system collects data from Serp API and Twitter (via Nitter), processes it using NLP and LLM techniques, and serves actionable insights through REST APIs and a streamlit interface.
 
 ## Key Features
 
@@ -15,7 +15,6 @@ This system collects data from search engines and Twitter (via Nitter), processe
 
 - **Investment Opportunity Analysis**:
   - Focus on early-stage startups (pre-seed, seed, Series A)
-  - Monitor funding announcements and growth signals
   - Score companies based on relevance and potential
 
 - **Automated Data Pipeline**:
@@ -65,12 +64,18 @@ capstone-dcp/
 
 ### Prerequisites
 - Python 3.9+
-- PostgreSQL
+- PostgreSQL (or Supabase)
 - Redis
-- Docker (optional)
+- Streamlit (for frontend)
+- Docker (optional, for containerized deployment)
 
 ### Environment Setup
-1. Clone the repository
+
+1. Clone the repository:
+   ```bash
+   git clone [repository-url]
+   cd capstone-dcp
+   ```
 
 2. Create and activate virtual environment:
    ```bash
@@ -78,7 +83,7 @@ capstone-dcp/
    source venv/bin/activate  # On Windows: .\venv\Scripts\activate
    ```
 
-3. Install dependencies:
+3. Install backend dependencies:
    ```bash
    cd backend
    pip install -r requirements.txt
@@ -86,28 +91,65 @@ capstone-dcp/
 
 4. Set up environment variables:
    ```bash
+   # Copy example environment files
    cp .env.example .env
-   # Edit .env with your configuration
+   cp .streamlit/secrets.toml.example .streamlit/secrets.toml
+   
+   # Edit .env and .streamlit/secrets.toml with your configuration
    ```
 
-### Running the Backend
+5. Configure Supabase (if using):
+   - Create a new Supabase project
+   - Update DATABASE_URL in .env with your Supabase connection string
+   - Set up necessary database tables and schemas
 
-1. Start PostgreSQL and Redis:
+### Running the Application
+
+1. Start Redis (required for caching and background tasks):
    ```bash
-   # Using Docker (optional)
-   docker-compose up -d postgres redis
+   sudo service redis-server start
    ```
 
-2. Run database migrations:
+2. Initialize the database:
    ```bash
+   cd backend
    alembic upgrade head
    ```
 
-3. Start the FastAPI server:
+3. Start the backend service:
    ```bash
-   uvicorn app.main:app --reload
+   # Development mode
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 
+4. Start the Streamlit frontend:
+   ```bash
+   # In a new terminal
+   cd frontend
+   streamlit run streamlit_app.py
+   ```
+
+### Development Workflow
+
+1. **API Development**:
+   - Backend runs on `http://localhost:8000`
+   - API documentation available at `http://localhost:8000/docs`
+   - Test endpoints using the interactive Swagger UI
+
+2. **Frontend Development**:
+   - Streamlit runs on `http://localhost:8501`
+   - Changes to frontend code auto-reload
+   - Use `.streamlit/secrets.toml` for frontend configuration
+
+
+
+### Deployment Notes
+
+- Ensure all environment variables are properly set in production
+- Use secure API keys and secrets
+- Configure proper CORS settings for production
+- Set up proper logging and monitoring
+- Consider using Docker Compose for containerized deployment
 
 ## API Documentation
 

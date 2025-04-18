@@ -181,8 +181,8 @@ class SERPScraper:
         founder_queries = self.query_builder.get_founder_queries(founder_name)
         
         all_categories = [
-            "bio_info", "company_info", "education", 
-            "duke affiliation", "social_media", "funding_history"
+            "bio_info", "company_info",
+            "duke affiliation", "social_media"
         ]
         
         combined_results = {

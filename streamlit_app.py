@@ -29,16 +29,19 @@ tab = st.sidebar.radio("Select Function", ["Company Search", "Founder Search"])
 if tab == "Company Search":
     st.header("🔍 Company Search")
     company_name = st.text_input("Enter company name:")
+
+    force_refresh = st.checkbox("Force refresh data", value=False, 
+                              help="Check this to fetch fresh data from sources instead of using cached data")
     if st.button("Search Company"):
         if not company_name:
             st.error("Please enter a company name to search.")
         else:
             try:
                 response = requests.get(
-    f"{API_BASE_URL}/api/company/search/{company_name}",
-    headers=headers,
-    params={"force_refresh": False},  # if you need it
-)
+                    f"{API_BASE_URL}/api/company/search/{company_name}", 
+                    headers=headers, 
+                    params={"force_refresh": force_refresh}
+                )
                 response.raise_for_status()
                 data = response.json()
 
@@ -54,17 +57,19 @@ if tab == "Company Search":
 elif tab == "Founder Search":
     st.header("🔍 Founder Search")
     founder_name = st.text_input("Enter founder name:")
+
+    force_refresh = st.checkbox("Force refresh data", value=False, 
+                              help="Check this to fetch fresh data from sources instead of using cached data")
     if st.button("Search Founder"):
         if not founder_name:
             st.error("Please enter a founder name to search.")
         else:
             try:
                 response = requests.get(
-    f"{API_BASE_URL}/api/person/search/{founder_name}",
-    headers=headers,
-    params={"force_refresh": False},
-)
-
+                    f"{API_BASE_URL}/api/founder/search/{founder_name}", 
+                    headers=headers, 
+                    params={"force_refresh": force_refresh}
+                )
                 response.raise_for_status()
                 data = response.json()
 

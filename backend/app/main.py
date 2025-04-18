@@ -265,7 +265,7 @@ async def health_check():
                 },
                 "api": {
                     "status": "active",
-                    "rate_limit": settings.RATE_LIMIT_PER_MINUTE,
+                    "rate_limit": getattr(settings, "RATE_LIMIT_PER_MINUTE", 60),
                     "environment": os.getenv("ENVIRONMENT", "development")
                 }
             },

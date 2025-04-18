@@ -15,6 +15,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, join
 from typing import List, Optional
+import json
+import asyncio
 
 from ..db import schemas, crud, session, person_crud
 from ..db.models import Person, Company, company_person_association
@@ -30,7 +32,6 @@ from .auth import verify_api_key
 from ..services.redis import redis_service
 
 router = APIRouter(
-    prefix="/api/person",
     tags=["People"],
     dependencies=[Depends(verify_api_key)]
 )
@@ -42,10 +43,10 @@ async def search_person(
     db: AsyncSession = Depends(session.get_db)
 ):
     """
-    Search for person information using a multi-layered approach.
+    Search for person information using a three-layered approach.
     
     Args:
-        name: Name of person to search for
+        name: Person name to search for
         force_refresh: If True, bypass cache and fetch fresh data
         db: Database session
         
@@ -53,45 +54,55 @@ async def search_person(
         PersonResponse containing person information
         
     Raises:
-        HTTPException(404): If person not found
+        HTTPException(404): If person not found in search results
         HTTPException(500): For processing errors
     """
+    cache_key = f"person:{name.lower()}"
     try:
         # Layer 1: Check Redis cache (unless force_refresh is True)
         if not force_refresh:
-            cached_data = await redis_service.get(f"person:{name}")
+            cached_data = await redis_service.get(cache_key)
             if cached_data:
                 logger.info(f"Cache hit for person: {name}")
                 return schemas.PersonResponse(**cached_data)
             
             # Layer 2: Check database
-            result = await db.execute(
-                select(Person).where(Person.name.ilike(f"%{name}%"))
-            )
-            person = result.scalars().first()
-            
+            person = await person_crud.get_person_by_name(db, name)
             if person:
+                logger.info(f"Database hit for person: {name}")
                 # Get associated companies
-                companies_result = await db.execute(
+                result = await db.execute(
                     select(Company)
                     .join(company_person_association)
                     .where(company_person_association.c.person_id == person.id)
                 )
-                companies = companies_result.scalars().all()
+                companies = result.scalars().all()
                 
-                # Prepare person data with companies
-                person_data = person.dict()
-                person_data['companies'] = [{"name": c.name} for c in companies]
+                # Create response dictionary
+                person_dict = {
+                    "id": person.id,
+                    "name": person.name,
+                    "title": person.title,
+                    "current_company": person.current_company,
+                    "education": person.education,
+                    "previous_companies": person.previous_companies,
+                    "twitter_handle": person.twitter_handle,
+                    "linkedin_handle": person.linkedin_handle,
+                    "duke_affiliation_status": person.duke_affiliation_status,
+                    "relevance_score": person.relevance_score,
+                    "twitter_summary": person.twitter_summary,
+                    "source_links": person.source_links,
+                    "created_at": person.created_at.isoformat() if person.created_at else None,
+                    "updated_at": person.updated_at.isoformat() if person.updated_at else None,
+                    "companies": [{"name": c.name} for c in companies]
+                }
                 
                 # Cache the database result
-                await redis_service.set(
-                    f"person:{name}",
-                    person_data,
-                    expire=3600  # 1 hour cache
-                )
-                return schemas.PersonResponse(**person_data)
+                await redis_service.set(cache_key, person_dict, expire=3600)
+                return schemas.PersonResponse(**person_dict)
         
         # Layer 3: Scrape and process new data
+        logger.info(f"Performing full scrape and process for person: {name}")
         scraper = SERPScraper()
         processor = PersonProcessor()
         nitter_scraper = NitterScraper()
@@ -99,79 +110,92 @@ async def search_person(
         founder_scorer = FounderScorer()
         storage = StorageService()
         
-        # Get SERP results
-        serp_results = await scraper.search_person(name)
-        if not serp_results or "organic_results" not in serp_results:
-            raise HTTPException(status_code=404, detail=f"No information found for person: {name}")
-            
+        # Execute SERP search
+        raw_serp_data = await scraper.search_founder(name)
+        
+        if not raw_serp_data or "organic_results" not in raw_serp_data:
+            logger.warning(f"SERP search yielded no results for person: {name}")
+            raise HTTPException(status_code=404, detail="Person not found in search results")
+        
         # Save raw SERP data
-        storage.save_raw_data(serp_results, "serp_person", name)
+        storage.save_raw_data(raw_serp_data, "serp_person", name)
         
-        # Process person data
-        person_data = await processor.process_person(name, serp_results)
-        if not person_data:
-            raise HTTPException(status_code=404, detail=f"Could not process person data for: {name}")
+        # Process with integrated NLP pipeline
+        processed_data = await processor.process_person(name, raw_serp_data)
+        
+        if "error" in processed_data:
+            logger.error(f"Processing failed for {name}: {processed_data['error']}")
+            raise HTTPException(status_code=500, detail=f"Processing error: {processed_data['error']}")
             
-        # Save intermediate data
-        storage.save_processed_data(person_data, "person", f"{name}_intermediate")
+        # Create or update person in database
+        person_values = {
+            "name": name,
+            "title": processed_data.get("title"),
+            "current_company": processed_data.get("current_company"),
+            "education": processed_data.get("education", []),
+            "previous_companies": processed_data.get("previous_companies", []),
+            "twitter_handle": processed_data.get("twitter_handle"),
+            "linkedin_handle": processed_data.get("linkedin_handle"),
+            "duke_affiliation_status": processed_data.get("duke_affiliation_status", "no"),
+            "relevance_score": processed_data.get("relevance_score", 0),
+            "twitter_summary": processed_data.get("twitter_summary"),
+            "source_links": processed_data.get("source_links", [])
+        }
         
-        # Get and process Twitter data if handle exists
-        twitter_urgency_score = None
-        if person_data.get("twitter_handle"):
-            nitter_results = await nitter_scraper.get_raw_tweets(person_data["twitter_handle"])
-            if nitter_results and not nitter_results.get("twitter_unavailable", True) and nitter_results.get("raw_tweets"):
-                storage.save_raw_data(nitter_results, "nitter", name)
-                
-                # Analyze tweets
-                summary, urgency_score = await nitter_nlp.analyze_tweets(nitter_results["raw_tweets"])
-                twitter_urgency_score = urgency_score
-                
-                # Save Twitter analysis
-                nitter_analysis = {
-                    "summary": summary,
-                    "urgency_score": urgency_score
-                }
-                storage.save_processed_data(nitter_analysis, "nitter_analysis", name)
-                person_data["twitter_summary"] = summary
-        
-        # Calculate final score
-        person_data["relevance_score"] = founder_scorer.calculate_relevance_score(
-            person_data=person_data,
-            twitter_urgency_score=twitter_urgency_score
-        )
-        
-        # Save final data
-        storage.save_data(person_data, "person", name, settings.JSON_INPUTS_DIR)
-        
-        # Layer 4: Store in database and cache
-        person = await person_crud.create_person(db=db, person=person_data)
-        if not person:
-            raise HTTPException(status_code=500, detail="Failed to store person data")
+        # Check if person exists
+        existing_person = await person_crud.get_person_by_name(db, name)
+        if existing_person:
+            # Convert dictionary to PersonUpdate schema and let validators handle conversion
+            person_update = schemas.PersonUpdate(**person_values)
+            person = await person_crud.update_person(db, existing_person.id, person_update)
+            if not person:
+                logger.error(f"Failed to update person in database: {name}")
+                raise HTTPException(status_code=500, detail="Failed to update person data in database")
+        else:
+            # Convert dictionary to PersonCreate schema and let validators handle conversion
+            person_create = schemas.PersonCreate(**person_values)
+            person = await person_crud.create_person(db, person_create)
+            if not person:
+                logger.error(f"Failed to create person in database: {name}")
+                raise HTTPException(status_code=500, detail="Failed to create person data in database")
             
-        # Get associated companies
-        companies_result = await db.execute(
+        # Get associated companies for response
+        result = await db.execute(
             select(Company)
             .join(company_person_association)
             .where(company_person_association.c.person_id == person.id)
         )
-        companies = companies_result.scalars().all()
+        companies = result.scalars().all()
         
-        # Prepare person data with companies
-        person_data = person.dict()
-        person_data['companies'] = [{"name": c.name} for c in companies]
-            
-        # Cache the result
-        await redis_service.set(
-            f"person:{name}",
-            person_data,
-            expire=3600  # 1 hour cache
-        )
+        # Prepare response data
+        person_dict = {
+            "id": person.id,
+            "name": person.name,
+            "title": person.title,
+            "current_company": person.current_company,
+            "education": person.education,
+            "previous_companies": person.previous_companies,
+            "twitter_handle": person.twitter_handle,
+            "linkedin_handle": person.linkedin_handle,
+            "duke_affiliation_status": person.duke_affiliation_status,
+            "relevance_score": person.relevance_score,
+            "twitter_summary": person.twitter_summary,
+            "source_links": person.source_links,
+            "created_at": person.created_at.isoformat() if person.created_at else None,
+            "updated_at": person.updated_at.isoformat() if person.updated_at else None,
+            "companies": [{"name": c.name} for c in companies]
+        }
         
-        return schemas.PersonResponse(**person_data)
+        # Cache the final result
+        await redis_service.set(cache_key, person_dict, expire=3600)
+        logger.info(f"Successfully processed and cached person: {name}")
+        return schemas.PersonResponse(**person_dict)
         
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
-        logger.error(f"Error processing person {name}: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error searching person {name}: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 
 @router.get("/", response_model=List[schemas.PersonResponse])
 async def list_people(
