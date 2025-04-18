@@ -59,6 +59,7 @@ coverage.xml
 data/raw/*
 data/json_inputs/*
 data/logs/*
+backend/app/data/*
 !data/raw/.gitkeep
 !data/json_inputs/.gitkeep
 !data/logs/.gitkeep
