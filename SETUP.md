@@ -2,20 +2,13 @@
 
 ## Step 1: Install Prerequisites
 
-### 1.1 Install Python and Git
+### Install Python and Git
 ```bash
-# Check Python version (should be 3.8 or higher)
+# Check Python version (should be 3.10)
 python --version
 
-# Install Git if not already installed
-# On macOS:
-brew install git
-# On Linux:
-sudo apt-get install git
-# On Windows: Download from https://git-scm.com/downloads
-```
 
-### 1.2 Install Redis
+### Install Redis
 ```bash
 # On macOS:
 brew install redis
@@ -25,7 +18,6 @@ brew services start redis
 sudo apt-get install redis-server
 sudo service redis-server start
 
-# On Windows: Download from https://github.com/microsoftarchive/redis/releases
 ```
 
 ## Step 2: Clone and Setup Project
@@ -115,7 +107,7 @@ python -m app.db.create_default_api_key
   DEV_API_KEY=<key_from_script>
   ```
 
-## Step 6: Verify Setup (Renumbered)
+## Step 6: Verify Setup
 
 ### 6.1 Check Redis
 ```bash
@@ -135,7 +127,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 curl http://localhost:8000/health
 ```
 
-## Step 7: Access Documentation (Renumbered)
+## Step 7: Access Documentation
 
 Once the server is running, access:
 - API Documentation: http://localhost:8000/docs
