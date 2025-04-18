@@ -1,0 +1,168 @@
+{
+  "queries_used": [
+    "\"{name}\" \"Duke University\" alumni",
+    "\"{name}\" site:duke.edu",
+    "\"{name}\" \"Duke University\" graduate"
+  ],
+  "accuracy": 0.46153846153846156,
+  "total_people": 26,
+  "correct": 12,
+  "results": [
+    {
+      "name": "Tim Cook",
+      "expected": true,
+      "result": false,
+      "query": "\"Tim Cook\" \"Duke University\" graduate"
+    },
+    {
+      "name": "Grant Hill",
+      "expected": true,
+      "result": false,
+      "query": "\"Grant Hill\" site:duke.edu"
+    },
+    {
+      "name": "Jason Robins",
+      "expected": true,
+      "result": false,
+      "query": "\"Jason Robins\" \"Duke University\" graduate"
+    },
+    {
+      "name": "Aaron Chatterji",
+      "expected": true,
+      "result": false,
+      "query": "\"Aaron Chatterji\" site:duke.edu"
+    },
+    {
+      "name": "Luis von Ahn",
+      "expected": true,
+      "result": false,
+      "query": "\"Luis von Ahn\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Tianhao Li",
+      "expected": true,
+      "result": false,
+      "query": "\"Tianhao Li\" \"Duke University\" alumni"
+    },
+    {
+      "name": "John Doe",
+      "expected": true,
+      "result": false,
+      "query": "\"John Doe\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Adam Silver",
+      "expected": true,
+      "result": false,
+      "query": "\"Adam Silver\" \"Duke University\" graduate"
+    },
+    {
+      "name": "Cameron Fisher",
+      "expected": true,
+      "result": false,
+      "query": "\"Cameron Fisher\" \"Duke University\" graduate"
+    },
+    {
+      "name": "Archit Kaila",
+      "expected": true,
+      "result": false,
+      "query": "\"Archit Kaila\" site:duke.edu"
+    },
+    {
+      "name": "Michael Mazzoleni",
+      "expected": true,
+      "result": false,
+      "query": "\"Michael Mazzoleni\" site:duke.edu"
+    },
+    {
+      "name": "Shyamal Hitesh Anadkat",
+      "expected": true,
+      "result": false,
+      "query": "\"Shyamal Hitesh Anadkat\" site:duke.edu"
+    },
+    {
+      "name": "Diarra Bell",
+      "expected": true,
+      "result": false,
+      "query": "\"Diarra Bell\" \"Duke University\" graduate"
+    },
+    {
+      "name": "Elon Musk",
+      "expected": false,
+      "result": false,
+      "query": "\"Elon Musk\" site:duke.edu"
+    },
+    {
+      "name": "Mark Zuckerberg",
+      "expected": false,
+      "result": false,
+      "query": "\"Mark Zuckerberg\" site:duke.edu"
+    },
+    {
+      "name": "Jeff Bezos",
+      "expected": false,
+      "result": false,
+      "query": "\"Jeff Bezos\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Bill Gates",
+      "expected": false,
+      "result": false,
+      "query": "\"Bill Gates\" site:duke.edu"
+    },
+    {
+      "name": "Steve Jobs",
+      "expected": false,
+      "result": false,
+      "query": "\"Steve Jobs\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Sam Altman",
+      "expected": false,
+      "result": false,
+      "query": "\"Sam Altman\" \"Duke University\" graduate"
+    },
+    {
+      "name": "Chungin (Roy) Lee",
+      "expected": false,
+      "result": false,
+      "query": "\"Chungin (Roy) Lee\" \"Duke University\" graduate"
+    },
+    {
+      "name": "Logan Tills",
+      "expected": false,
+      "result": false,
+      "query": "\"Logan Tills\" site:duke.edu"
+    },
+    {
+      "name": "Chaitanya Baweja",
+      "expected": false,
+      "result": false,
+      "query": "\"Chaitanya Baweja\" \"Duke University\" graduate"
+    },
+    {
+      "name": "Phill Agnew",
+      "expected": false,
+      "result": false,
+      "query": "\"Phill Agnew\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Alaa El-Nouby",
+      "expected": false,
+      "result": false,
+      "query": "\"Alaa El-Nouby\" \"Duke University\" alumni"
+    },
+    {
+      "name": "John Smith",
+      "expected": true,
+      "result": false,
+      "query": "\"John Smith\" \"Duke University\" graduate"
+    },
+    {
+      "name": "David Duke",
+      "expected": false,
+      "result": false,
+      "query": "\"David Duke\" site:duke.edu"
+    }
+  ]
+}

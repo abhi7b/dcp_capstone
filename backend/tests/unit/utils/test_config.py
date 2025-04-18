@@ -26,7 +26,7 @@ def test_settings_creates_directories():
     settings = Settings()
     
     # Test that directories exist
-    assert os.path.exists(settings.BASE_DATA_DIR)
+    assert os.path.exists(settings.DATA_DIR)
     assert os.path.exists(settings.RAW_DATA_DIR)
     assert os.path.exists(settings.JSON_INPUTS_DIR)
     assert os.path.exists(settings.LOGS_DIR)

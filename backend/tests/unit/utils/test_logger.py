@@ -22,6 +22,9 @@ def test_setup_logger():
         for handler in logger.handlers
     )
     assert has_console_handler, "Logger should have a console handler"
+    
+    # Test logging a message
+    logger.info("Test message from test_setup_logger")
 
 def test_get_logger():
     """Test that get_logger returns an appropriate logger."""
@@ -32,9 +35,15 @@ def test_get_logger():
     assert logger.name == "test_component"
     assert logger.level == logging.INFO  # Default level
     
+    # Test logging a message
+    logger.info("Test message from test_get_logger")
+    
     # Get a logger for an existing component
     db_logger = get_logger("db")
     assert db_logger.name == "db"
+    
+    # Test logging a message with db logger
+    db_logger.info("Test message from db logger")
 
 def test_configure_loggers():
     """Test that configure_loggers properly sets up file handlers."""
@@ -46,18 +55,34 @@ def test_configure_loggers():
         # Configure loggers
         configure_loggers(temp_log_dir)
         
-        # Get a logger that should now have a file handler
-        app_logger = get_logger("app")
+        # Test logging with various loggers
+        loggers = [
+            get_logger("app"),
+            get_logger("scraper"),
+            get_logger("api"),
+            get_logger("db"),
+            get_logger("celery"),
+            get_logger("scorer"),
+            get_logger("nitter"),
+            get_logger("nlp"),
+            get_logger("processor"),
+            get_logger("storage"),
+            get_logger("person_processor"),
+            get_logger("redis_service"),
+            get_logger("test")
+        ]
         
+        # Log a test message with each logger
+        for logger in loggers:
+            logger.info(f"Test message from {logger.name} logger")
+            
         # Check for file handler
+        app_logger = get_logger("app")
         has_file_handler = any(
             isinstance(handler, logging.FileHandler)
             for handler in app_logger.handlers
         )
-        
-        # This might be false in a unit test environment since we're not fully initializing the app
-        # Just check that the function runs without error
-        # assert has_file_handler, "Logger should have a file handler after configuration"
+        assert has_file_handler, "Logger should have a file handler after configuration"
     finally:
         # Cleanup
         # Uncomment if you want to remove the temp directory after test
