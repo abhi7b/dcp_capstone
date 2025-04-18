@@ -36,32 +36,44 @@ def setup_logger(name: str, log_file: str = None, level: str = None) -> logging.
     """
     logger = logging.getLogger(name)
     
-    if not logger.handlers:  # Only add handlers if they don't exist
-        # Use provided level or fall back to settings
-        log_level = level or settings.LOG_LEVEL
-        logger.setLevel(log_level)
-        
-        # Create formatters
-        file_formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
-        console_formatter = logging.Formatter(
-            '%(levelname)s - %(message)s'
-        )
-        
-        # Always add console handler
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(console_formatter)
-        logger.addHandler(console_handler)
-        
-        # Add file handler if log_file is provided
-        if log_file:
+    # Remove any existing handlers to prevent duplicates
+    if logger.handlers:
+        for handler in logger.handlers[:]:
+            logger.removeHandler(handler)
+    
+    # Use provided level or fall back to settings
+    log_level = level or settings.LOG_LEVEL
+    logger.setLevel(log_level)
+    
+    # Create formatters
+    file_formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    console_formatter = logging.Formatter(
+        '%(levelname)s - %(message)s'
+    )
+    
+    # Always add console handler
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(console_formatter)
+    logger.addHandler(console_handler)
+    print(f"Added console handler to logger: {name}")
+    
+    # Add file handler if log_file is provided
+    if log_file:
+        try:
             os.makedirs(settings.LOGS_DIR, exist_ok=True)
-            file_handler = logging.FileHandler(
-                os.path.join(settings.LOGS_DIR, log_file)
+            log_path = os.path.join(settings.LOGS_DIR, log_file)
+            file_handler = RotatingFileHandler(
+                log_path,
+                maxBytes=10*1024*1024,  # 10MB
+                backupCount=5
             )
             file_handler.setFormatter(file_formatter)
             logger.addHandler(file_handler)
+            print(f"Added file handler to logger: {name}, file: {log_path}")
+        except Exception as e:
+            print(f"Error setting up file handler for {name}: {str(e)}")
     
     return logger
 
@@ -69,13 +81,7 @@ def setup_logger(name: str, log_file: str = None, level: str = None) -> logging.
 log_level_name = os.environ.get("LOG_LEVEL", "INFO")
 log_level = getattr(logging, log_level_name)
 
-# Use a safe temporary directory in the user's home folder
-temp_log_dir = os.path.join(os.path.expanduser("~"), "temp_duke_vc_logs")
-try:
-    os.makedirs(temp_log_dir, exist_ok=True)
-except Exception:
-    # If we can't create the temp directory, just use console logging initially
-    temp_log_dir = None
+print(f"Initial log level: {log_level_name}")
 
 # Initialize service loggers with console logging only
 app_logger = setup_logger('app', None, level=log_level)
@@ -91,6 +97,7 @@ storage_logger = setup_logger('storage', None, level=log_level)
 person_processor_logger = setup_logger('person_processor', None, level=log_level)
 redis_service_logger = setup_logger('redis_service', None, level=log_level)
 test_logger = setup_logger('test', None, level=log_level)
+
 # Track if loggers have been reconfigured
 _loggers_configured = False
 
@@ -107,11 +114,15 @@ def configure_loggers(logs_dir):
     """
     global _loggers_configured
     if _loggers_configured:
+        print("Loggers already configured, skipping...")
         return
+    
+    print(f"Configuring loggers with directory: {logs_dir}")
     
     try:
         # Ensure directory exists
         os.makedirs(logs_dir, exist_ok=True)
+        print(f"Created/verified logs directory: {logs_dir}")
         
         # Reconfigure each logger with file handlers
         loggers_config = {
@@ -131,12 +142,15 @@ def configure_loggers(logs_dir):
         }
         
         for name, log_file in loggers_config.items():
-            setup_logger(name, os.path.join(logs_dir, log_file), level=log_level)
+            logger = setup_logger(name, log_file, level=log_level)
+            print(f"Configured logger: {name} with file: {log_file}")
             
         app_logger.info(f"Loggers configured with directory: {logs_dir}")
         _loggers_configured = True
+        print("Logger configuration completed successfully")
     except Exception as e:
         print(f"Failed to configure loggers with directory {logs_dir}: {str(e)}")
+        raise
 
 def get_logger(name: str, level: str = None) -> logging.Logger:
     """

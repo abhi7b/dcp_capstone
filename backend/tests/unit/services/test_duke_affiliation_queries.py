@@ -16,17 +16,9 @@ from pathlib import Path
 
 from app.utils.logger import test_logger as logger
 from app.services.scraper import SERPScraper
-from app.services.nlp_processor import NLPProcessor
+from app.services.person_processor import PersonProcessor
+from app.services.query_utils import QueryBuilder
 from app.utils.config import settings
-
-# Basic list of queries to test
-QUERIES = [
-    '"{name}" "Duke University" alumni',
-    '"{name}" "Duke University" graduate',
-    '"{name}" site:duke.edu',
-    '"{name}" "Duke" education',
-    '"{name}" Duke University'
-]
 
 # Test dataset of people with known Duke affiliations
 TEST_PEOPLE = [
@@ -68,7 +60,8 @@ class TestDukeAffiliationQueries:
     
     def __init__(self):
         self.scraper = SERPScraper()
-        self.nlp_processor = NLPProcessor()
+        self.person_processor = PersonProcessor()
+        self.query_builder = QueryBuilder()
         # Use the data directory for test output
         self.test_output_dir = Path(settings.DATA_DIR) / "duke_affiliation_tests"
         self.test_output_dir.mkdir(parents=True, exist_ok=True)
@@ -85,13 +78,19 @@ class TestDukeAffiliationQueries:
             Dictionary with test results
         """
         query = query_template.format(name=person["name"])
+        logger.info(f"\nTesting person: {person['name']}")
+        logger.info(f"Using query: {query}")
+        
         try:
+            logger.info("Making SERP API call...")
             serp_results = await self.scraper.search(query)
+            logger.info(f"SERP results received: {len(serp_results.get('organic_results', []))} results")
+            
             if serp_results and "organic_results" in serp_results:
-                person_data = await self.nlp_processor._process_person_education({
-                    "name": person["name"],
-                    "title": "Test Person"
-                })
+                logger.info("Processing with PersonProcessor...")
+                person_data = await self.person_processor.process_person(person["name"], serp_results)
+                logger.info(f"Person processing complete. Affiliation status: {person_data.get('duke_affiliation_status')}")
+                
                 return {
                     "name": person["name"],
                     "expected": person["is_duke"],
@@ -104,7 +103,8 @@ class TestDukeAffiliationQueries:
                 "name": person["name"],
                 "expected": person["is_duke"],
                 "result": False,
-                "query": query
+                "query": query,
+                "error": str(e)
             }
         
         return {
@@ -114,22 +114,27 @@ class TestDukeAffiliationQueries:
             "query": query
         }
     
-    async def run_test(self, selected_queries: List[str]) -> Dict[str, Any]:
+    async def run_test(self, selected_queries: List[str], test_people: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         Run a single test with a specific set of queries.
         
         Args:
             selected_queries: List of query templates to use
+            test_people: List of people to test
             
         Returns:
             Dictionary with test results
         """
         results = []
-        for person in TEST_PEOPLE:
+        logger.info(f"\nStarting test with queries: {selected_queries}")
+        
+        for i, person in enumerate(test_people, 1):
+            logger.info(f"\nProcessing person {i}/{len(test_people)}: {person['name']}")
             # Randomly select one query from the set
             query_template = random.choice(selected_queries)
             result = await self.test_person(person, query_template)
             results.append(result)
+            logger.info(f"Completed person {i}/{len(test_people)}")
         
         # Calculate metrics
         total = len(results)
@@ -150,19 +155,36 @@ async def test_query_effectiveness(caplog):
     # Set logging level to INFO to capture all output
     caplog.set_level("INFO")
     
+    logger.info("Starting Duke affiliation query tests...")
     tester = TestDukeAffiliationQueries()
     
-    # Run multiple tests with different query combinations
-    num_tests = 5  # Number of different query combinations to test
+    # Get queries from QueryBuilder
+    query_builder = QueryBuilder()
+    duke_queries = query_builder.get_founder_queries("{name}")["duke affiliation"]
+    
+    # Select a random sample of 8 people (4 Duke, 4 non-Duke)
+    duke_people = [p for p in TEST_PEOPLE if p["is_duke"]]
+    non_duke_people = [p for p in TEST_PEOPLE if not p["is_duke"]]
+    
+    # Run 3 tests with different random samples
+    num_tests = 3
     all_results = {}
     
     for test_num in range(1, num_tests + 1):
-        # Randomly select 2-3 queries for this test
-        num_queries = random.randint(2, 3)
-        selected_queries = random.sample(QUERIES, num_queries)
+        logger.info(f"\nStarting Test {test_num}/{num_tests}")
         
-        logger.info(f"\nRunning Test {test_num} with queries: {selected_queries}")
-        results = await tester.run_test(selected_queries)
+        # Select random sample
+        sample_size = 4
+        test_people = (
+            random.sample(duke_people, min(sample_size, len(duke_people))) +
+            random.sample(non_duke_people, min(sample_size, len(non_duke_people)))
+        )
+        random.shuffle(test_people)
+        
+        logger.info(f"Selected test people: {[p['name'] for p in test_people]}")
+        logger.info(f"Running test with queries: {duke_queries}")
+        
+        results = await tester.run_test(duke_queries, test_people)
         
         # Save results to data directory
         filename = tester.test_output_dir / f"duke_affiliation_test{test_num}.json"
@@ -173,7 +195,7 @@ async def test_query_effectiveness(caplog):
         
         # Print results
         logger.info(f"\nTest {test_num} Results:")
-        logger.info(f"Queries used: {selected_queries}")
+        logger.info(f"Queries used: {duke_queries}")
         logger.info(f"Accuracy: {results['accuracy']:.2%}")
         logger.info(f"Correct: {results['correct']}/{results['total_people']}")
         

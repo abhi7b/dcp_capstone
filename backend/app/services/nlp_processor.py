@@ -285,7 +285,8 @@ class NLPProcessor:
             return {"error": "No snippets found in SERP results"}
         
         extraction_prompt = f"""
-        Extract information about {company_name} from these search results.
+        You are a VC research analyst extracting structured information about individuals, especially entrepreneurs and business leaders, with a specific focus on Duke University affiliation.
+        Your task is to extract key information from the provided search results for a {company_name}.
         
         Return ONLY a valid JSON object with these fields (use null if info not found):
         {{
@@ -296,8 +297,8 @@ class NLPProcessor:
             "funding_stage": "Latest known stage (e.g., Seed, Series A)" | string or null,
             "investors": ["Investor 1", "Investor 2", ...] | array of strings or null,
             "summary": "Brief 1-2 sentence company description" | string or null,
-            "twitter_handle": "handle_without_@" | string or null,
-            "linkedin_handle": "Full LinkedIn company URL or unique part" | string or null,
+            "twitter_handle": "@_handle" | string or null,
+            "linkedin_handle": "Full LinkedIn company URL" | string or null,
             "people": [ {{ "name": "Person Name", "title": "Their role" }}, ... ] | array of objects or [],
             "source_links": ["URL1", "URL2", ...] | array of strings or []
         }}

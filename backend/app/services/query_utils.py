@@ -91,7 +91,7 @@ class QueryBuilder:
             # Duke affiliation queries
             "duke affiliation": [
                 f'"{founder_name}" "Duke University" alumni degree graduate',
-                # f'"{founder_name}" "Duke" education history'
+                f'"{founder_name}" "Duke" education history affiliation',
 
             ],
             "social_media": [

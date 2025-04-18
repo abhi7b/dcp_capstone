@@ -1,0 +1,59 @@
+{
+  "queries_used": [
+    "\"{name}\" \"Duke University\" alumni degree graduate",
+    "\"{name}\" \"Duke\" education history affiliation"
+  ],
+  "accuracy": 0.75,
+  "total_people": 8,
+  "correct": 6,
+  "results": [
+    {
+      "name": "Jason Robins",
+      "expected": true,
+      "result": true,
+      "query": "\"Jason Robins\" \"Duke University\" alumni degree graduate"
+    },
+    {
+      "name": "Mark Zuckerberg",
+      "expected": false,
+      "result": false,
+      "query": "\"Mark Zuckerberg\" \"Duke University\" alumni degree graduate"
+    },
+    {
+      "name": "Elon Musk",
+      "expected": false,
+      "result": false,
+      "query": "\"Elon Musk\" \"Duke\" education history affiliation"
+    },
+    {
+      "name": "Steve Jobs",
+      "expected": false,
+      "result": true,
+      "query": "\"Steve Jobs\" \"Duke University\" alumni degree graduate"
+    },
+    {
+      "name": "Grant Hill",
+      "expected": true,
+      "result": true,
+      "query": "\"Grant Hill\" \"Duke University\" alumni degree graduate"
+    },
+    {
+      "name": "David Duke",
+      "expected": false,
+      "result": true,
+      "query": "\"David Duke\" \"Duke University\" alumni degree graduate"
+    },
+    {
+      "name": "Adam Silver",
+      "expected": true,
+      "result": true,
+      "query": "\"Adam Silver\" \"Duke\" education history affiliation"
+    },
+    {
+      "name": "Tim Cook",
+      "expected": true,
+      "result": true,
+      "query": "\"Tim Cook\" \"Duke\" education history affiliation"
+    }
+  ]
+}

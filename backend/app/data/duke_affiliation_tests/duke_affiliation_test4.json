@@ -1,0 +1,168 @@
+{
+  "queries_used": [
+    "\"{name}\" \"Duke\" education",
+    "\"{name}\" Duke University",
+    "\"{name}\" \"Duke University\" alumni"
+  ],
+  "accuracy": 0.46153846153846156,
+  "total_people": 26,
+  "correct": 12,
+  "results": [
+    {
+      "name": "Tim Cook",
+      "expected": true,
+      "result": false,
+      "query": "\"Tim Cook\" \"Duke\" education"
+    },
+    {
+      "name": "Grant Hill",
+      "expected": true,
+      "result": false,
+      "query": "\"Grant Hill\" Duke University"
+    },
+    {
+      "name": "Jason Robins",
+      "expected": true,
+      "result": false,
+      "query": "\"Jason Robins\" Duke University"
+    },
+    {
+      "name": "Aaron Chatterji",
+      "expected": true,
+      "result": false,
+      "query": "\"Aaron Chatterji\" Duke University"
+    },
+    {
+      "name": "Luis von Ahn",
+      "expected": true,
+      "result": false,
+      "query": "\"Luis von Ahn\" Duke University"
+    },
+    {
+      "name": "Tianhao Li",
+      "expected": true,
+      "result": false,
+      "query": "\"Tianhao Li\" \"Duke\" education"
+    },
+    {
+      "name": "John Doe",
+      "expected": true,
+      "result": false,
+      "query": "\"John Doe\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Adam Silver",
+      "expected": true,
+      "result": false,
+      "query": "\"Adam Silver\" Duke University"
+    },
+    {
+      "name": "Cameron Fisher",
+      "expected": true,
+      "result": false,
+      "query": "\"Cameron Fisher\" \"Duke\" education"
+    },
+    {
+      "name": "Archit Kaila",
+      "expected": true,
+      "result": false,
+      "query": "\"Archit Kaila\" \"Duke\" education"
+    },
+    {
+      "name": "Michael Mazzoleni",
+      "expected": true,
+      "result": false,
+      "query": "\"Michael Mazzoleni\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Shyamal Hitesh Anadkat",
+      "expected": true,
+      "result": false,
+      "query": "\"Shyamal Hitesh Anadkat\" \"Duke\" education"
+    },
+    {
+      "name": "Diarra Bell",
+      "expected": true,
+      "result": false,
+      "query": "\"Diarra Bell\" Duke University"
+    },
+    {
+      "name": "Elon Musk",
+      "expected": false,
+      "result": false,
+      "query": "\"Elon Musk\" \"Duke\" education"
+    },
+    {
+      "name": "Mark Zuckerberg",
+      "expected": false,
+      "result": false,
+      "query": "\"Mark Zuckerberg\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Jeff Bezos",
+      "expected": false,
+      "result": false,
+      "query": "\"Jeff Bezos\" \"Duke\" education"
+    },
+    {
+      "name": "Bill Gates",
+      "expected": false,
+      "result": false,
+      "query": "\"Bill Gates\" \"Duke\" education"
+    },
+    {
+      "name": "Steve Jobs",
+      "expected": false,
+      "result": false,
+      "query": "\"Steve Jobs\" \"Duke\" education"
+    },
+    {
+      "name": "Sam Altman",
+      "expected": false,
+      "result": false,
+      "query": "\"Sam Altman\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Chungin (Roy) Lee",
+      "expected": false,
+      "result": false,
+      "query": "\"Chungin (Roy) Lee\" Duke University"
+    },
+    {
+      "name": "Logan Tills",
+      "expected": false,
+      "result": false,
+      "query": "\"Logan Tills\" Duke University"
+    },
+    {
+      "name": "Chaitanya Baweja",
+      "expected": false,
+      "result": false,
+      "query": "\"Chaitanya Baweja\" \"Duke University\" alumni"
+    },
+    {
+      "name": "Phill Agnew",
+      "expected": false,
+      "result": false,
+      "query": "\"Phill Agnew\" Duke University"
+    },
+    {
+      "name": "Alaa El-Nouby",
+      "expected": false,
+      "result": false,
+      "query": "\"Alaa El-Nouby\" \"Duke\" education"
+    },
+    {
+      "name": "John Smith",
+      "expected": true,
+      "result": false,
+      "query": "\"John Smith\" Duke University"
+    },
+    {
+      "name": "David Duke",
+      "expected": false,
+      "result": false,
+      "query": "\"David Duke\" \"Duke\" education"
+    }
+  ]
+}

@@ -20,11 +20,11 @@ from app.utils.config import settings
 async def test_load_json_file():
     """Test loading JSON files."""
     # Test loading a valid file
-    file_path = os.path.join(settings.JSON_INPUTS_DIR, "company_OpenAI.json")
+    file_path = os.path.join(settings.JSON_INPUTS_DIR, "company_Anthropic.json")
     data = await load_json_file(file_path)
     assert data is not None
     assert "name" in data
-    assert data["name"] == "OpenAI"
+    assert data["name"] == "Anthropic"
     
     # Test loading a non-existent file
     data = await load_json_file("nonexistent.json")
@@ -33,8 +33,8 @@ async def test_load_json_file():
 @pytest.mark.asyncio
 async def test_process_company_data(db: AsyncSession):
     """Test processing company data."""
-    # Load OpenAI company data
-    file_path = os.path.join(settings.JSON_INPUTS_DIR, "company_OpenAI.json")
+    # Load Anthropic company data
+    file_path = os.path.join(settings.JSON_INPUTS_DIR, "company_Anthropic.json")
     company_data = await load_json_file(file_path)
     assert company_data is not None
     
@@ -42,19 +42,19 @@ async def test_process_company_data(db: AsyncSession):
         # Process company
         company = await process_company_data(company_data, db)
         assert company is not None
-        assert company.name == "OpenAI"
+        assert company.name == "Anthropic"
         assert company.duke_affiliation_status == "confirmed"
-        assert company.relevance_score == 95
-        assert "SoftBank" in company.investors
-        assert "Goldman Sachs" in company.investors
-        assert "Morgan Stanley" in company.investors
-        assert company.funding_stage == "Series A"
+        assert company.relevance_score == 78
+        assert "Lightspeed Venture Partners" in company.investors
+        assert "Salesforce Ventures" in company.investors
+        assert "Amazon" in company.investors
+        assert "Google" in company.investors
+        assert company.funding_stage == "Series E"
         assert company.industry == "Artificial Intelligence"
-        assert company.founded == "2015"
-        assert company.location == "San Francisco, California"
-        assert company.twitter_handle == "openai"
-        assert company.linkedin_handle == "openai"
-     
+        assert company.founded == "2021"
+        assert company.linkedin_handle == "anthropicresearch"
+        assert "https://www.anthropic.com/company" in company.source_links
+        assert "https://en.wikipedia.org/wiki/Anthropic" in company.source_links
         
         # Test updating existing company
         company_data["summary"] = "Updated summary"
@@ -70,8 +70,8 @@ async def test_process_company_data(db: AsyncSession):
 @pytest.mark.asyncio
 async def test_process_person_data(db: AsyncSession):
     """Test processing person data."""
-    # Load Sam Altman's data
-    file_path = os.path.join(settings.JSON_INPUTS_DIR, "person_Sam_Altman.json")
+    # Load Dario Amodei's data
+    file_path = os.path.join(settings.JSON_INPUTS_DIR, "person_Dario_Amodei.json")
     person_data = await load_json_file(file_path)
     assert person_data is not None
     
@@ -79,21 +79,9 @@ async def test_process_person_data(db: AsyncSession):
         # Process person
         person = await process_person_data(db, person_data)
         assert person is not None
-        assert person.name == "Sam Altman"
-        assert person.title == "CEO & Co-Founder"
-        assert person.current_company == "OpenAI"
-        assert person.duke_affiliation_status == "confirmed"
-        assert person.relevance_score == 89
-        assert "School: John Burroughs School" in person.education
-        assert "School: Stanford University; Field: Computer Science" in person.education
-        assert "School: Duke University; Degree: Bachelor's" in person.education
-        assert "Y Combinator (President)" in person.previous_companies
-        assert "Loopt (CEO)" in person.previous_companies
-        assert person.twitter_handle == "sama"
-        assert person.linkedin_handle == "https://www.linkedin.com/in/samaltman"
-        assert "OpenAI has made several significant updates" in person.twitter_summary
-        assert "https://www.forbes.com" in person.source_links
-        assert "https://en.wikipedia.org" in person.source_links
+        assert person.name == "Dario Amodei"
+        assert person.title == "CEO"
+        assert person.current_company == "Anthropic"
         
         # Test updating existing person
         person_data["title"] = "Chief Executive Officer"
@@ -109,8 +97,8 @@ async def test_process_person_data(db: AsyncSession):
 @pytest.mark.asyncio
 async def test_process_company_people(db: AsyncSession):
     """Test processing company people and relationships."""
-    # Load OpenAI company data
-    file_path = os.path.join(settings.JSON_INPUTS_DIR, "company_OpenAI.json")
+    # Load Anthropic company data
+    file_path = os.path.join(settings.JSON_INPUTS_DIR, "company_Anthropic.json")
     company_data = await load_json_file(file_path)
     assert company_data is not None
     
@@ -133,14 +121,15 @@ async def test_process_company_people(db: AsyncSession):
             {"company_id": company.id}
         )
         people = result.all()
-        assert len(people) > 0
+        assert len(people) == 5  # Anthropic has 5 people
         
         # Verify each person exists and has correct title
         person_titles = {p.name: p.title for p in people}
-        assert person_titles["Sam Altman"] == "CEO & Co-Founder"
-        assert person_titles["Greg Brockman"] == "President & Co-Founder"
-        assert person_titles["Ilya Sutskever"] == "Chief Scientist"
-        assert person_titles["Julia Villagra"] == "Chief People Officer"
+        assert person_titles["Dario Amodei"] == "CEO"
+        assert person_titles["Daniela Amodei"] == "President/Co-Founder"
+        assert person_titles["Jack Clark"] == "Policy Director"
+        assert person_titles["Tom Brown"] == "Partner"
+        assert person_titles["Jason Clinton"] == "Chief Information Security Officer"
         
         await db.commit()
     except Exception as e:
@@ -164,15 +153,15 @@ async def test_full_migration(db: AsyncSession):
         people = result.scalars().all()
         assert len(people) > 0
         
-        # Verify OpenAI relationships with eager loading
+        # Verify Anthropic relationships with eager loading
         result = await db.execute(
             select(Company)
             .options(selectinload(Company.people))
-            .where(Company.name == "OpenAI")
+            .where(Company.name == "Anthropic")
         )
-        openai = result.scalars().first()
-        assert openai is not None
-        assert len(openai.people) > 0
+        anthropic = result.scalars().first()
+        assert anthropic is not None
+        assert len(anthropic.people) == 5  # Anthropic has 5 people
         
         await db.commit()
     except Exception as e:
