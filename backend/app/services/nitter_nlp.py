@@ -58,7 +58,7 @@ class NitterNLP:
         # Prepare message for OpenAI
         message = f"""
         Analyze these tweets and provide:
-        1. A concise summary of key points
+        1. A concise summary of 2-3 key points
         2. An urgency score (0-100) based on:
            - Recent funding announcements
            - Product launches

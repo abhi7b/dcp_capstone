@@ -47,8 +47,8 @@ Return a JSON object with these fields (use null for missing fields):
         }
     ],
     "previous_companies": [
-        "Company Name (Role)",
-        "Company Name (Role)"
+        "Name of Company (Role of Individual in Company)",
+        "Name of Company (Role of Individual in Company)"
     ],
     "twitter_handle": "handle_without_at",
     "linkedin_handle": "URL",
