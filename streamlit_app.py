@@ -29,6 +29,7 @@ tab = st.sidebar.radio("Select Function", ["Company Search", "Founder Search"])
 if tab == "Company Search":
     st.header("🔍 Company Search")
     company_name = st.text_input("Enter company name:")
+
     force_refresh = st.checkbox("Force refresh data", value=False, 
                               help="Check this to fetch fresh data from sources instead of using cached data")
     if st.button("Search Company"):
@@ -56,6 +57,7 @@ if tab == "Company Search":
 elif tab == "Founder Search":
     st.header("🔍 Founder Search")
     founder_name = st.text_input("Enter founder name:")
+
     force_refresh = st.checkbox("Force refresh data", value=False, 
                               help="Check this to fetch fresh data from sources instead of using cached data")
     if st.button("Search Founder"):
